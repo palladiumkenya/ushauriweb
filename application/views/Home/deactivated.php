@@ -68,9 +68,13 @@
                                         <tr>
                                             <td class="a-center"><?php echo $i; ?></td>
 
-                                            
+                                            <?php
+                                            $view_client = $this->session->userdata('view_client');
+
+                                            if ($view_client == "Yes") {
+                                                ?>
                                                 <td>
-                                                    <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>"/>
+                                                    <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->id; ?>"/>
                                                     <button class="btn btn-default btn-small edit_btn" id="edit_btn">
                                                         <?php echo $value->clinic_number; ?>
                                                     </button>
@@ -83,11 +87,20 @@
                                                     echo $client_name;
                                                     ?></td>
                                                 <td><?php echo $value->phone_no; ?></td>
-                                              
-                                            
+                                                <?php
+                                            } else {
+                                                ?>
+
+                                                <td>XXXXXX XXXXXXX</td>
+                                                <td>XXXXXX XXXXXXX</td>
+                                                <td>XXXXXX XXXXXXX</td>
+                                                <td>XXXXXX XXXXXXX</td>
+                                                <?php
+                                            }
+                                            ?>
                                             <td><?php echo $value->dob; ?></td>
-                                            <td><?php echo $value->group_name; ?></td>
-                                            <td><?php echo $value->status; ?></td>
+                                            <td><?php echo $value->name; ?></td>
+                                            <td><?php echo $value->ST; ?></td>
 
                                             <td><?php echo $value->created_at; ?></td>
                                             <?php

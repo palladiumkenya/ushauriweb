@@ -2525,7 +2525,7 @@ class Reports extends MY_Controller {
 
 
 
-//        $get_query = $this->db->query("SELECT tbl_client.`smsenable` AS k , COUNT(tbl_client.id) AS v FROM tbl_client  GROUP BY tbl_client.`smsenable`")->result();
+    //        $get_query = $this->db->query("SELECT tbl_client.`smsenable` AS k , COUNT(tbl_client.id) AS v FROM tbl_client  GROUP BY tbl_client.`smsenable`")->result();
         echo json_encode($get_query);
     }
 
@@ -3760,7 +3760,9 @@ FROM
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
-
+        $data['access_level'] = $access_level;
+        $data['partner_id'] = $partner_id;
+        $data['facility_id'] = $facility_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
@@ -9636,11 +9638,10 @@ if ($access_level == 'Facility') {
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
 
-
-        // $data['side_functions'] = $this->data->get_side_modules();
-        // $data['top_functions'] = $this->data->get_top_modules();
-        // $data['output'] = $this->get_access_level();
-
+        
+        $data['access_level'] = $access_level;
+        $data['partner_id'] = $partner_id;
+        $data['facility_id'] = $facility_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
@@ -9672,7 +9673,9 @@ if ($access_level == 'Facility') {
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
-
+        $data['access_level'] = $access_level;
+        $data['partner_id'] = $partner_id;
+        $data['facility_id'] = $facility_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
@@ -10090,7 +10093,9 @@ if ($access_level == 'Facility') {
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
-
+        $data['access_level'] = $access_level;
+        $data['partner_id'] = $partner_id;
+        $data['facility_id'] = $facility_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();

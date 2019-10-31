@@ -395,16 +395,19 @@ class Home extends MY_Controller {
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
                     'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'county' => 'county.id = partner_facility.county_id', 'sub_county' => 'sub_county.id = partner_facility.sub_county_id', 'master_facility' => 'master_facility.code = partner_facility.mfl_code'),
-                'where' => array('client.status' => 'Disabled')
+                'where' => array('client.status' => 'Deceased')
             );
             
-        } elseif ($access_level == "Partner") { //Partner level access
-            $clients = "SELECT * FROM tbl_disabled_clients WHERE partner_id = '$partner_id'";
+        } elseif ($access_level == "Partner") {
+            //Partner level access
+
+            $clients = "SELECT a.id, a.f_name, a.m_name, a.l_name, a.clinic_number, a.file_no, a.status AS ST, d.name AS county_name, e.name AS sub_county, f.name AS facility_name , a.phone_no, a.dob, b.name, a.created_at FROM tbl_client a INNER JOIN tbl_groups b ON b.id = a.group_id INNER JOIN tbl_partner_facility c ON c.mfl_code = a.mfl_code INNER JOIN tbl_county d ON d.id = c.county_id INNER JOIN tbl_sub_county e ON e.id = c.sub_county_id INNER JOIN tbl_master_facility f ON f.`code` = c.mfl_code
+            WHERE a.partner_id = '$partner_id' AND a.status =  'Deceased' OR a.status= 'Dead' AND a.partner_id = '$partner_id'";
 
         } elseif ($access_level == "Facility") {
 
+            $clients = "SELECT a.id, a.f_name, a.m_name, a.l_name, a.clinic_number, a.file_no, a.status AS ST, a.phone_no, a.dob, b.name, a.created_at FROM tbl_client a INNER JOIN tbl_groups b ON b.id = a.group_id WHERE a.mfl_code = '$facility_id' AND a.status =  'Deceased' OR a.status= 'Dead' AND a.mfl_code = '$facility_id'";
 
-            $clients = "SELECT * FROM tbl_disabled_clients WHERE mfl_code = '$facility_id'";
 
 
         } elseif ($access_level == "County") {
@@ -5232,14 +5235,14 @@ FROM tbl_client where age_group IS NOT NULL")->result();
                 . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'master_facility' => 'master_facility.code = partner_facility.mfl_code', 'county' => 'master_facility.county_id = county.id', 'sub_county' => 'master_facility.sub_county_id = sub_county.name'),
-                'where' => array('client.status' => 'Active', 'client.smsenable' => 'Yes', 'partner_facility.partner_id' => $partner_id),
+                'where' => array('client.status' => 'Active', 'client.smsenable' => 'Yes', 'client.partner_id' => $partner_id),
                 'order' => array('enrollment_date' => 'DESC')
             );
 
             $facilities = array(
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code'),
-                'where' => array('partner_facility.status' => 'Active', 'partner_facility.partner_id' => $partner_id, 'partner_facility.mfl_code' => $facility_id)
+                'where' => array('partner_facility.status' => 'Active', 'partner_facility.partner_id' => $partner_id)
             );
         } elseif ($access_level == "Facility") {
 
@@ -8217,7 +8220,6 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $data['current_appointments'] = $this->count_current_appointments();
         $data['missed_appointments'] = $this->count_missed_appointments();
         $data['defaulted_appointments'] = $this->count_defaulted_appointments();
-        $data['LTFU_appointments'] = $this->count_LTFU_appointments();
         $data['LTFU_appointments'] = $this->count_LTFU_appointments();
         $data['Today_appointments'] = $this->count_Today_appointments();
 

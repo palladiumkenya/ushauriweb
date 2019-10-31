@@ -18,6 +18,9 @@ application/controllers/ExtractReport/*
 Defaulter_Clean_up
 /Defaulter_Clean_up
 
+.history
+/.history
+
 
 
 application/config/database.php

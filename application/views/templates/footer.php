@@ -1539,11 +1539,23 @@ if ($function_name == "facility_home") {
 
         dTbles(".filter_monthly_appointment_extract").click(function () {
 
+            var access_level = $('#access_level').val();
+            var partner_id = $('#partner_id').val();
+            var facility_id = $('#facility_id').val();
+
             var partner = dTbles(".filter_partner").val();
             var county = dTbles(".filter_county").val();
             var sub_county = dTbles(".filter_sub_county").val();
             var facility = dTbles(".filter_facility").val();
             var filter_time = dTbles(".filter_time").val();
+
+            if(access_level == 'Partner'){
+                    partner = partner_id;
+                }
+            
+                if(access_level == 'Facility'){
+                    facility = facility_id;
+                }
 
 
 
@@ -1557,7 +1569,16 @@ if ($function_name == "facility_home") {
             }
 
 
+            if (partner != "") {
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() + "";
 
+            }else{
+
+                if(access_level == 'Partner'){
+                    selected_partner = "For Partner: " + access_level + "";
+                }
+
+            }
 
             if (county != "") {
                 selected_county = "For " + dTbles(".filter_county option:selected").text() + " County ";
@@ -1708,14 +1729,30 @@ if ($function_name == "facility_home") {
 
 
         dTbles(".filter_client_extract").click(function () {
+
+            var access_level = $('#access_level').val();
+            var partner_id = $('#partner_id').val();
+            var facility_id = $('#facility_id').val();
+
+            console.log(partner_id);
+
+            var partner = dTbles(".filter_partner").val();
             var county = dTbles(".filter_county").val();
             var sub_county = dTbles(".filter_sub_county").val();
             var facility = dTbles(".filter_facility").val();
             var date_from = dTbles(".date_from").val();
             var date_to = dTbles(".date_to").val();
 
+            if(access_level == 'Partner'){
+                    partner = partner_id;
+                }
+            
+                if(access_level == 'Facility'){
+                    facility = facility_id;
+                }
 
 
+            var selected_partner = "";
             var selected_county = "";
             var selected_sub_county = "";
             var selected_facility = "";
@@ -1730,7 +1767,17 @@ if ($function_name == "facility_home") {
                 selected_date_to = "To : " + dTbles(".date_to").val();
             }
 
+            if (partner != "") {
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() + "";
 
+            }else{
+
+                if(access_level == 'Partner'){
+                    selected_partner = "For Partner: " + access_level + "";
+                }
+
+            }
+            
             if (county != "") {
                 selected_county = "For " + dTbles(".filter_county option:selected").text() + " County ";
 
@@ -1754,14 +1801,152 @@ if ($function_name == "facility_home") {
 
         });
 
+    function generate_client_report(county, sub_county, facility, date_from, date_to, description_one, description_two, tokenizer) {
+
+
+
+        var final_description;
+        if (description_one == undefined && description_two != undefined) {
+            final_description = " " + description_two;
+        } else if (description_one != undefined && description_two == undefined) {
+            final_description = " " + description_one;
+        } else if (description_one == undefined && description_two == undefined) {
+            final_description = " ";
+        } else {
+            final_description = description_one + ' </br> ' + description_two;
+        }
+        var processed_json = new Array();
+
+        dTbles(".gender_report_div").empty();
+
+        dTbles.ajax({
+            type: 'POST',
+            url: "<?php echo base_url(); ?>Reports/get_client_reports/",
+            dataType: 'JSON',
+            data: {county: county, sub_county: sub_county, facility: facility, date_from: date_from, date_to: date_to, tokenizer: tokenizer},
+            success: function (data) {
+
+
+
+        dTbles(".client_reports_div").empty();
+        dTbles('.client_listing').DataTable().clear();
+        dTbles('.client_listing').DataTable().destroy();
+        var table = '  <table class=" display nowrap table table-hover table-striped table-bordered client_listing " cellspacing="0" width="100%">\n\
+        <thead> <tr> <th>CCC No</th> <th>Gender  :</th> <th>Group : </th><th>Marital Status : </th> <th>Create At : </th>\n\
+        <th>Month Year: </th> <th>Language </th> <th>Text Time : </th><th>Enrollment Date : </th> <th>ART Date : </th><th>Partner : </th> <th>County  </th>\n\
+        <th>Sub County: </th> <th>MFL Code </th> <th>Facility  : </th><th>SMS Enable : </th> <th>Consent Date : </th><th>Wellness Enable : </th>   </tr> </thead>  \n\
+        <tbody id="results_tbody" class="results_tbody"> </tbody> </table> ';
+        dTbles('.client_reports_div').append(table);
+        if (data === "Too much data") {
+            dTbles(".client_reports_div").empty();
+            sweetAlert("Info", "The data you're trying to load is too much , we will send it to you through your personal e-mail ", 'info');
+        } else {
+            dTbles.each(data, function (i, value) {
+
+
+
+                var clinic_number = value.clinic_number;
+                var gender = value.gender;
+                var group_name = value.group_name;
+                var marital = value.marital;
+                var created_at = value.created_at;
+                var month_year = value.month_year;
+                var LANGUAGE = value.LANGUAGE;
+                var txt_time = value.txt_time;
+                var enrollment_date = value.enrollment_date;
+                var art_date = value.art_date;
+                var partner_id = value.partner_id;
+                var partner_name = value.partner_name;
+                var county_name = value.county_name;
+                var sub_county = value.sub_county;
+                var mfl_code = value.mfl_code;
+                var facility_name = value.facility_name;
+                var smsenable = value.smsenable;
+                var consent_date = value.consent_date;
+                var motivational_enable = value.motivational_enable;
+                var wellness_enable = value.wellness_enable;
+
+
+                var tr_results = "<tr>\n\
+        <td>" + clinic_number + "</td>\n\
+        <td>" + gender + "</td>\n\
+        <td>" + group_name + "</td>\n\
+        <td>" + marital + "</td>\n\
+        <td>" + created_at + "</td>\n\
+        <td>" + month_year + "</td>\n\
+        <td>" + LANGUAGE + "</td>\n\
+        <td>" + txt_time + "</td>\n\
+        <td>" + enrollment_date + "</td>\n\
+        <td>" + art_date + "</td>\n\
+        <td>" + partner_name + "</td>\n\
+        <td>" + county_name + "</td>\n\
+        <td>" + sub_county + "</td>\n\
+        <td>" + mfl_code + "</td>\n\
+        <td>" + facility_name + "</td>\n\
+        <td>" + smsenable + "</td>\n\
+        <td>" + consent_date + "</td>\n\
+        <td>" + wellness_enable + "</td>\n\
+        </tr>";
+                dTbles(".results_tbody").append(tr_results);
+
+            });
+
+            dTbles(".client_reports_div").show();
+            dTbles('.client_listing').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                "lengthMenu": [[5, 10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: [
+                    dTbles.extend(true, {}, {
+                        extend: 'copyHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'excelHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'pdfHtml5'
+                    })
+                ]
+            });
+
+
+
+        }
+
+
+
+
+
+    }
+});
+
+
+
+
+}
+
         //TRACING OUTCOME STARTS HERE ...
         dTbles(".filter_tracing_outcome").click(function () {
+
+            var access_level = $('#access_level').val();
+            var partner_id = $('#partner_id').val();
+            var facility_id = $('#facility_id').val();
+
+            var partner = dTbles(".filter_partner").val();
             var county = dTbles(".filter_county").val();
             var sub_county = dTbles(".filter_sub_county").val();
             var facility = dTbles(".filter_facility").val();
             var date_from = dTbles(".date_from").val();
             var date_to = dTbles(".date_to").val();
             console.log('data loads');
+
+            if(access_level == 'Partner'){
+                    partner = partner_id;
+                }
+            
+                if(access_level == 'Facility'){
+                    facility = facility_id;
+                }
 
 
 
@@ -1777,6 +1962,17 @@ if ($function_name == "facility_home") {
 
             if (date_to.length > 0) {
                 selected_date_to = "To : " + dTbles(".date_to").val();
+            }
+
+            if (partner != "") {
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() + "";
+
+            }else{
+
+                if(access_level == 'Partner'){
+                    selected_partner = "For Partner: " + access_level + "";
+                }
+
             }
 
 
@@ -1805,38 +2001,38 @@ if ($function_name == "facility_home") {
         //TRACING OUTCOME FUNCTION
         function generate_tracing_outcome(county, sub_county, facility, date_from, date_to, description_one, description_two, tokenizer) {
 
-console.log("in generate");
-        
-var final_description;
-if (description_one == undefined && description_two != undefined) {
-final_description = " " + description_two;
-} else if (description_one != undefined && description_two == undefined) {
-final_description = " " + description_one;
-} else if (description_one == undefined && description_two == undefined) {
-final_description = " ";
-} else {
-final_description = description_one + ' </br> ' + description_two;
-}
-var processed_json = new Array();
+            console.log("in generate");
+                    
+            var final_description;
+            if (description_one == undefined && description_two != undefined) {
+            final_description = " " + description_two;
+            } else if (description_one != undefined && description_two == undefined) {
+            final_description = " " + description_one;
+            } else if (description_one == undefined && description_two == undefined) {
+            final_description = " ";
+            } else {
+            final_description = description_one + ' </br> ' + description_two;
+            }
+            var processed_json = new Array();
 
-dTbles(".gender_report_div").empty();
+            dTbles(".gender_report_div").empty();
 
-dTbles.ajax({
-type: 'POST',
-url: "<?php echo base_url(); ?>Reports/TracingOutcomefilter/",
-dataType: 'JSON',
-data: {county: county, sub_county: sub_county, facility: facility, date_from: date_from, date_to: date_to, tokenizer: tokenizer},
-success: function (data) {
+            dTbles.ajax({
+            type: 'POST',
+            url: "<?php echo base_url(); ?>Reports/TracingOutcomefilter/",
+            dataType: 'JSON',
+            data: {county: county, sub_county: sub_county, facility: facility, date_from: date_from, date_to: date_to, tokenizer: tokenizer},
+            success: function (data) {
 
-    console.log(data);
+                console.log(data);
 
     dTbles(".client_reports_div").empty();
     dTbles('.client_listing').DataTable().clear();
     dTbles('.client_listing').DataTable().destroy();
     var table = '  <table class=" display nowrap table table-hover table-striped table-bordered client_listing " cellspacing="0" width="100%">\n\
-<thead> <tr>  <th>Clinic Number  :</th> <th>Age  :</th> <th>Facility  :</th> <th>Gender  :</th> <th>Sub_County  :</th> <th>File No : </th><th>Appointment Date : </th> <th>Tracer Name : </th>\n\
-<th>Days Defaulted: </th> <th>Tracing Date </th> <th>Outcome : </th><th>Final Outcome : </th> <th>Other Outcome : </th> </tr> </thead>  \n\
-<tbody id="results_tbody" class="results_tbody"> </tbody> </table> ';
+        <thead> <tr>  <th>Clinic Number  :</th> <th>Age  :</th> <th>Facility  :</th> <th>Gender  :</th> <th>Sub_County  :</th> <th>File No : </th><th>Appointment Date : </th> <th>Tracer Name : </th>\n\
+        <th>Days Defaulted: </th> <th>Tracing Date </th> <th>Outcome : </th><th>Final Outcome : </th> <th>Other Outcome : </th> </tr> </thead>  \n\
+        <tbody id="results_tbody" class="results_tbody"> </tbody> </table> ';
     dTbles('.client_reports_div').append(table);
     // if (data === "Too much data") {
     //     dTbles(".client_reports_div").empty();
@@ -1927,129 +2123,7 @@ success: function (data) {
 
 
 
-        function generate_client_report(county, sub_county, facility, date_from, date_to, description_one, description_two, tokenizer) {
-
-
-
-            var final_description;
-            if (description_one == undefined && description_two != undefined) {
-                final_description = " " + description_two;
-            } else if (description_one != undefined && description_two == undefined) {
-                final_description = " " + description_one;
-            } else if (description_one == undefined && description_two == undefined) {
-                final_description = " ";
-            } else {
-                final_description = description_one + ' </br> ' + description_two;
-            }
-            var processed_json = new Array();
-
-            dTbles(".gender_report_div").empty();
-
-            dTbles.ajax({
-                type: 'POST',
-                url: "<?php echo base_url(); ?>Reports/get_client_reports/",
-                dataType: 'JSON',
-                data: {county: county, sub_county: sub_county, facility: facility, date_from: date_from, date_to: date_to, tokenizer: tokenizer},
-                success: function (data) {
-
-
-
-                    dTbles(".client_reports_div").empty();
-                    dTbles('.client_listing').DataTable().clear();
-                    dTbles('.client_listing').DataTable().destroy();
-                    var table = '  <table class=" display nowrap table table-hover table-striped table-bordered client_listing " cellspacing="0" width="100%">\n\
-             <thead> <tr> <th>CCC No</th> <th>Gender  :</th> <th>Group : </th><th>Marital Status : </th> <th>Create At : </th>\n\
-            <th>Month Year: </th> <th>Language </th> <th>Text Time : </th><th>Enrollment Date : </th> <th>ART Date : </th><th>Partner : </th> <th>County  </th>\n\
-            <th>Sub County: </th> <th>MFL Code </th> <th>Facility  : </th><th>SMS Enable : </th> <th>Consent Date : </th><th>Wellness Enable : </th>   </tr> </thead>  \n\
-               <tbody id="results_tbody" class="results_tbody"> </tbody> </table> ';
-                    dTbles('.client_reports_div').append(table);
-                    if (data === "Too much data") {
-                        dTbles(".client_reports_div").empty();
-                        sweetAlert("Info", "The data you're trying to load is too much , we will send it to you through your personal e-mail ", 'info');
-                    } else {
-                        dTbles.each(data, function (i, value) {
-
-
-
-                            var clinic_number = value.clinic_number;
-                            var gender = value.gender;
-                            var group_name = value.group_name;
-                            var marital = value.marital;
-                            var created_at = value.created_at;
-                            var month_year = value.month_year;
-                            var LANGUAGE = value.LANGUAGE;
-                            var txt_time = value.txt_time;
-                            var enrollment_date = value.enrollment_date;
-                            var art_date = value.art_date;
-                            var partner_id = value.partner_id;
-                            var partner_name = value.partner_name;
-                            var county_name = value.county_name;
-                            var sub_county = value.sub_county;
-                            var mfl_code = value.mfl_code;
-                            var facility_name = value.facility_name;
-                            var smsenable = value.smsenable;
-                            var consent_date = value.consent_date;
-                            var motivational_enable = value.motivational_enable;
-                            var wellness_enable = value.wellness_enable;
-
-
-                            var tr_results = "<tr>\n\
-                    <td>" + clinic_number + "</td>\n\
-                    <td>" + gender + "</td>\n\
-                    <td>" + group_name + "</td>\n\
-                    <td>" + marital + "</td>\n\
-                    <td>" + created_at + "</td>\n\
-                    <td>" + month_year + "</td>\n\
-                    <td>" + LANGUAGE + "</td>\n\
-                    <td>" + txt_time + "</td>\n\
-                    <td>" + enrollment_date + "</td>\n\
-                    <td>" + art_date + "</td>\n\
-                    <td>" + partner_name + "</td>\n\
-                    <td>" + county_name + "</td>\n\
-                    <td>" + sub_county + "</td>\n\
-                    <td>" + mfl_code + "</td>\n\
-                    <td>" + facility_name + "</td>\n\
-                    <td>" + smsenable + "</td>\n\
-                    <td>" + consent_date + "</td>\n\
-                    <td>" + wellness_enable + "</td>\n\
-                    </tr>";
-                            dTbles(".results_tbody").append(tr_results);
-
-                        });
-
-                        dTbles(".client_reports_div").show();
-                        dTbles('.client_listing').DataTable({
-                            dom: 'Bfrtip',
-                            responsive: true,
-                            "lengthMenu": [[5, 10, 25, 50, -1], [10, 25, 50, "All"]],
-                            buttons: [
-                                dTbles.extend(true, {}, {
-                                    extend: 'copyHtml5'
-                                }),
-                                dTbles.extend(true, {}, {
-                                    extend: 'excelHtml5'
-                                }),
-                                dTbles.extend(true, {}, {
-                                    extend: 'pdfHtml5'
-                                })
-                            ]
-                        });
-
-
-
-                    }
-
-
-
-
-
-                }
-            });
-
-
-
-
-        }
+        
 
 
 
@@ -2215,11 +2289,25 @@ success: function (data) {
 
 
         dTbles(".filter_message_extract").click(function () {
+
+            var access_level = $('#access_level').val();
+            var partner_id = $('#partner_id').val();
+            var facility_id = $('#facility_id').val();
+
+            var partner = dTbles(".filter_partner").val();
             var county = dTbles(".filter_county").val();
             var sub_county = dTbles(".filter_sub_county").val();
             var facility = dTbles(".filter_facility").val();
             var date_from = dTbles(".date_from").val();
             var date_to = dTbles(".date_to").val();
+
+            if(access_level == 'Partner'){
+                    partner = partner_id;
+                }
+            
+                if(access_level == 'Facility'){
+                    facility = facility_id;
+                }
 
 
 
@@ -2235,6 +2323,17 @@ success: function (data) {
 
             if (date_to.length > 0) {
                 selected_date_to = "To : " + dTbles(".date_to").val();
+            }
+
+            if (partner != "") {
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() + "";
+
+            }else{
+
+                if(access_level == 'Partner'){
+                    selected_partner = "For Partner: " + access_level + "";
+                }
+
             }
 
 

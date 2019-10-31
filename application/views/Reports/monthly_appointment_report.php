@@ -17,9 +17,14 @@
     <div class="container-fluid">
         <!-- Start Page Content -->
 
-
+        <?php echo $access_level ?>
         <div class="row">
             <form class="form-inline" >
+                <input type='hidden' id="access_level" value="<?php echo $access_level; ?>" />
+                <input type='hidden' id="partner_id" value="<?php echo $partner_id; ?>" />
+                <input type='hidden' id="facility_id" value="<?php echo $facility_id; ?>" />
+
+                <?php if($access_level == 'Admin' || $access_level == 'Donor') {?>
 
                 <select class = "form-control filter_partner  input-rounded input-sm select2" name = "filter_partner" id = "filter_partner">
                     <option value = "">Please select Partner</option>
@@ -33,6 +38,9 @@
                     <option></option>
                 </select>
 
+                <?php } ?>
+                    
+                <?php if($access_level == 'Admin' || $access_level == 'Donor' || $access_level == 'Partner') {?>
 
 
                 <select class = "form-control filter_county  input-rounded input-sm select2" name = "filter_county" id = "filter_county">
@@ -62,9 +70,17 @@
 
                 <span class="filter_time_wait" style="display: none;">Loading , Please Wait ...</span>
 
+                <?php }?>
 
                 <select class = "form-control filter_time  input-rounded input-sm select2" name = "filter_time" id = "filter_time">
                     <option value = "">Please select Month</option>
+                    <?php
+                    foreach ($filtered_time as $value) {
+                        ?>
+                        <option value="<?php echo $value->time; ?>"><?php echo $value->time; ?></option>
+                        <?php
+                    }
+                    ?>
                 </select>
 
                 <button class="btn btn-default filter_monthly_appointment_extract btn-round  btn-small btn-primary  " type="button" name="filter_monthly_appointment_extract" id="filter_monthly_appointment_extract"> <i class="fa fa-filter"></i>  Filter</button>

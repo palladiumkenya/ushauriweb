@@ -18,6 +18,12 @@
         <div class="row">
             <form class="form-inline" >
 
+                <input type='hidden' id="access_level" value="<?php echo $access_level; ?>" />
+                <input type='hidden' id="partner_id" value="<?php echo $partner_id; ?>" />
+                <input type='hidden' id="facility_id" value="<?php echo $facility_id; ?>" />
+
+                <?php if($access_level == 'Admin' || $access_level == 'Donor') {?>
+
                 <select class = "form-control filter_partner  input-rounded input-sm select2" name = "filter_partner" id = "filter_partner">
                     <option value = "">Please select Partner</option>
                     <?php
@@ -29,8 +35,10 @@
                     ?>
                     <option></option>
                 </select>
+                <?php } ?>
 
 
+                <?php if($access_level == 'Admin' || $access_level == 'Donor' || $access_level == 'Partner') {?>
 
                 <select class = "form-control filter_county  input-rounded input-sm select2" name = "filter_county" id = "filter_county">
                     <option value = "">Please select County</option>
@@ -56,7 +64,7 @@
                 <select class="form-control filter_facility input-rounded input-sm select2" name="filter_facility" id="filter_facility">
                     <option value="">Please select Facility : </option>
                 </select>
-
+                <?php }?>
 
                 <input type="text" name="date_from" id="date_from" class="form-controL date_from input-rounded input-sm " placeholder="Date From : "/>
 

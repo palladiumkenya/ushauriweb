@@ -129,7 +129,7 @@ WHERE
 
                     $embeded_url .= "&Facility=" . $facility_name;
                 }
-            }z
+            };
 
             if ($server_url === 'https://ushauritest.mhealthkenya.co.ke/') {
                 //Test Link 

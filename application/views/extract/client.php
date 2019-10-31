@@ -17,48 +17,59 @@
     <div class="container-fluid">
         <!-- Start Page Content -->
 
-
+<?php echo $access_level ?>
         <div class="row">
             <form class="form-inline" >
+                <input type='hidden' id="access_level" value="<?php echo $access_level; ?>" />
+                <input type='hidden' id="partner_id" value="<?php echo $partner_id; ?>" />
+                <input type='hidden' id="facility_id" value="<?php echo $facility_id; ?>" />
 
-                <select class = "form-control filter_partner  input-rounded input-sm select2" name = "filter_partner" id = "filter_partner">
-                    <option value = "">Please select Partner</option>
-                    <?php
-                    foreach ($filtered_partner as $value) {
-                        ?>
-                        <option value="<?php echo $value->partner_id; ?>"><?php echo $value->partner_name; ?></option>
+                <?php if($access_level == 'Admin' || $access_level == 'Donor') {?>
+
+                    <select class = "form-control filter_partner  input-rounded input-sm select2" name = "filter_partner" id = "filter_partner">
+                        <option value = "">Please select Partner</option>
                         <?php
-                    }
-                    ?>
-                    <option></option>
-                </select>
-
-
-
-                <select class = "form-control filter_county  input-rounded input-sm select2" name = "filter_county" id = "filter_county">
-                    <option value = "">Please select County</option>
-                    <?php
-                    foreach ($filtered_county as $value) {
+                        foreach ($filtered_partner as $value) {
+                            ?>
+                            <option value="<?php echo $value->partner_id; ?>"><?php echo $value->partner_name; ?></option>
+                            <?php
+                        }
                         ?>
-                        <option value="<?php echo $value->county_id; ?>"><?php echo $value->county_name; ?></option>
+                        <option></option>
+                    </select>
+                <?php } ?>
+
+                <?php if($access_level == 'Admin' || $access_level == 'Donor' || $access_level == 'Partner') {?>
+
+                    <select class = "form-control filter_county  input-rounded input-sm select2" name = "filter_county" id = "filter_county">
+                        <option value = "">Please select County</option>
                         <?php
-                    }
-                    ?>
-                    <option></option>
-                </select>
+                        foreach ($filtered_county as $value) {
+                            ?>
+                            <option value="<?php echo $value->county_id; ?>"><?php echo $value->county_name; ?></option>
+                            <?php
+                        }
+                        ?>
+                        <option></option>
+                    </select>
+
+          
 
 
-                <span class="filter_sub_county_wait" style="display: none;">Loading , Please Wait ...</span>
-                <select class="form-control filter_sub_county input-rounded input-sm select2" name="filter_sub_county" id="filter_sub_county">
-                    <option value="">Please Select Sub County : </option>
-                </select>
+                    <span class="filter_sub_county_wait" style="display: none;">Loading , Please Wait ...</span>
+                    <select class="form-control filter_sub_county input-rounded input-sm select2" name="filter_sub_county" id="filter_sub_county">
+                        <option value="">Please Select Sub County : </option>
+                    </select>
+                
 
 
-                <span class="filter_facility_wait" style="display: none;">Loading , Please Wait ...</span>
+                    <span class="filter_facility_wait" style="display: none;">Loading , Please Wait ...</span>
 
-                <select class="form-control filter_facility input-rounded input-sm select2" name="filter_facility" id="filter_facility">
-                    <option value="">Please select Facility : </option>
-                </select>
+                    <select class="form-control filter_facility input-rounded input-sm select2" name="filter_facility" id="filter_facility">
+                        <option value="">Please select Facility : </option>
+                    </select>
+
+                <?php }?>
 
 
                 <input type="text" name="date_from" id="date_from" class="form-controL date_from input-rounded input-sm " placeholder="Date From : "/>
@@ -87,6 +98,8 @@
                     <div class="card-body">
                         <h4 class="card-title">Clients Extract  List</h4>
                         <h6 class="card-subtitle">Raw Data Extract of all Clients in the  system </h6>
+                        <?php echo $access_level ?>
+
                         <div class="table-responsive m-t-40">
 
 
