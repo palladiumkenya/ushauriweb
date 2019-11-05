@@ -218,9 +218,7 @@
                             <div class="card-body">
 
                                 <div class="row">
-                                    <div class="appointment_outcomes_log_div" id="appointment_outcomes_log_div" >
-                                        <h1>Outcomes goes in here ....</h1>
-                                    </div>
+                                    <div class="appointment_outcomes_log_div" id="appointment_outcomes_log_div" ></div>
 
                                 </div>
 
@@ -314,6 +312,7 @@ var tb = jQuery.noConflict();
                 dataType: 'JSON',
                 data: {upn: upn, tokenizer: tokenizer},
                 success: function (data) {
+                    console.log(data);
                     tb(".loading_div").hide();
                     tb(".search_field").show();
                     $('#myModal').modal('hide');
@@ -548,10 +547,21 @@ var tb = jQuery.noConflict();
                                 console.log("Our response " + clinic_no);
 
 
-                                var tbody = "<tr><td>" + no + "</td><td>" + clinic_no + "</td>\n\
-                        <td>" + file_no + "</td><td>" + appntmnt_date + "</td><td>" + appointment_type + "</td>\n\
-                        <td>" + tracer_name + "</td><td>" + outcome + "</td><td>" + final_outcome + "</td>\n\
-                        <td>" + tracing_date + "</td><td>" + other_final_outcome + "</td><td>" + app_status + "</td><td>" + days_defaulted + "</td><td>" + created_at + "</td></tr>";
+                                var tbody = "<tr>\n\
+                                <td>" + no + "</td>\n\
+                                <td>" + clinic_no + "</td>\n\
+                                <td>" + file_no + "</td>\n\
+                                <td>" + appntmnt_date + "</td>\n\
+                                <td>" + appointment_type + "</td>\n\
+                                <td>" + tracer_name + "</td>\n\
+                                <td>" + outcome + "</td>\n\
+                                <td>" + final_outcome + "</td>\n\
+                                <td>" + tracing_date + "</td>\n\
+                                <td>" + other_final_outcome + "</td>\n\
+                                <td>" + app_status + "</td>\n\
+                                <td>" + days_defaulted + "</td>\n\
+                                <td>" + created_at + "</td>\n\
+                                </tr>";
                                 tb(".outcomes_results_tbody").append(tbody);
                                 no++;
                             });
@@ -567,7 +577,7 @@ var tb = jQuery.noConflict();
                             tb('.outcomes_msg_table').DataTable({
                                 dom: 'Bfrtip',
                                 responsive: true,
-                                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                                "aLengthMenu": [[5, 10, 25, 50, -1], [10, 25, 50, "All"]],
                                 buttons: [
                                     tb.extend(true, {}, {
                                         extend: 'copyHtml5',

@@ -8260,6 +8260,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $cclient_info = $this->data->commonGet($clients);
 
         echo json_encode($cclient_info);
+        
     }
 
     function count_client_all_appointments() {

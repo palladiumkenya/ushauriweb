@@ -306,37 +306,37 @@ class Chore extends MY_Controller {
 
 
         $broadcast = $this->db->query(" SELECT 
-  tbl_sms_queue.id,
-  clnt_usr_id,
-  recepient_type,
-  destination,
-  sms_datetime,
-  sms_status,
-  tbl_sms_queue.created_at,
-  tbl_sms_queue.updated_at,
-  source,
-  tbl_sms_queue.msg,
-  tbl_sms_queue.time_id,
-  tbl_sms_queue.broadcast_date,
-  tbl_time.name,
-  clnt_usr_id,
-  recepient_type 
-FROM
-  tbl_sms_queue 
-  INNER JOIN tbl_time 
-    ON tbl_time.id = tbl_sms_queue.time_id 
-  INNER JOIN tbl_broadcast 
-    ON tbl_sms_queue.`broadcast_id` = tbl_broadcast.id 
-WHERE sms_status = 'Not Sent' 
-  AND DATE(tbl_sms_queue.broadcast_date) = CURDATE() 
-  AND tbl_broadcast.is_approved = 'Yes' group by destination  ")->result();
-        //print_r($broadcast);
+            tbl_sms_queue.id,
+            clnt_usr_id,
+            recepient_type,
+            destination,
+            sms_datetime,
+            sms_status,
+            tbl_sms_queue.created_at,
+            tbl_sms_queue.updated_at,
+            source,
+            tbl_sms_queue.msg,
+            tbl_sms_queue.time_id,
+            tbl_sms_queue.broadcast_date,
+            tbl_time.name,
+            clnt_usr_id,
+            recepient_type 
+            FROM
+            tbl_sms_queue 
+            INNER JOIN tbl_time 
+                ON tbl_time.id = tbl_sms_queue.time_id 
+            INNER JOIN tbl_broadcast 
+                ON tbl_sms_queue.`broadcast_id` = tbl_broadcast.id 
+            WHERE sms_status = 'Not Sent' 
+            AND DATE(tbl_sms_queue.broadcast_date) = CURDATE() 
+            AND tbl_broadcast.is_approved = 'Yes' group by destination  ")->result();
+                    //print_r($broadcast);
 
-        foreach ($broadcast as $value) {
-            $broadcast_id = $value->id;
-            $source = $value->source;
-            $destination = $value->destination;
-            $msg = $value->msg;
+                    foreach ($broadcast as $value) {
+                        $broadcast_id = $value->id;
+                        $source = $value->source;
+                        $destination = $value->destination;
+                        $msg = $value->msg;
 
             $sms_status = $value->sms_status;
             $time = $value->name;
@@ -349,19 +349,23 @@ WHERE sms_status = 'Not Sent'
             $datetime = new DateTime($broadcast_date);
             $broadcast_day = $datetime->format('d');
             $broadcat_time = $time;
-            $broadcast_hour = explode(":", $broadcat_time);
-            echo 'Broadcast date : ' . $broadcast_day . 'Broadcast time : ' . $broadcast_hour[0] . '</br>';
+            //$broadcast_hour = explode(":", $broadcat_time);
+            $broadcast_hour = $time;
+          
+            //echo 'Broadcast date : ' . $broadcast_day . 'Broadcast time : ' . $broadcast_hour[0] . '</br>';
             $today = date("d");
             $hour = date("H");
-            echo 'Today is : ' . $today . " and Hour is : " . $hour . "</br>";
+            //echo 'Today is : ' . $today . " and Hour is : " . $hour . "</br>";
 
             $today_month = date('m');
             $broadcast_month = $datetime->format('m');
-            echo 'Broadcast month : ' . $broadcast_month . 'Todays  month : ' . $today_month . '</br>';
+            //echo 'Broadcast month : ' . $broadcast_month . 'Todays  month : ' . $today_month . '</br>';
 
             $today_year = date('Y');
             $broadcast_year = $datetime->format('Y');
-            echo 'Broadcast date : ' . $today_year . 'Broadcast time : ' . $broadcast_year . '</br>';
+            // echo json_encode($broadcat_time);
+            // exit;
+            //echo 'Broadcast date : ' . $today_year . 'Broadcast time : ' . $broadcast_year . '</br>';
 
             if ($sms_status == "Sent") {
                 echo "Message already sent to User No : => " . $destination . '<br>';
@@ -374,9 +378,10 @@ WHERE sms_status = 'Not Sent'
                         echo 'Month Found...<br>';
                         if ($today == $broadcast_day) {
                             echo ' Day Found...<br>';
-                            echo "Broadcast Hour  " . $broadcast_hour[0] . '   Current Hour   ' . $hour . '<br>';
-                            if ( $broadcast_hour[0] != null) {
+                            //echo "Broadcast Hour  " . $broadcast_hour[0] . '   Current Hour   ' . $hour . '<br>';
+                            if ( $broadcast_hour == $broadcat_time) {
                                 echo 'Hour Found...<br>';
+                                
                                 //Number process        
                                 $mobile = substr($destination, -9);
                                 $len = strlen($mobile);
@@ -385,6 +390,7 @@ WHERE sms_status = 'Not Sent'
                                 }
 
                                 echo 'Msg => ' . $msg . '</br>';
+                                
                                 $send_text = $this->data->send_message($source, $destination, $msg, $broadcast_id);
 
                                 echo "Sent status => " . $send_text;
