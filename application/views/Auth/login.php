@@ -231,43 +231,29 @@
                     data: dataString,
                     success: function (data) {
 
-                        $(".loader").hide();
-                        if (data == "Login Success") {
-                //                        
-           
-                    swal({
-                        title: "Login Success!",
-                        text: "You will be redirected to your Home page in a few.",
-                        imageUrl: '<?php echo base_url(); ?>assets/images/hand.jpg'
-                    });
+                    data =data.trim();
+                    console.log(data);                  
 
-                        setTimeout(function () {
-                        window.location.href = "<?php echo base_url(); ?>";
-
-            //$('#myModal').modal('show');
-
-
-
-
-                    }, 3000);} else if (data == "User does not exist") {
-                        $(".login_btn").prop('disabled', false);
-                        swal("Oops", "User does not exist...", "info");
-                    } else if (data == "Wrong Password") {
-                        $(".login_btn").prop('disabled', false);
-                        swal("Error", "Wrong password", "warning");
-                    } else if (data == "Pass Exp") {
-                        $(".login_btn").prop('disabled', false);
+                    if (data == "Login Success") {  
+                    
                         swal({
-                            title: "Password Expired!",
-                            text: "Your password has expired please reset before accessing the  system."
-                        });
+                            title: "Login Success!",
+                            text: "You will be redirected to your Home page in a few.",
+                            imageUrl: '<?php echo base_url(); ?>assets/images/hand.jpg'
+                        });         
 
                         setTimeout(function () {
-                            window.location.href = "<?php echo base_url(); ?>";
-
+                            window.location.href = "<?php echo base_url(); ?>";                     
                         }, 3000);
-                    }
-
+                        }
+                       if (data === "Wrong Password") {
+                            $(".login_btn").prop('disabled', false);
+                            swal("Error", "Wrong password", "warning");
+                        }
+                        else if (data == "User does not exist") {
+                            $(".login_btn").prop('disabled', false);
+                            swal("Oops", "User does not exist...", "info");
+                        }
                     }
 
                 });
