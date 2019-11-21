@@ -33,13 +33,13 @@ class Chore extends MY_Controller {
 
             if($updated_at == $created_at){
                 echo "Inserted Client ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-                $dwh_db->insert('trial_new_copy1', $data);
+                $dwh_db->insert('trial_new_copy2', $data);
 
             } else{
 
-                echo "Updated Client ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
+                echo "Updated Client ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
                 $dwh_db->where('client_key', $client_ids);
-                $dwh_db->update('trial_new_copy1', $data);
+                $dwh_db->update('trial_new_copy2', $data);
             }
 
         }
@@ -49,14 +49,31 @@ class Chore extends MY_Controller {
             $apt_updated_at = $value['apt_updated_at'];
 
             if($app_created_at == $apt_updated_at){
-                echo "Inserted Client ID => " .$appointment_key . "Updated At => " . $apt_updated_at . "Added => " . $app_created_at . "<br>";
-                $dwh_db->insert('trial_new_copy1', $data);
+                echo "Inserted Appointments ID => " .$appointment_key . "Updated App At => " . $apt_updated_at . "Added App => " . $app_created_at . "<br>";
+                $dwh_db->insert('trial_new_copy2', $value);
 
             } else{
 
-                echo "Updated Client ID => " .$appointment_key . "Updated At => " . $apt_updated_at . "Added => " . $app_created_at . "<br>";
+                echo "Updated Appointments ID => " .$appointment_key . "Updated App At => " . $apt_updated_at . "Added App => " . $app_created_at . "<br>";
                 $dwh_db->where('appntmnt_id', $appointment_key);
-                $dwh_db->update('trial_new_copy1', $data);
+                $dwh_db->update('trial_new_copy1', $value);
+            }
+        }
+        foreach ($newIDs->result_array() as $outgoing){
+            $outgoing_id = $outgoing['outgoing_id'] ;
+            $outgoing_created = $outgoing['outgoing_created_at'];
+            $outgoing_updated = $outgoing['outgoing_updated_at'];
+            $outgoing_status = $outgoing['clnt_outgoing_status'];
+
+            if($outgoing_created == $outgoing_updated){
+
+                echo "Inserted ClntOutgoing ID => " .$outgoing_id . "Updated Out At => " . $outgoing_updated . "Added Out => " . $outgoing_created . "Sent Status => " . $outgoing_status . "<br>";
+                $dwh_db->insert('trial_new_copy2', $outgoing);
+
+            } else{
+                echo "Updated ClntOutgoing ID => " .$outgoing_id . "Updated App At => " . $outgoing_updated . "Added App => " . $outgoing_created . "Sent Status => " . $outgoing_status . "<br>";
+                $dwh_db->where('outgoing_id', $outgoing_id);
+                $dwh_db->update('trial_new_copy2', $outgoing);
             }
         }
 
