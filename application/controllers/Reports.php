@@ -1,5 +1,6 @@
 <?php
-
+ini_set('max_execution_time', '0'); 
+ini_set('memory_limit', '4096M');
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -20,6 +21,8 @@ class Reports extends MY_Controller {
     }
 
     function index() {
+
+        // echo __DIR__;
         redirect("Reports/dashboard", "refresh");
     }
 

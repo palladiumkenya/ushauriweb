@@ -1530,7 +1530,7 @@ class Chore extends MY_Controller {
             AND active_app = '1' 
             AND tbl_appointment.appntmnt_date < CURDATE( ) 
             AND datediff( CURDATE( ), date( appntmnt_date ) ) BETWEEN 5 
-            AND 90  AND tbl_appointment.app_status != 'Defaulted'
+            AND 30  AND tbl_appointment.app_status != 'Defaulted'
         ORDER BY
             appntmnt_date ASC  ")->result();
 
@@ -1740,7 +1740,7 @@ class Chore extends MY_Controller {
         INNER JOIN tbl_client 
             ON tbl_client.id = tbl_appointment.client_id 
         WHERE tbl_client.status = 'Active'  AND active_app = '1' AND app_status != 'LTFU'
-        AND tbl_appointment.appntmnt_date <= DATE_SUB(CURRENT_DATE, INTERVAL 91 DAY) ")->result();
+        AND tbl_appointment.appntmnt_date <= DATE_SUB(CURRENT_DATE, INTERVAL 31 DAY) ")->result();
 
         foreach ($appointments as $value) {
             $f_name = $value->f_name;
