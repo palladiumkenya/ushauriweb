@@ -23,6 +23,8 @@ class Reports extends MY_Controller {
     }
 
     function index() {
+
+        // echo __DIR__;
         redirect("Reports/dashboard", "refresh");
     }
 

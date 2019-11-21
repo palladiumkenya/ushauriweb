@@ -3729,8 +3729,8 @@ function get_todays_confirmed(){
                     . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
                     . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
                     . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
-                    . " from tbl_client left join tbl_language on tbl_language.id = tbl_client.language_id "
-                    . " left join tbl_groups on tbl_groups.id = tbl_client.group_id "
+                    . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
+                    . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
                     . "inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code "
                     . "inner JOIN `tbl_county`  ON `tbl_county`.`id` = `tbl_master_facility`.county_id "
                     . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
@@ -4039,7 +4039,7 @@ function get_todays_confirmed(){
         $data['output'] = $this->get_access_level();
         $data['adolescent_group'] = $this->data->commonGet($client_clinic);
         $this->load->vars($data);
-        $function_name = $this->uri->segment(2);
+        $function_name = $this->uri->segment(3);
 
         if (empty($function_name)) {
             
