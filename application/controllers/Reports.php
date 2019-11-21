@@ -1,4 +1,7 @@
 <?php
+ini_set('max_execution_time', '0'); 
+ini_set('memory_limit', '1024M');
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
