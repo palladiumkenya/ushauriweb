@@ -56,7 +56,7 @@ class Chore extends MY_Controller {
 
                 echo "Updated Appointments ID => " .$appointment_key . "Updated App At => " . $apt_updated_at . "Added App => " . $app_created_at . "<br>";
                 $dwh_db->where('appntmnt_id', $appointment_key);
-                $dwh_db->update('trial_new_copy1', $value);
+                $dwh_db->update('trial_new_copy2', $value);
             }
         }
         foreach ($newIDs->result_array() as $outgoing){
