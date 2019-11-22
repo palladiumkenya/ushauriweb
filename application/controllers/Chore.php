@@ -17,66 +17,147 @@ class Chore extends MY_Controller {
 
         $this->data = new DBCentral();
     }
-    function test_clients(){
-        $dwh_db = $this->load->database('post_Ushauri', TRUE);
+    
 
-        $getDwh = $dwh_db->query('select max(id) as id from tbl_client_copy1');
-        foreach ($getDwh->result_array() as $value){
-            $current_id = $value['id'];
-            //print_r($current_id);
-        
-        $newIDs = $this->db->query("SELECT * FROM tbl_client WHERE id > '$current_id'");
-        foreach ($newIDs->result_array() as $data){
-            $client_ids = $data['id'];
-            $updated_at = $data['updated_at'];
-            $created_at = $data['created_at'];
+    function clnt_outgoing_msgs() {
 
-            if($updated_at == $created_at){
-                echo "Inserted Client ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-                $dwh_db->insert('tbl_client_copy1', $data);
 
-            } else{
+        $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
+        $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
 
-                echo "Updated Client ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-                $dwh_db->where('id', $client_ids);
-                $dwh_db->update('tbl_client_copy1', $data);
+
+        $get_last_added_DWH = $DWH_Ushauri->query('Select id from tbl_clnt_outgoing order by ID Desc LIMIT 1');
+        if ($get_last_added_DWH->num_rows() > 0) {
+            foreach ($get_last_added_DWH->result() as $value) {
+                $last_insered_id = $value->id;
+                echo "Last Insert ID => " . $last_insered_id;
+                $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
+
+                $get_partner_facility = $mysqli_Ushauri->query("Select * from tbl_clnt_outgoing where id > '$last_insered_id'")->result();
+                foreach ($get_partner_facility as $value) {
+                    $id = $value->id;
+                    $ushauri_id = $value->id;
+                    $destination = $value->destination;
+                    $source = $value->source;
+                    $msg = $value->msg;
+                    $updated_at = $value->updated_at;
+                    $created_at = $value->created_at;
+                    $status = $value->status;
+                    $responded = $value->responded;
+                    $message_type_id = $value->message_type_id;
+                    $content_id = $value->content_id;
+                    $recepient_type = $value->recepient_type;
+                    $created_by = $value->created_by;
+                    $updated_by = $value->updated_by;
+                    $is_deleted = $value->is_deleted;
+                    $clnt_usr_id = $value->clnt_usr_id;
+
+                     echo 'New Msg ID => ' . $id . '<br>';
+                    // echo 'Created At => '.$created_at.'<br>';
+                    // echo 'Updated At => '.$updated_at.'<br>';
+
+                    $DWH_Ushauri->trans_start();
+
+
+
+                    $data = array(
+                        'id' => $id,
+                        'ushauri_id' => $ushauri_id,
+                        'destination' => $destination,
+                        'source' => $source,
+                        'msg' => $msg,
+                        'updated_at' => $updated_at,
+                        'created_at' => $created_at,
+                        'status' => $status,
+                        'responded' => $responded,
+                        'message_type_id' => $message_type_id,
+                        'content_id' => $content_id,
+                        'recepient_type' => $recepient_type,
+                        'created_by' => $created_by,
+                        'updated_by' => $updated_by,
+                        'is_deleted' => $is_deleted,
+                        'clnt_usr_id' => $clnt_usr_id
+                    );
+
+                    $DWH_Ushauri->insert('tbl_clnt_outgoing', $data);
+
+                    $DWH_Ushauri->trans_complete();
+                    if ($DWH_Ushauri->trans_status() === FALSE) {
+
+                        echo 'Transaction Failed...';
+                        
+                    } else {
+                        echo 'Transaction Success....';
+                    }
+                }
             }
+        }
 
+            
+        else {
+            $get_updated_records = $mysqli_Ushauri->query('Select * from tbl_clnt_outgoing WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at ');
+            if ($get_updated_records->num_rows() > 0) {
+                foreach ($get_updated_records->result() as $value) {
+                    $id = $value->id;
+                    $ushauri_id = $value->id;
+                    $destination = $value->destination;
+                    $source = $value->source;
+                    $msg = $value->msg;
+                    $updated_at = $value->updated_at;
+                    $created_at = $value->created_at;
+                    $status = $value->status;
+                    $responded = $value->responded;
+                    $message_type_id = $value->message_type_id;
+                    $content_id = $value->content_id;
+                    $recepient_type = $value->recepient_type;
+                    $created_by = $value->created_by;
+                    $updated_by = $value->updated_by;
+                    $is_deleted = $value->is_deleted;
+                    $clnt_usr_id = $value->clnt_usr_id;
+
+                    echo 'Old Msg ID => ' . $id . '<br>';
+
+                    $DWH_Ushauri->trans_start();
+
+
+                    $data = array(
+                        'ushauri_id' => $ushauri_id,
+                        'destination' => $destination,
+                        'source' => $source,
+                        'msg' => $msg,
+                        'updated_at' => $updated_at,
+                        'created_at' => $created_at,
+                        'status' => $status,
+                        'responded' => $responded,
+                        'message_type_id' => $message_type_id,
+                        'content_id' => $content_id,
+                        'recepient_type' => $recepient_type,
+                        'created_by' => $created_by,
+                        'updated_by' => $updated_by,
+                        'is_deleted' => $is_deleted,
+                        'clnt_usr_id' => $clnt_usr_id
+                    );
+                    $DWH_Ushauri->where('id', $id);
+                    $DWH_Ushauri->update('tbl_clnt_outgoing', $data);
+
+                    $DWH_Ushauri->trans_complete();
+                    if ($DWH_Ushauri->trans_status() === FALSE) {
+
+                        echo 'Transaction Failed... <br>';
+                        
+                    } else {
+
+                        echo 'Transaction was a success... <br>';
+                        
+                    }
+                }
+            } else {
+                echo 'Do Nothing .....nothing to be updated.....<br> Bye Bye .....';
+            }
         }
     }
-}
-
-function test_appointments(){
-    $dwh_db = $this->load->database('post_Ushauri', TRUE);
-
-    $getDwh = $dwh_db->query('select max(id) as id from tbl_new_appointment');
-    foreach ($getDwh->result_array() as $value){
-        $current_id = $value['id'];
-        print_r($current_id);
-    
-    $newIDs = $this->db->query("SELECT * FROM tbl_appointment WHERE id > '$current_id'");
-    foreach ($newIDs->result_array() as $data){
-        $client_ids = $data['id'];
-        $updated_at = $data['updated_at'];
-        $created_at = $data['created_at'];
-
-        // if($updated_at == $created_at){
-             echo "Inserted Appointment ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-             $dwh_db->insert('tbl_new_appointment', $data);
-
-        // } else{
-
-        //     echo "Updated Appointment ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-        //     $dwh_db->where('id', $client_ids);
-        //     $dwh_db->update('tbl_new_appointment', $data);
-        // }
-
-    }
-}
-}
 
 
-    
 
     function syncRawData() {        
        
