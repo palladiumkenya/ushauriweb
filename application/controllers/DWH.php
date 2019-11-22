@@ -22,26 +22,54 @@ class DWH extends CI_Controller {
      * @see https://codeigniter.com/user_guide/general/urls.html
      */
     public function index() {
-        $this->gender();
-        $this->county();
-        $this->sub_county();
-        $this->condition();
-        $this->consituency();
-        $this->master_facility();
-        $this->partner();
-        $this->partner_facility();
-        $this->groups();
-        $this->marital_status();
-        $this->language();
-        $this->time();
-        $this->message_types();
-        $this->appointment_types();
-        $this->clients();
-        $this->appointments();
+        // $this->gender();
+        // $this->county();
+        // $this->sub_county();
+        // $this->condition();
+        // $this->consituency();
+        // $this->master_facility();
+        // $this->partner();
+        // $this->partner_facility();
+        // $this->groups();
+        // $this->marital_status();
+        // $this->language();
+        // $this->time();
+        // $this->message_types();
+        // $this->appointment_types();
+        $this->test_clients();
+        $this->appointments_sync();
         $this->clnt_outgoing_msgs();
         $this->refresh_materialized_view();
-        $this->clean_DOB();
+        //$this->clean_DOB();
     }
+    function test_clients(){
+        $dwh_db = $this->load->database('post_Ushauri', TRUE);
+
+        $getDwh = $dwh_db->query('select max(id) as id from tbl_client_copy1');
+        foreach ($getDwh->result_array() as $value){
+            $current_id = $value['id'];
+            //print_r($current_id);
+        
+        $newIDs = $this->db->query("SELECT * FROM tbl_client WHERE id > '$current_id'");
+        foreach ($newIDs->result_array() as $data){
+            $client_ids = $data['id'];
+            $updated_at = $data['updated_at'];
+            $created_at = $data['created_at'];
+
+            if($updated_at == $created_at){
+                echo "Inserted Client ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
+                $dwh_db->insert('tbl_client_copy1', $data);
+
+            } else{
+
+                echo "Updated Client ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
+                $dwh_db->where('id', $client_ids);
+                $dwh_db->update('tbl_client_copy1', $data);
+            }
+
+        }
+    }
+}
     
 
     function escape_output($string) {
@@ -52,113 +80,7 @@ class DWH extends CI_Controller {
         $newString = str_replace('\'', '', $newString);
         return $newString;
     }
-    // function insertClients(){
-    //     $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
-    //     $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE);  // the TRUE paramater tells CI that you'd like to return the database object.
-
-
-    //     $mysql_ids = $mysqli_Ushauri->query('select id from tbl_client')->result();
-
-    //     foreach($mysql_ids as $mysql_id){
-
-           
-    //         $check_existance = $DWH_Ushauri->query("select id from tbl_client where id = '$mysql_id->id'")->num_rows();
-
-    //         if($check_existance > 0 ){
-    //         }else{
-    //             $get_missings = $mysqli_Ushauri->query("select * from tbl_client where id = '$mysql_id->id' ")->result();
-    //             foreach($get_missings as $missing){
-    //                 $status = $missing->status;
-    //                 $id = $missing->id;
-    //                 $ushauri_id = $missing->ushauri_id;
-    //                 $group_id = $missing->group_id;
-    //                 $language_id = $missing->language_id;
-    //                 $facility_id = $missing->facility_id;
-    //                 $clinic_number = $missing->clinic_number;
-    //                 $f_name = $missing->f_name;
-    //                 $m_name = $missing->m_name;
-    //                 $l_name = $missing->l_name;
-    //                 $created_by = $missing->created_by;
-    //                 $updated_by = $missing->updated_by;
-    //                 $created_at = $missing->created_at;
-    //                 $updated_at = $missing->updated_at;
-    //                 $dob = $missing->dob;
-    //                 $client_status = $missing->client_status;
-    //                 $txt_frequency = $missing->txt_frequency;
-    //                 $txt_time = $missing->txt_time;
-    //                 $phone_no = $missing->phone_no;
-    //                 $alt_phone_no = $missing->alt_phone_no;
-    //                 $shared_no_name = $missing->shared_no_name;
-    //                 $smsenable = $missing->smsenable;
-    //                 $partner_id = $missing->partner_id;
-    //                 $mfl_code = $missing->mfl_code;
-    //                 $gender = $missing->gender;
-    //                 $marital = $missing->marital;
-    //                 $enrollment_date = $missing->enrollment_date;
-    //                 $art_date = $missing->art_date;
-    //                 $wellness_enable = $missing->wellness_enable;
-    //                 $motivational_enable = $missing->motivational_enable;
-    //                 $client_type = $missing->client_type;
-    //                 $prev_clinic = $missing->prev_clinic;
-    //                 $transfer_date = $missing->transfer_date;
-    //                 $entry_point = $missing->entry_point;
-    //                 $welcome_sent = $missing->welcome_sent;
-    //                 $stable = $missing->stable;
-    //                 $physical_address = $missing->physical_address;
-    //                 $consent_date = $missing->consent_date;
-
-    //                 $data = array(
-    //                     'id' => $mysql_id->id,
-    //                     'group_id' => $group_id,
-    //                     'language_id' => $language_id,
-    //                     'facility_id' => $facility_id,
-    //                     'clinic_number' => $clinic_number,
-    //                     'f_name' => $f_name,
-    //                     'm_name' => $m_name,
-    //                     'l_name' => $l_name,
-    //                     'status' => $status,
-    //                     'created_by' => $created_by,
-    //                     'updated_by' => $updated_by,
-    //                     'created_at' => $created_at,
-    //                     'updated_at' => $updated_at,
-    //                     'dob' => $dob,
-    //                     'client_status' => $client_status,
-    //                     'txt_frequency' => '168',
-    //                     'txt_time' => $txt_time,
-    //                     'phone_no' => $phone_no,
-    //                     'alt_phone_no' => $alt_phone_no,
-    //                     'shared_no_name' => $shared_no_name,
-    //                     'smsenable' => $smsenable,
-    //                     'partner_id' => $partner_id,
-    //                     'mfl_code' => $mfl_code,
-    //                     'gender' => $gender,
-    //                     'marital' => $marital,
-    //                     'enrollment_date' => $enrollment_date,
-    //                     'art_date' => $art_date,
-    //                     'wellness_enable' => $wellness_enable,
-    //                     'motivational_enable' => $motivational_enable,
-    //                     'client_type' => $client_type,
-    //                     'prev_clinic' => $prev_clinic,
-    //                     'transfer_date' => $transfer_date,
-    //                     'entry_point' => $entry_point,
-    //                     'welcome_sent' => $welcome_sent,
-    //                     'stable' => $stable,
-    //                     'physical_address' => $physical_address,
-    //                     'consent_date' => $consent_date);
-
-    //                     $insert =  $DWH_Ushauri->insert('tbl_client', $data);
-
-    //                if($insert){
-    //                 echo "Inserted";
-    //                }else{
-    //                    echo "Found but not inserted";
-    //                }
-    //             }
-    //         }
-
-    //     }
-    // }
-
+    
     public function partner() {
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
 
@@ -995,256 +917,23 @@ class DWH extends CI_Controller {
         } 
     }
 
-    function clients() {
+    
+
+    function appointments_sync() {
 
 
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
-        $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
-
-
-
-        $get_last_added_DWH = $DWH_Ushauri->query('Select MAX(id) AS id from tbl_client LIMIT 1');
-        if ($get_last_added_DWH->num_rows() > 0) {
-            echo 'Client Found ....';
-            foreach ($get_last_added_DWH->result() as $value) {
-                $last_insered_id = $value->id;
-                echo 'ID => ' . $last_insered_id . '<br>';
-                $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
-
-                $get_partner_facility = $mysqli_Ushauri->query("Select * from tbl_client where id > '$last_insered_id'")->result();
-                foreach ($get_partner_facility as $value) {
-                    $status = $value->status;
-                    $id = $value->id;
-                    $ushauri_id = $value->ushauri_id;
-                    $group_id = $value->group_id;
-                    $language_id = $value->language_id;
-                    $facility_id = $value->facility_id;
-                    $clinic_number = $value->clinic_number;
-                    $f_name = $value->f_name;
-                    $m_name = $value->m_name;
-                    $l_name = $value->l_name;
-                    $created_by = $value->created_by;
-                    $updated_by = $value->updated_by;
-                    $created_at = $value->created_at;
-                    $updated_at = $value->updated_at;
-                    $dob = $value->dob;
-                    $client_status = $value->client_status;
-                    $txt_frequency = $value->txt_frequency;
-                    $txt_time = $value->txt_time;
-                    $phone_no = $value->phone_no;
-                    $alt_phone_no = $value->alt_phone_no;
-                    $shared_no_name = $value->shared_no_name;
-                    $smsenable = $value->smsenable;
-                    $partner_id = $value->partner_id;
-                    $mfl_code = $value->mfl_code;
-                    $gender = $value->gender;
-                    $marital = $value->marital;
-                    $enrollment_date = $value->enrollment_date;
-                    $art_date = $value->art_date;
-                    $wellness_enable = $value->wellness_enable;
-                    $motivational_enable = $value->motivational_enable;
-                    $client_type = $value->client_type;
-                    $prev_clinic = $value->prev_clinic;
-                    $transfer_date = $value->transfer_date;
-                    $entry_point = $value->entry_point;
-                    $welcome_sent = $value->welcome_sent;
-                    $stable = $value->stable;
-                    $physical_address = $value->physical_address;
-                    $consent_date = $value->consent_date;
-
-                    $data = array(
-                        'ushauri_id' => $ushauri_id,
-                        'id' => $id,
-                        'group_id' => $group_id,
-                        'language_id' => $language_id,
-                        'facility_id' => $facility_id,
-                        'clinic_number' => $clinic_number,
-                        'f_name' => $f_name,
-                        'm_name' => $m_name,
-                        'l_name' => $l_name,
-                        'status' => $status,
-                        'created_by' => $created_by,
-                        'updated_by' => $updated_by,
-                        'created_at' => $created_at,
-                        'updated_at' => $updated_at,
-                        'dob' => $dob,
-                        'client_status' => $client_status,
-                        'txt_frequency' => '168',
-                        'txt_time' => $txt_time,
-                        'phone_no' => $phone_no,
-                        'alt_phone_no' => $alt_phone_no,
-                        'shared_no_name' => $shared_no_name,
-                        'smsenable' => $smsenable,
-                        'partner_id' => $partner_id,
-                        'mfl_code' => $mfl_code,
-                        'gender' => $gender,
-                        'marital' => $marital,
-                        'enrollment_date' => $enrollment_date,
-                        'art_date' => $art_date,
-                        'wellness_enable' => $wellness_enable,
-                        'motivational_enable' => $motivational_enable,
-                        'client_type' => $client_type,
-                        'prev_clinic' => $prev_clinic,
-                        'transfer_date' => $transfer_date,
-                        'entry_point' => $entry_point,
-                        'welcome_sent' => $welcome_sent,
-                        'stable' => $stable,
-                        'physical_address' => $physical_address,
-                        'consent_date' => $consent_date
-                    );
-
-                    
-
-
-
-                    if ($updated_at == $created_at){
-                        echo 'New Client ID => ' . $id . '<br>';
-                        $DWH_Ushauri->insert('tbl_client', $data);
-                        
-
-                    }else{
-                        echo 'Existing client => ' . $id . '<br>';
-                        $DWH_Ushauri->where('id', $id);
-                        $DWH_Ushauri->update('tbl_client', $data);
-                    }
-
-                    // $DWH_Ushauri->trans_start();
-
-
-
-                    
-
-                    // $DWH_Ushauri->insert('tbl_client', $data);
-
-                    //$DWH_Ushauri->trans_complete();
-                    // if ($DWH_Ushauri->trans_status() === FALSE) {
-                        
-                    // } else {
-                        
-                    // }
-                }
-            }
-        } 
-        // else {
-        //     echo "Client not found ...";
-        //     $get_updated_records = $mysqli_Ushauri->query('Select * from tbl_client WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ');
-        //     if ($get_updated_records->num_rows() > 0) {
-        //         foreach ($get_updated_records->result() as $value) {
-        //             $status = $value->status;
-        //             $id = $value->id;
-        //             $ushauri_id = $value->ushauri_id;
-        //             $group_id = $value->group_id;
-        //             $language_id = $value->language_id;
-        //             $facility_id = $value->facility_id;
-        //             $clinic_number = $value->clinic_number;
-        //             $f_name = $value->f_name;
-        //             $m_name = $value->m_name;
-        //             $l_name = $value->l_name;
-        //             $created_by = $value->created_by;
-        //             $updated_by = $value->updated_by;
-        //             $created_at = $value->created_at;
-        //             $updated_at = $value->updated_at;
-        //             $dob = $value->dob;
-        //             $client_status = $value->client_status;
-        //             $txt_frequency = $value->txt_frequency;
-        //             $txt_time = $value->txt_time;
-        //             $phone_no = $value->phone_no;
-        //             $alt_phone_no = $value->alt_phone_no;
-        //             $shared_no_name = $value->shared_no_name;
-        //             $smsenable = $value->smsenable;
-        //             $partner_id = $value->partner_id;
-        //             $mfl_code = $value->mfl_code;
-        //             $gender = $value->gender;
-        //             $marital = $value->marital;
-        //             $enrollment_date = $value->enrollment_date;
-        //             $art_date = $value->art_date;
-        //             $wellness_enable = $value->wellness_enable;
-        //             $motivational_enable = $value->motivational_enable;
-        //             $client_type = $value->client_type;
-        //             $prev_clinic = $value->prev_clinic;
-        //             $transfer_date = $value->transfer_date;
-        //             $entry_point = $value->entry_point;
-        //             $welcome_sent = $value->welcome_sent;
-        //             $stable = $value->stable;
-        //             $physical_address = $value->physical_address;
-        //             $consent_date = $value->consent_date;
-
-        //             echo 'Old Client ID => ' . $id . '<br>';
-
-
-        //             $DWH_Ushauri->trans_start();
-
-
-        //             $data = array(
-        //                 'ushauri_id' => $ushauri_id,
-        //                 'id' => $id,
-        //                 'group_id' => $group_id,
-        //                 'language_id' => $language_id,
-        //                 'facility_id' => $facility_id,
-        //                 'clinic_number' => $clinic_number,
-        //                 'f_name' => $f_name,
-        //                 'm_name' => $m_name,
-        //                 'l_name' => $l_name,
-        //                 'status' => $status,
-        //                 'created_by' => $created_by,
-        //                 'updated_by' => $updated_by,
-        //                 'created_at' => $created_at,
-        //                 'updated_at' => $updated_at,
-        //                 'dob' => $dob,
-        //                 'client_status' => $client_status,
-        //                 'txt_frequency' => $txt_frequency,
-        //                 'txt_time' => $txt_time,
-        //                 'phone_no' => $phone_no,
-        //                 'alt_phone_no' => $alt_phone_no,
-        //                 'shared_no_name' => $shared_no_name,
-        //                 'smsenable' => $smsenable,
-        //                 'partner_id' => $partner_id,
-        //                 'mfl_code' => $mfl_code,
-        //                 'gender' => $gender,
-        //                 'marital' => $marital,
-        //                 'enrollment_date' => $enrollment_date,
-        //                 'art_date' => $art_date,
-        //                 'wellness_enable' => $wellness_enable,
-        //                 'motivational_enable' => $motivational_enable,
-        //                 'client_type' => $client_type,
-        //                 'prev_clinic' => $prev_clinic,
-        //                 'transfer_date' => $transfer_date,
-        //                 'entry_point' => $entry_point,
-        //                 'welcome_sent' => $welcome_sent,
-        //                 'stable' => $stable,
-        //                 'physical_address' => $physical_address,
-        //                 'consent_date' => $consent_date
-        //             );
-        //             $DWH_Ushauri->where('id', $id);
-        //             $DWH_Ushauri->update('tbl_client', $data);
-
-        //             $DWH_Ushauri->trans_complete();
-        //             if ($DWH_Ushauri->trans_status() === FALSE) {
-                        
-        //             } else {
-                        
-        //             }
-        //         }
-        //     } else {
-        //         echo 'Do Nothing .....nothing to be updated.....<br> Bye Bye .....';
-        //     }
-        // }
-    }
-
-    function appointments() {
-
-
-        $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
-        $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
-
-
-        $get_last_added_DWH = $DWH_Ushauri->query('Select MAX(id) AS id from tbl_appointment LIMIT 1');
+        $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
+    
+    
+        $get_last_added_DWH = $DWH_Ushauri->query('select max(id) as id from tbl_new_appointment');
         if ($get_last_added_DWH->num_rows() > 0) {
             foreach ($get_last_added_DWH->result() as $value) {
                 $last_insered_id = $value->id;
                 echo" Last inserted id => " . $last_insered_id . "<br>";
-                $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
-
+                
+                $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
+    
                 $get_partner_facility = $mysqli_Ushauri->query("Select * from tbl_appointment where id > '$last_insered_id'")->result();
                 foreach ($get_partner_facility as $value) {
                     $id = $value->id;
@@ -1272,7 +961,14 @@ class DWH extends CI_Controller {
                     $fnl_trcing_outocme = $value->fnl_trcing_outocme;
                     $fnl_outcome_dte = $value->fnl_outcome_dte;
                     $other_trcing_outcome = $value->other_trcing_outcome;
-
+    
+                    echo 'New Appointment  ID => ' . $id . '<br>';
+                    
+    
+    
+                    $DWH_Ushauri->trans_start();
+    
+    
                     $data = array(
                         'id' => $id,
                         'client_id' => $client_id,
@@ -1300,27 +996,102 @@ class DWH extends CI_Controller {
                         'fnl_outcome_dte' => $fnl_outcome_dte,
                         'other_trcing_outcome' => $other_trcing_outcome
                     );
-
-                    if ($updated_at == $created_at){
-                        echo 'New Appointment  ID => ' . $id . '<br>';
-                        $DWH_Ushauri->insert('tbl_appointment', $data);
+    
+                    $DWH_Ushauri->insert('tbl_new_appointment', $data);
+    
+                    $DWH_Ushauri->trans_complete();
+                    if ($DWH_Ushauri->trans_status() === FALSE) {
+    
+                        echo 'It Has Failed on New ID';
                         
-
-                    }else{
-                        echo 'Existing appointment => ' . $id . '<br>';
-                        $DWH_Ushauri->where('id', $id);
-                        $DWH_Ushauri->update('tbl_appointment', $data);
+                    } else {
+                        echo "Data is Inserting";
+                        
                     }
                 }
             }
-        } 
-        
+        } else {
+            $get_updated_records = $mysqli_Ushauri->query('Select * from tbl_appointment WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ');
+            if ($get_updated_records->num_rows() > 0) {
+                foreach ($get_updated_records->result() as $value) {
+                    $id = $value->id;
+                    $client_id = $value->client_id;
+                    $appntmnt_date = $value->appntmnt_date;
+                    $app_type_1 = $value->app_type_1;
+                    $created_at = $value->created_at;
+                    $updated_at = $value->updated_at;
+                    $app_status = $value->app_status;
+                    $app_msg = $value->app_msg;
+                    $status = $value->status;
+                    $notified = $value->notified;
+                    $sent_status = $value->sent_status;
+                    $created_by = $value->created_by;
+                    $updated_by = $value->updated_by;
+                    $entry_point = $value->entry_point;
+                    $appointment_kept = $value->appointment_kept;
+                    $active_app = $value->active_app;
+                    $no_calls = $value->no_calls;
+                    $no_msgs = $value->no_msgs;
+                    $home_visits = $value->home_visits;
+                    $visit_type = $value->visit_type;
+                    $unscheduled_date = $value->unscheduled_date;
+                    $tracer_name = $value->tracer_name;
+                    $fnl_trcing_outocme = $value->fnl_trcing_outocme;
+                    $fnl_outcome_dte = $value->fnl_outcome_dte;
+                    $other_trcing_outcome = $value->other_trcing_outcome;
+    
+                    echo 'Old Appointment  ID => ' . $id . '<br>';
+    
+    
+                    $DWH_Ushauri->trans_start();
+    
+    
+                    $data = array(
+                        'client_id' => $client_id,
+                        'appntmnt_date' => $appntmnt_date,
+                        'app_type_1' => $app_type_1,
+                        'created_at' => $created_at,
+                        'created_by' => $created_by,
+                        'updated_at' => $updated_at,
+                        'updated_by' => $updated_by,
+                        'app_status' => $app_status,
+                        'app_msg' => $app_msg,
+                        'status' => $status,
+                        'notified' => $notified,
+                        'sent_status' => $sent_status,
+                        'entry_point' => $entry_point,
+                        'appointment_kept' => $appointment_kept,
+                        'active_app' => $active_app,
+                        'no_calls' => $no_calls,
+                        'no_msgs' => $no_msgs,
+                        'home_visits' => $home_visits,
+                        'visit_type' => $visit_type,
+                        'unscheduled_date' => $unscheduled_date,
+                        'tracer_name' => $tracer_name,
+                        'fnl_trcing_outcome' => $fnl_trcing_outocme,
+                        'fnl_outcome_dte' => $fnl_outcome_dte,
+                        'other_trcing_outcome' => $other_trcing_outcome
+                    );
+                    $DWH_Ushauri->where('id', $id);
+                    $DWH_Ushauri->update('tbl_new_appointment', $data);
+    
+                    $DWH_Ushauri->trans_complete();
+                    if ($DWH_Ushauri->trans_status() === FALSE) {
+                        
+                    } else {
+                        
+                    }
+                }
+            } else {
+                echo 'Do Nothing .....nothing to be updated.....<br> Bye Bye .....';
+            }
+        }
     }
 
     function clnt_outgoing_msgs() {
 
 
-        $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
+        $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
 
 
@@ -1329,7 +1100,7 @@ class DWH extends CI_Controller {
             foreach ($get_last_added_DWH->result() as $value) {
                 $last_insered_id = $value->id;
                 echo "Last Insert ID => " . $last_insered_id;
-                $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
+                $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
 
                 $get_partner_facility = $mysqli_Ushauri->query("Select * from tbl_clnt_outgoing where id > '$last_insered_id'")->result();
                 foreach ($get_partner_facility as $value) {
@@ -1350,7 +1121,7 @@ class DWH extends CI_Controller {
                     $is_deleted = $value->is_deleted;
                     $clnt_usr_id = $value->clnt_usr_id;
 
-                    // echo 'New Msg ID => ' . $id . '<br>';
+                     echo 'New Msg ID => ' . $id . '<br>';
                     // echo 'Created At => '.$created_at.'<br>';
                     // echo 'Updated At => '.$updated_at.'<br>';
                     $data = array(
