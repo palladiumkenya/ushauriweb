@@ -49,7 +49,7 @@ class Chore extends MY_Controller {
 function test_appointments(){
     $dwh_db = $this->load->database('post_Ushauri', TRUE);
 
-    $getDwh = $dwh_db->query('select max(id) as id from tbl_appointment');
+    $getDwh = $dwh_db->query('select max(id) as id from tbl_new_appointment');
     foreach ($getDwh->result_array() as $value){
         $current_id = $value['id'];
         //print_r($current_id);
@@ -62,13 +62,13 @@ function test_appointments(){
 
         if($updated_at == $created_at){
             echo "Inserted Appointment ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-            $dwh_db->insert('tbl_appointment', $data);
+            $dwh_db->insert('tbl_new_appointment', $data);
 
         } else{
 
             echo "Updated Appointment ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
             $dwh_db->where('id', $client_ids);
-            $dwh_db->update('tbl_appointment', $data);
+            $dwh_db->update('tbl_new_appointment', $data);
         }
 
     }
