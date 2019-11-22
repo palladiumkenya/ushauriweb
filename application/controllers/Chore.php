@@ -46,69 +46,37 @@ class Chore extends MY_Controller {
     }
 }
 
-    function sync_tableau_date(){
-        $dwh_db = $this->load->database('post_Ushauri', TRUE);
+function test_appointments(){
+    $dwh_db = $this->load->database('post_Ushauri', TRUE);
 
-        $getDwh = $dwh_db->query('select max(client_key) as client_key from trial_new_copy1');
-        foreach ($getDwh->result_array() as $value){
-            $current_id = $value['client_key'];
-            //print_r($current_id);
-        
-        $newIDs = $this->db->query("SELECT * FROM tableau_sync WHERE client_key > '$current_id'");
-        foreach ($newIDs->result_array() as $data){
-            $client_ids = $data['client_key'];
-            $updated_at = $data['updated_at'];
-            $created_at = $data['created_at'];
+    $getDwh = $dwh_db->query('select max(id) as id from tbl_appointment');
+    foreach ($getDwh->result_array() as $value){
+        $current_id = $value['id'];
+        //print_r($current_id);
+    
+    $newIDs = $this->db->query("SELECT * FROM tbl_appointment WHERE id > '$current_id'");
+    foreach ($newIDs->result_array() as $data){
+        $client_ids = $data['id'];
+        $updated_at = $data['updated_at'];
+        $created_at = $data['created_at'];
 
-            if($updated_at == $created_at){
-                echo "Inserted Client ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-                $dwh_db->insert('trial_new_copy2', $data);
+        if($updated_at == $created_at){
+            echo "Inserted Appointment ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
+            $dwh_db->insert('tbl_appointment', $data);
 
-            } else{
+        } else{
 
-                echo "Updated Client ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-                $dwh_db->where('client_key', $client_ids);
-                $dwh_db->update('trial_new_copy2', $data);
-            }
-
-        }
-        foreach($newIDs->result_array() as $value){
-            $appointment_key = $value['appntmnt_id'];
-            $app_created_at = $value['apt_created_at'];
-            $apt_updated_at = $value['apt_updated_at'];
-
-            if($app_created_at == $apt_updated_at){
-                echo "Inserted Appointments ID => " .$appointment_key . "Updated App At => " . $apt_updated_at . "Added App => " . $app_created_at . "<br>";
-                $dwh_db->insert('trial_new_copy2', $value);
-
-            } else{
-
-                echo "Updated Appointments ID => " .$appointment_key . "Updated App At => " . $apt_updated_at . "Added App => " . $app_created_at . "<br>";
-                $dwh_db->where('appntmnt_id', $appointment_key);
-                $dwh_db->update('trial_new_copy2', $value);
-            }
-        }
-        foreach ($newIDs->result_array() as $outgoing){
-            $outgoing_id = $outgoing['outgoing_id'] ;
-            $outgoing_created = $outgoing['outgoing_created_at'];
-            $outgoing_updated = $outgoing['outgoing_updated_at'];
-            $outgoing_status = $outgoing['clnt_outgoing_status'];
-
-            if($outgoing_created == $outgoing_updated){
-
-                echo "Inserted ClntOutgoing ID => " .$outgoing_id . "Updated Out At => " . $outgoing_updated . "Added Out => " . $outgoing_created . "Sent Status => " . $outgoing_status . "<br>";
-                $dwh_db->insert('trial_new_copy2', $outgoing);
-
-            } else{
-                echo "Updated ClntOutgoing ID => " .$outgoing_id . "Updated App At => " . $outgoing_updated . "Added App => " . $outgoing_created . "Sent Status => " . $outgoing_status . "<br>";
-                $dwh_db->where('outgoing_id', $outgoing_id);
-                $dwh_db->update('trial_new_copy2', $outgoing);
-            }
-        }
-
+            echo "Updated Appointment ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
+            $dwh_db->where('id', $client_ids);
+            $dwh_db->update('tbl_appointment', $data);
         }
 
     }
+}
+}
+
+
+    
 
     function syncRawData() {        
        
