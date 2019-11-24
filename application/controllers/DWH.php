@@ -40,7 +40,7 @@ class DWH extends CI_Controller {
         $this->appointments_sync();
         $this->clnt_outgoing_msgs();
         $this->refresh_materialized_view();
-        //$this->clean_DOB();
+        $this->clean_DOB();
     }
 
     function escape_output($string) {
@@ -52,40 +52,6 @@ class DWH extends CI_Controller {
         return $newString;
     }
 
-    
-//     function test_clients(){
-//         $dwh_db = $this->load->database('post_Ushauri', TRUE);
-
-//         $getDwh = $dwh_db->query('select max(id) as id from tbl_new_client');
-//         foreach ($getDwh->result_array() as $value){
-//             $current_id = $value['id'];
-//             //print_r($current_id);
-        
-//         $newIDs = $this->db->query("SELECT * FROM tbl_client WHERE id > '$current_id'");
-//         foreach ($newIDs->result_array() as $data){
-//             $client_ids = $data['id'];
-//             $updated_at = $data['updated_at'];
-//             $created_at = $data['created_at'];
-
-//             if($updated_at == $created_at){
-//                 echo "Inserted Client ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-//                 $dwh_db->insert('tbl_new_client', $data);
-
-//             } else{
-
-//                 echo "Updated Client ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-//                 $dwh_db->where('id', $client_ids);
-//                 $dwh_db->update('tbl_new_client', $data);
-//             }
-
-//         }
-//     }
-// }
-
-
-    
-
-    
     
     public function partner() {
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
@@ -1519,10 +1485,10 @@ class DWH extends CI_Controller {
 
     function clean_DOB() {
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
-        $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
+        $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
 
 
-        $get_last_added_DWH = $DWH_Ushauri->query('Select * from tbl_client where clnd_dob IS NULL')->result();
+        $get_last_added_DWH = $DWH_Ushauri->query('Select * from tbl_new_client where clnd_dob IS NULL')->result();
         foreach ($get_last_added_DWH as $value) {
             $id = $value->id;
             $dob = $value->dob;
@@ -1537,7 +1503,16 @@ class DWH extends CI_Controller {
                 'clnd_dob' => $cleaned_dob
             );
             $DWH_Ushauri->where('id', $id);
-            $DWH_Ushauri->update('tbl_client', $data_update);
+            $DWH_Ushauri->update('tbl_new_client', $data_update);
+
+            $DWH_Ushauri->trans_complete();
+                    if ($DWH_Ushauri->trans_status() === FALSE) {
+
+                        echo 'Failed to update...' . '<br>';
+                        
+                    } else {
+                        echo 'Update data succesful...' . '<br>';
+                    }
         }
     }
 
