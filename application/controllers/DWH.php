@@ -42,10 +42,21 @@ class DWH extends CI_Controller {
         $this->refresh_materialized_view();
         //$this->clean_DOB();
     }
+
+    function escape_output($string) {
+        $newString = str_replace('\r\n', '<br/>', $string);
+        $newString = str_replace('\n\r', '<br/>', $newString);
+        $newString = str_replace('\r', '<br/>', $newString);
+        $newString = str_replace('\n', '<br/>', $newString);
+        $newString = str_replace('\'', '', $newString);
+        return $newString;
+    }
+
+    
     function test_clients(){
         $dwh_db = $this->load->database('post_Ushauri', TRUE);
 
-        $getDwh = $dwh_db->query('select max(id) as id from tbl_client_copy1');
+        $getDwh = $dwh_db->query('select max(id) as id from tbl_new_client');
         foreach ($getDwh->result_array() as $value){
             $current_id = $value['id'];
             //print_r($current_id);
@@ -58,28 +69,23 @@ class DWH extends CI_Controller {
 
             if($updated_at == $created_at){
                 echo "Inserted Client ID => " .$client_ids . "Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
-                $dwh_db->insert('tbl_client_copy1', $data);
+                $dwh_db->insert('tbl_new_client', $data);
 
             } else{
 
                 echo "Updated Client ID => " .$client_ids . " Updated At => " . $updated_at . "Added => " . $created_at . "<br>";
                 $dwh_db->where('id', $client_ids);
-                $dwh_db->update('tbl_client_copy1', $data);
+                $dwh_db->update('tbl_new_client', $data);
             }
 
         }
     }
 }
+
+
     
 
-    function escape_output($string) {
-        $newString = str_replace('\r\n', '<br/>', $string);
-        $newString = str_replace('\n\r', '<br/>', $newString);
-        $newString = str_replace('\r', '<br/>', $newString);
-        $newString = str_replace('\n', '<br/>', $newString);
-        $newString = str_replace('\'', '', $newString);
-        return $newString;
-    }
+    
     
     public function partner() {
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
