@@ -19,7 +19,7 @@ class Chore extends MY_Controller {
     }
     
 
-    function clnt_outgoing_msgs() {
+    function clnt_messages() {
 
 
         $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
