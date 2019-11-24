@@ -26,11 +26,12 @@ class Chore extends MY_Controller {
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
 
 
-        $get_last_added_DWH = $DWH_Ushauri->query('Select id from tbl_clnt_outgoing order by ID Desc LIMIT 1');
+        $get_last_added_DWH = $DWH_Ushauri->query('Select id from tbl_clnt_outgoing_copy1 order by ID Desc LIMIT 1');
         if ($get_last_added_DWH->num_rows() > 0) {
             foreach ($get_last_added_DWH->result() as $value) {
                 $last_insered_id = $value->id;
                 echo "Last Insert ID => " . $last_insered_id;
+                exit;
                 $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
 
                 $get_partner_facility = $mysqli_Ushauri->query("Select * from tbl_clnt_outgoing where id > '$last_insered_id'")->result();
@@ -53,6 +54,7 @@ class Chore extends MY_Controller {
                     $clnt_usr_id = $value->clnt_usr_id;
 
                      echo 'New Msg ID => ' . $id . '<br>';
+                     exit;
                     // echo 'Created At => '.$created_at.'<br>';
                     // echo 'Updated At => '.$updated_at.'<br>';
 
@@ -79,7 +81,7 @@ class Chore extends MY_Controller {
                         'clnt_usr_id' => $clnt_usr_id
                     );
 
-                    $DWH_Ushauri->insert('tbl_clnt_outgoing', $data);
+                    $DWH_Ushauri->insert('tbl_clnt_outgoing_copy1', $data);
 
                     $DWH_Ushauri->trans_complete();
                     if ($DWH_Ushauri->trans_status() === FALSE) {
@@ -138,7 +140,7 @@ class Chore extends MY_Controller {
                         'clnt_usr_id' => $clnt_usr_id
                     );
                     $DWH_Ushauri->where('id', $id);
-                    $DWH_Ushauri->update('tbl_clnt_outgoing', $data);
+                    $DWH_Ushauri->update('tbl_clnt_outgoing_copy1', $data);
 
                     $DWH_Ushauri->trans_complete();
                     if ($DWH_Ushauri->trans_status() === FALSE) {
@@ -147,7 +149,7 @@ class Chore extends MY_Controller {
                         
                     } else {
 
-                        echo 'Transaction was a success... <br>';
+                        echo 'Transaction update was a success... <br>';
                         
                     }
                 }
