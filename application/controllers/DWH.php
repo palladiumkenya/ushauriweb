@@ -1488,22 +1488,25 @@ class DWH extends CI_Controller {
         $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
 
 
-        $get_last_added_DWH = $DWH_Ushauri->query('Select * from tbl_new_client where clnd_dob IS NULL')->result();
+        $get_last_added_DWH = $DWH_Ushauri->query("Select id, dob, clnd_dob from tbl_new_client_copy1 where clnd_dob IS NULL")->result();
         foreach ($get_last_added_DWH as $value) {
             $id = $value->id;
             $dob = $value->dob;
+            echo $dob . '<br>';
 
             if (!empty($dob)) {
-                $dob2 = str_replace('/', '-', $dob);
-                $cleaned_dob = date("Y-m-d", strtotime($dob2));
+                //$dob2 = str_replace('/', '-', $dob);
+                $time = strtotime($dob);
+                $newformat = date('Y-m-d',$time);
+                //$newDate = date("Y-m-d", strtotime($dob2));
             }
-            echo $cleaned_dob . '<br>';
+            echo $newformat . '<br>';
 
             $data_update = array(
-                'clnd_dob' => $cleaned_dob
+                'clnd_dob' => $newformat
             );
             $DWH_Ushauri->where('id', $id);
-            $DWH_Ushauri->update('tbl_new_client', $data_update);
+            $DWH_Ushauri->update('tbl_new_client_copy1', $data_update);
 
             $DWH_Ushauri->trans_complete();
                     if ($DWH_Ushauri->trans_status() === FALSE) {
