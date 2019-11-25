@@ -40,7 +40,7 @@ class DWH extends CI_Controller {
         $this->appointments_sync();
         $this->clnt_outgoing_msgs();
         $this->refresh_materialized_view();
-        $this->clean_DOB();
+        //$this->clean_DOB();
     }
 
     function escape_output($string) {
@@ -1478,45 +1478,45 @@ class DWH extends CI_Controller {
     function refresh_materialized_view() {
         $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
 
-        $mysqli_Ushauri = $this->load->database('mysqli_Ushauri', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
-
-        $get_last_added_DWH = $DWH_Ushauri->query(" REFRESH MATERIALIZED VIEW mat_vw_tableau_Data ");
-    }
-
-    function clean_DOB() {
-        $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
         $mysqli_Ushauri = $this->load->database('default', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
 
-
-        $get_last_added_DWH = $DWH_Ushauri->query("Select id, dob, clnd_dob from tbl_new_client_copy1 where clnd_dob IS NULL")->result();
-        foreach ($get_last_added_DWH as $value) {
-            $id = $value->id;
-            $dob = $value->dob;
-            echo $dob . '<br>';
-
-            if (!empty($dob)) {
-                //$dob2 = str_replace('/', '-', $dob);
-                $time = strtotime($dob);
-                $newformat = date('Y-m-d',$time);
-                //$newDate = date("Y-m-d", strtotime($dob2));
-            }
-            echo $newformat . '<br>';
-
-            $data_update = array(
-                'clnd_dob' => $newformat
-            );
-            $DWH_Ushauri->where('id', $id);
-            $DWH_Ushauri->update('tbl_new_client_copy1', $data_update);
-
-            $DWH_Ushauri->trans_complete();
-                    if ($DWH_Ushauri->trans_status() === FALSE) {
-
-                        echo 'Failed to update...' . '<br>';
-                        
-                    } else {
-                        echo 'Update data succesful...' . '<br>';
-                    }
-        }
+        $get_last_added_DWH = $DWH_Ushauri->query(" REFRESH VIEW tableau_data_sync ");
     }
+
+    // function clean_DOB() {
+    //     $DWH_Ushauri = $this->load->database('post_Ushauri', TRUE);
+    //     $mysqli_Ushauri = $this->load->database('default', TRUE); 
+
+
+    //     $get_last_added_DWH = $DWH_Ushauri->query("Select id, dob from tbl_new_client_copy1")->result();
+    //     foreach ($get_last_added_DWH as $value) {
+    //         $id = $value->id;
+    //         $dob = $value->dob;
+    //         echo $dob . '<br>';
+
+    //         if (!empty($dob)) {
+    //             //$dob2 = str_replace('/', '-', $dob);
+    //             $time = strtotime($dob);
+    //             $newformat = date('Y-m-d',$time);
+    //             //$newDate = date("Y-m-d", strtotime($dob2));
+    //         }
+    //         echo $newformat . '<br>';
+
+    //         $data_update = array(
+    //             'clnd_dob' => $newformat
+    //         );
+    //         $DWH_Ushauri->where('id', $id);
+    //         $DWH_Ushauri->update('tbl_new_client_copy1', $data_update);
+
+    //         $DWH_Ushauri->trans_complete();
+    //                 if ($DWH_Ushauri->trans_status() === FALSE) {
+
+    //                     echo 'Failed to update...' . '<br>';
+                        
+    //                 } else {
+    //                     echo 'Update data succesful...' . '<br>';
+    //                 }
+    //     }
+    // }
 
 }
