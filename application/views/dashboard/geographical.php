@@ -36,32 +36,15 @@
         if ($access_level == 'Admin' or $access_level == 'Donor' or $access_level == 'National') {
             if ($server_url === 'https://ushauritest.mhealthkenya.co.ke/') {
                 //Test Link 
-                $view = "/views/T4AUshauri-GEOGRAPHICALDASHBOARDUPDATED1232_0/NationalGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no";
+                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD_15747913922750/NationalGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no";
             } else {
                 //Live Link
-                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD/NationalGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no"; // View URL 
+                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD_15747913922750/NationalGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no"; // View URL 
             }
         } else if ($access_level == 'Partner') {
                 $partner_name = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('partner_name')))));
                 $partner_id = $this->session->userdata('partner_id');
                 $embeded_url = "&partner_id=" . $partner_id;
-    //             $sql = "SELECT
-    //     id,name
-    // FROM
-    //     `tbl_partner`
-        
-    // WHERE
-    //     id = $partner_id ";
-    //             $embeded_url = "&Partner=" . $partner_name;
-    //             $query = $this->db->query($sql);
-    //             if ($query->num_rows() > 0) {
-    //                 foreach ($query->result() as $row) {
-    //                     $county_name = $row->name;
-    //                     // $county_id = $row->county_id;
-    	
-    //                   echo  $embeded_url .= "&County=" . $county_name;
-    //                 }
-    //             }
 
 
 
@@ -70,7 +53,7 @@
                 $view = "/views/T4AUshauri-GEOGRAPHICALDASHBOARDUPDATED1232_0/PartnerGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url";
             } else {
                 //Live Link
-                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD/PartnerGeographicalMap?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url"; // View URL 
+                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD_15747913922750/PartnerGeographicalMap?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url"; // View URL 
             }
         } elseif ($access_level == 'County') {
             $county = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('county_name')))));
@@ -104,7 +87,7 @@ WHERE
                 $view = "/views/T4AUshauri-GEOGRAPHICALDASHBOARDUPDATED1232_0/CountyGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url";
             } else {
                 //Live Link
-                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD/CountyGeographicalMap?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no$embeded_url"; // View URL 
+                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD_15747913922750/CountyGeographicalMap?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url"; // View URL 
             }
         } elseif ($access_level == 'Sub County') {
             $sub_county = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('sub_county_name')))));
@@ -142,7 +125,7 @@ WHERE
                 $view = "/views/T4AUshauri-GEOGRAPHICALDASHBOARDUPDATED1232_0/SubCountyGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no$embeded_url";
             } else {
                 //Live Link
-                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD/SubCountyGeographicalMap?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no$embeded_url"; // View URL 
+                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD_15747913922750/SubCountyGeographicalMap?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url"; // View URL 
             }
         } elseif ($access_level == 'Facility') {
             $facility = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('facility_name')))));
