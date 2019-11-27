@@ -44,10 +44,8 @@
             }
         } elseif ($access_level == 'Partner') {
             $partner_name = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('partner_name')))));
-         
-            $partner_id = $this->session->userdata('partner_id');
-
-            $embeded_url = "&partner_name=" . $partner_name;
+                $partner_id = $this->session->userdata('partner_id');
+                $embeded_url = "&partner_id=" . $partner_id;
 
 
 
