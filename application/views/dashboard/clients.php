@@ -40,7 +40,7 @@
                 $view = "/views/T4AUshauri-GEOGRAPHICALDASHBOARDUPDATED1232_0/CLIENTSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no";
             } else {
                 //Live Link
-                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD/CLIENTSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no"; // View URL 
+                $view = "/views/Ushauri-SUMMARYDASHBOARDS/CLIENTSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no"; // View URL 
             }
         } elseif ($access_level == 'Partner') {
             $partner_name = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('partner_name')))));
@@ -57,7 +57,7 @@
                
             } else {
                 //Live Link
-                $view = "views/Ushauri-GEOGRAPHICALDASHBOARD/PartnerGeographicalMapDashboard?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no$embeded_url"; // View URL 
+                $view = "/views/Ushauri-SUMMARYDASHBOARDS/PARTNERSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url"; // View URL 
             }
 //             $sql = "SELECT
 // 	tbl_county.`name` AS county_name,
@@ -109,7 +109,7 @@ WHERE
                 $view = "/views/T4AUshauri-GEOGRAPHICALDASHBOARDUPDATED1232_0/COUNTYSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no&$embeded_url";
             } else {
                 //Live Link
-                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD/COUNTYSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no&$embeded_url"; // View URL 
+                $view = "/views/Ushauri-SUMMARYDASHBOARDS/COUNTYSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url"; // View URL 
             }
         } elseif ($access_level == 'Sub County') {
             $sub_county = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('sub_county_name')))));
@@ -144,7 +144,7 @@ WHERE
                 $view = "/views/T4AUshauri-GEOGRAPHICALDASHBOARDUPDATED1232_0/SUBCOUNTYSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no&$embeded_url";
             } else {
                 //Live Link
-                $view = "/views/Ushauri-GEOGRAPHICALDASHBOARD/SUBCOUNTYSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no$embeded_url"; // View URL 
+                $view = "/views/Ushauri-SUMMARYDASHBOARDS/SUBCOUNTYSUMMARYREPORT?iframeSizedToWindow=true&:embed=y&:showAppBanner=false&:display_count=no&:showVizHome=no.$embeded_url"; // View URL 
             }
         } elseif ($access_level == 'Facility') {
             $facility = str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($this->session->userdata('facility_name')))));
