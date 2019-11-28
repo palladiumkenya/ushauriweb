@@ -9871,9 +9871,9 @@ if ($access_level == 'Facility') {
                 $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $row->month_year);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $row->LANGUAGE);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $row->txt_time);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $row->month_year);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $row->county);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, $row->sub_county);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->created_at);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->status);
                 $excel_row++;
             }
 

@@ -1043,7 +1043,9 @@ class DWH extends CI_Controller {
                 }
             }
         } else {
-            $get_updated_records = $mysqli_Ushauri->query('Select * from tbl_appointment WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at ');
+            echo "No new Appointment";
+        }
+        $get_updated_records = $mysqli_Ushauri->query('Select * from tbl_appointment WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at ');
             if ($get_updated_records->num_rows() > 0) {
                 foreach ($get_updated_records->result() as $value) {
                     $id = $value->id;
@@ -1117,7 +1119,6 @@ class DWH extends CI_Controller {
             } else {
                 echo 'Do Nothing .....nothing to be updated.....<br> Bye Bye .....';
             }
-        }
     }
     function clients_sync() {
 
@@ -1239,7 +1240,9 @@ class DWH extends CI_Controller {
                 }
             }
         } else {
-            $get_updated_records = $mysqli_Ushauri->query('Select * from tbl_client WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at');
+           echo "No New Client";
+        }
+        $get_updated_records = $mysqli_Ushauri->query('Select * from tbl_client WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at');
             if ($get_updated_records->num_rows() > 0) {
                 foreach ($get_updated_records->result() as $value) {
                     $status = $value->status;
@@ -1344,7 +1347,6 @@ class DWH extends CI_Controller {
             } else {
                 echo 'Do Nothing .....nothing to be updated.....<br> Bye Bye .....';
             }
-        }
     }
     function clnt_outgoing_msgs() {
 
