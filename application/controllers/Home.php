@@ -213,7 +213,7 @@ class Home extends MY_Controller {
             
             $clients = array(
                 'select' => '*',
-                'table' => 'tbl_client_raw_report',
+                'table' => 'client_raw_report',
                 'where' => array('partner_id' => $partner_id),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -287,7 +287,7 @@ class Home extends MY_Controller {
 
             $clients = array(
                 'select' => '*',
-                'table' => 'tbl_client_raw_report',
+                'table' => 'client_raw_report',
                 'where' => array('mfl_code' => $facility_id),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -296,7 +296,7 @@ class Home extends MY_Controller {
 
             $clients = array(
                 'select' => '*',
-                'table' => 'tbl_client_raw_report',
+                'table' => 'client_raw_report',
                 'order' => array('enrollment_date' => 'DESC')
             );
 
@@ -338,6 +338,8 @@ class Home extends MY_Controller {
             'table' => 'appointment_types',
             'where' => array('status' => 'Active')
         );
+
+        
 
 
 
