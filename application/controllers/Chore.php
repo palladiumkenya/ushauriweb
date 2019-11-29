@@ -215,6 +215,15 @@ class Chore extends MY_Controller {
                 $this->db->insert('tbl_client_raw_report', $new_client);
             }
         }
+        $updated_ids = $this->db->query("Select * from client_raw_report WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at");
+        if($updated_ids->num_rows() > 0){
+            foreach($updated_ids->result() as $value){
+                echo 'Old ids => ' . $value->client_id . '<br>';
+                 $this->db->where('client_id', $value->client_id);
+                 $this->db->update('tbl_client_raw_report', $value);
+
+            }
+        }
     }
 
     function pull_past_appointments(){

@@ -339,6 +339,8 @@ class Home extends MY_Controller {
             'where' => array('status' => 'Active')
         );
 
+        
+
 
 
         $data['side_functions'] = $this->data->get_side_modules();
