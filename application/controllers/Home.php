@@ -213,7 +213,7 @@ class Home extends MY_Controller {
             
             $clients = array(
                 'select' => '*',
-                'table' => 'client_raw_report',
+                'table' => 'tbl_client_raw_report',
                 'where' => array('partner_id' => $partner_id),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -287,7 +287,7 @@ class Home extends MY_Controller {
 
             $clients = array(
                 'select' => '*',
-                'table' => 'client_raw_report',
+                'table' => 'tbl_client_raw_report',
                 'where' => array('mfl_code' => $facility_id),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -296,7 +296,7 @@ class Home extends MY_Controller {
 
             $clients = array(
                 'select' => '*',
-                'table' => 'client_raw_report',
+                'table' => 'tbl_client_raw_report',
                 'order' => array('enrollment_date' => 'DESC')
             );
 
@@ -353,6 +353,7 @@ class Home extends MY_Controller {
         $data['maritals'] = $this->data->commonGet($maritals);
         $data['output'] = $this->get_access_level();
         $this->load->vars($data);
+        
         
         $function_name = $this->uri->segment(2);
         //// $this->output->enable_profiler(TRUE);
