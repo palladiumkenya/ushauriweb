@@ -710,7 +710,7 @@ class DBCentral extends CI_Model {
 
     function add_user($created_by, $f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_names, $view_bio_data, $rcv_app_list, $county_id, $sub_county_id, $clinic_id) {
         if (empty($clinic_id)) {
-            $clinic_id = '3';
+            $clinic_id = '1';
         } else {
             
         }

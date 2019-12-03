@@ -24,6 +24,7 @@
                 <input type='hidden' id="access_level" value="<?php echo $access_level; ?>" />
                 <input type='hidden' id="partner_id" value="<?php echo $partner_id; ?>" />
                 <input type='hidden' id="facility_id" value="<?php echo $facility_id; ?>" />
+                <input type='hidden' id="sub_county_id" value="<?php echo $sub_county_id; ?>" />
 
                 <?php if($access_level == 'Admin' || $access_level == 'Donor') {?>
 
@@ -59,6 +60,14 @@
                 <span class="filter_sub_county_wait" style="display: none;">Loading , Please Wait ...</span>
                 <select class="form-control filter_sub_county input-rounded input-sm select2" name="filter_sub_county" id="filter_sub_county">
                     <option value="">Please Select Sub County : </option>
+                    <?php
+                    foreach ($filtered_sub_county as $value) {
+                        ?>
+                        <option value="<?php echo $value->sub_county_id; ?>"><?php echo $value->sub_county; ?></option>
+                        <?php
+                    }
+                    ?>
+                    <option></option>
                 </select>
 
 

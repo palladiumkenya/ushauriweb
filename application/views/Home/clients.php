@@ -89,6 +89,8 @@
                                                     } else {
                                                         ?>
                                                         <td>XXXXXX XXXXXXX</td>
+                                                        <td>XXXXXX XXXXXXX</td>
+                                                        <td>XXXXXX XXXXXXX</td>
 
                                                         <?php
                                                     }
@@ -192,6 +194,7 @@
                                                         <td>XXXXXXX XXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
+                                                        <td>XXXXXX XXXXXXX</td>
                                                         <?php
                                                     }
                                                     ?>
@@ -269,6 +272,7 @@
                                                     } else {
                                                         ?>
                                                         <td>XXXXXXX XXXXXX</td>
+                                                        <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <?php

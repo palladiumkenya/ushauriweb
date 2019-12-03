@@ -213,7 +213,7 @@ class Home extends MY_Controller {
             
             $clients = array(
                 'select' => '*',
-                'table' => 'client_raw_report',
+                'table' => 'tbl_client_raw_report',
                 'where' => array('partner_id' => $partner_id),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -287,7 +287,7 @@ class Home extends MY_Controller {
 
             $clients = array(
                 'select' => '*',
-                'table' => 'client_raw_report',
+                'table' => 'tbl_client_raw_report',
                 'where' => array('mfl_code' => $facility_id),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -296,7 +296,7 @@ class Home extends MY_Controller {
 
             $clients = array(
                 'select' => '*',
-                'table' => 'client_raw_report',
+                'table' => 'tbl_client_raw_report',
                 'order' => array('enrollment_date' => 'DESC')
             );
 
@@ -1457,13 +1457,14 @@ class Home extends MY_Controller {
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
                     . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
                     . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency, tbl_client.file_no,"
                     . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
                     . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
                     . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
                     . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
                     . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
                     . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
                     . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
                     . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' and active_app='1' ";
@@ -3717,9 +3718,10 @@ function get_todays_confirmed(){
                     . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
                     . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
                     . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
+                    . " inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code"
                     . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
                     . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                    . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_client.sub_county_id='$sub_county_id'";
+                    . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_master_facility.Sub_County_ID='$sub_county_id'";
         } elseif ($access_level == "Facility") {
 
             $appointments = array(

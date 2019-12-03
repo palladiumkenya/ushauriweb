@@ -17,40 +17,18 @@ class Chore extends MY_Controller {
 
         $this->data = new DBCentral();
     }
-    
-    function syncRawData() {        
-       
-        $getDWH =  $this->db->query('SELECT max(Appointment_ID) AS Appointment_ID FROM tbl_outcome_report_raw limit 1');
-        foreach ($getDWH->result_array() as $value) {
-            $current_id = $value['Appointment_ID'];
-            //print_r($current_id);
 
-            $getnewid = $this->db->query("SELECT * FROM partner_outcome_report  where Appointment_ID > '$current_id'");
-            foreach ($getnewid->result_array() as $data) {
-                $Outcome_ID = $data['Outcome_ID'];
-                $updated_at = $data['Updated_at'];
-                $addedOn = $data['Created_at'];
-                $Appointment_ID = $data['Appointment_ID'];
-                
-                echo ' Inserted At ' . $addedOn . ' App ID' . $Appointment_ID . '<br>';  
-
-
-                // $this->db->insert('tbl_outcome_report_raw', $data);
-                $this->db->insert('tbl_outcome_report_raw', $data);
-                
-            
-                // if ($updated_at == $addedOn) {
-                //     echo ' Inserted APP ID ' . $Appointment_ID . ' Added on ' . $addedOn . '<br>';                    
-                //     $this->db->insert('tbl_outcome_report_raw', $data);
-                // } else {
-                //    echo ' Updated APP ID ' . $Appointment_ID . ' Added On ' . $addedOn . ' App ID ' . $Appointment_ID . '<br>';
-                //     $this->db->where('Appointment_ID', $Appointment_ID);
-                //    $this->db->update('tbl_outcome_report_raw', $data);
-
-                // }
+    function sync_tracing_outcome(){
+        $latest_ids = $this->db->query("SELECT MAX(Outcome_ID) as Outcome_ID FROM tbl_outcome_report_raw")->result();
+        foreach ($latest_ids as $latest) {
+          
+            $new_clients = $this->db->query("SELECT * FROM partner_outcome_report WHERE Outcome_ID > '$latest->Outcome_ID'")->result();
+            foreach($new_clients as $new_client){
+                $this->db->insert('tbl_outcome_report_raw', $new_client);
             }
-       }
-         }
+        }
+
+    }
 
     function sender() {
 
@@ -80,9 +58,10 @@ class Chore extends MY_Controller {
             $limit = round($no_outgoing_msgs / 2);
             $log_message = 'No of outgoing msgs => ' . $no_outgoing_msgs . ' and our limit is => ' . $limit . '<br>';
 
+
             log_message("INFO", $log_message);
 
-            $new_query = "    SELECT 
+            $new_query = "SELECT 
             tbl_clnt_outgoing.id,
             source,
             destination,
@@ -1218,7 +1197,8 @@ class Chore extends MY_Controller {
 
 
 
-                                        echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                        // echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                        // exit;
                                         
                                         if ($smsenable == 'Yes') {
                                             $this->db->trans_start();
@@ -1248,6 +1228,7 @@ class Chore extends MY_Controller {
                                                 
                                             } else {
                                                 echo "Client message also sent";
+                                               
                                                 
                                             }
                                         } else {
@@ -15037,8 +15018,9 @@ WHERE message_type_id = '6'
 
     function welcome_msg($client_id = null) {
         //$client_id = $_POST['client_id'];
+
       
-               //echo "Welcome message has been called...<br>";
+            echo "Welcome message has been called...<br>";
             $get_clients = $this->db->query("SELECT * FROM tbl_client WHERE id='$client_id' and smsenable='Yes' ")->result();
             foreach ($get_clients as $value) {
                 $phone_no = $value->phone_no;
@@ -15049,7 +15031,7 @@ WHERE message_type_id = '6'
                 $enrollment_date = $value->enrollment_date;
                 $check_welcome_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id='3' and status='Not Sent' and  clnt_usr_id='$client_id' LIMIT 1");
                 $num_rows = $check_welcome_existence->num_rows();
-                // echo $num_rows . '<br>';
+                 
                 if ($num_rows > 0) {
                     //Welcome added
                     $log_message = "welcome added";
@@ -15075,10 +15057,10 @@ WHERE message_type_id = '6'
                             // echo $source, $destination, $msg, $outgoing_id;
                             $send_msg = $this->data->send_message($source, $destination, $msg, $outgoing_id);
                             if ($send_msg) {
-                                // echo 'Message sent success';
+                                 echo 'Message sent success';
                                 return true;
                             } else {
-                                // echo 'Message sending fialure';
+                                 echo 'Message sending fialure';
                             }
                         }
                     }
@@ -15096,6 +15078,7 @@ WHERE message_type_id = '6'
 
                         $cleaned_msg = str_replace("XXX", $client_name, $message_1);
                         $created_at = date('Y-m-d H:i:s');
+                        
                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -15279,7 +15262,8 @@ FROM
 	tbl_client 
 WHERE
 	id NOT IN ( SELECT clnt_usr_id FROM tbl_clnt_outgoing WHERE message_type_id = '3' ) 
-	AND tbl_client.smsenable = 'Yes' group by tbl_client.id  LIMIT 250 ")->result();
+    AND tbl_client.smsenable = 'Yes' group by tbl_client.id  LIMIT 250 ")->result();
+    var_dump($get_clients);
         foreach ($get_clients as $value) {
             $phone_no = $value->phone_no;
             $client_id = $value->id;
@@ -15291,9 +15275,11 @@ WHERE
             $num_rows = $check_welcome_existence->num_rows();
 
             if ($num_rows > 0) {
-                //Welcome added
+                echo 'Welcome added';
+
             } else {
                 echo $language_id;
+
                 $message_type = "Welcome";
                 //Get first welcome msg
 

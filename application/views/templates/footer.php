@@ -1542,6 +1542,7 @@ if ($function_name == "facility_home") {
             var access_level = $('#access_level').val();
             var partner_id = $('#partner_id').val();
             var facility_id = $('#facility_id').val();
+            var sub_county_id = $('#sub_county_id').val();
 
             var partner = dTbles(".filter_partner").val();
             var county = dTbles(".filter_county").val();
@@ -1549,12 +1550,18 @@ if ($function_name == "facility_home") {
             var facility = dTbles(".filter_facility").val();
             var filter_time = dTbles(".filter_time").val();
 
+            console.log(sub_county_id);
+
             if(access_level == 'Partner'){
                     partner = partner_id;
                 }
             
                 if(access_level == 'Facility'){
                     facility = facility_id;
+                }
+
+                if(access_level == 'Sub County'){
+                    sub_county = sub_county_id;
                 }
 
 
@@ -1931,6 +1938,7 @@ if ($function_name == "facility_home") {
             var access_level = $('#access_level').val();
             var partner_id = $('#partner_id').val();
             var facility_id = $('#facility_id').val();
+            var sub_county_id = $('#sub_county_id').val();
 
             var partner = dTbles(".filter_partner").val();
             var county = dTbles(".filter_county").val();
@@ -1946,6 +1954,10 @@ if ($function_name == "facility_home") {
             
                 if(access_level == 'Facility'){
                     facility = facility_id;
+                }
+
+                if(access_level == 'Sub County'){
+                    sub_county = sub_county_id;
                 }
 
 
@@ -2293,6 +2305,7 @@ if ($function_name == "facility_home") {
             var access_level = $('#access_level').val();
             var partner_id = $('#partner_id').val();
             var facility_id = $('#facility_id').val();
+            var sub_county_id = $('#sub_county_id').val();
 
             var partner = dTbles(".filter_partner").val();
             var county = dTbles(".filter_county").val();
@@ -2307,6 +2320,10 @@ if ($function_name == "facility_home") {
             
                 if(access_level == 'Facility'){
                     facility = facility_id;
+                }
+
+                if(access_level == 'Sub County'){
+                    sub_county = sub_county_id;
                 }
 
 
