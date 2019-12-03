@@ -3767,6 +3767,7 @@ FROM
         $data['output'] = $this->get_access_level();
         $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
+        $data['sub_county_id'] = $sub_county_id;
         $data['facility_id'] = $facility_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
@@ -3785,31 +3786,6 @@ FROM
             $sub_county_id = $this->session->userdata('subcounty_id');
             $facility_id = $this->session->userdata('facility_id');
             $access_level = $this->session->userdata('access_level');
-
-
-             //$appnts = " SELECT * FROM outcome_report WHERE 1 LIMIT 100 ";
-
-            // if ($access_level == "Partner") {
-
-            //     $appnts = " SELECT * FROM partner_outcome_report WHERE partner_id='$partner_id' ";
-            // } elseif ($access_level == "County") {
-            //     $appnts .= " AND outcome_report.county_id = '$county_id' ";
-            // } elseif ($access_level == "Sub County") {
-            //     $appnts .= " AND outcome_report.sub_county_id='$sub_county_id' ";
-            // } elseif ($access_level == "Facility") {
-            //     $appnts .= " AND outcome_report.mfl_code = '$facility_id' ";
-            // } else {
-                
-            // }
-
-            // if (!empty($date_from)) {
-            //     $appnts .= " AND partner_outcome_report.Appointment_Date >= '$formated_date_from' ";
-           
-            // }
-            // if (!empty($date_to)) {
-            //     $appnts .= " AND partner_outcome_report.Appointment_Date <= '$formated_date_to' ";
-             
-            // }
 
             $data['side_functions'] = $this->data->get_side_modules();
             $data['top_functions'] = $this->data->get_top_modules();
@@ -3852,134 +3828,6 @@ FROM
             $date_to = str_replace('-', '-', $date_to);
             $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
-        
-       
-        
-
-        // if ($access_level === "Admin"):
-
-        // endif;
-
-        // if ($access_level == "Partner"):
-        //     $this->db->where('partner_id', $partner_id);
-        // endif;
-        // if ($access_level == "Facility"):
-        //     $this->db->where('mfl_code', $facility_id);
-        // endif;
-        // if (!empty($county_id)) {
-        //     $this->db->where('county_id', $county_id);
-        // }
-        // if (!empty($sub_county_id)) {
-        //     $this->db->where('sub_county_id', $sub_county_id);
-        // }
-        // if (!empty($mfl_code)) {
-        //     $this->db->where('mfl_code', $mfl_code);
-        // }
-
-        // if (!empty($date_from)) {
-        //     $this->db->where('created_at >= ', $formated_date_from);
-        // }
-        // if (!empty($date_to)) {
-        //     $this->db->where('created_at <=', $formated_date_to);
-        // }
-        // // $this->db->group_by("UPN"); // Produces: GROUP BY Gender
-        // $query = $this->db->get();
-        // if ($query->num_rows() < 2500) {
-        //     $get_query = $query->result_array();
-
-        //     echo json_encode($get_query);
-        // }
-        // else {
-        //     $filename = "Outcome Report";
-
-
-
-
-        //     $this->load->library("excel");
-        //     $object = new PHPExcel();
-
-        //     $object->setActiveSheetIndex(0);
-
-        //     $table_columns = array("Clinic Number", "MFL Code", "Facility", "Gender",
-        //         "Group Name", "Marital", "Partner", "Created At", "Month Year", "Language",
-        //         "TXT Time", "County", "Sub County", "Status");
-
-
-
-        //     $column = 0;
-
-        //     foreach ($table_columns as $field) {
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow($column, 1, $field);
-        //         $column++;
-        //     }
-
-        //     $results_data = $query->result();
-
-        //     $excel_row = 2;
-
-        //     foreach ($results_data as $row) {
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $row->clinic_number);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $row->mfl_code);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $row->facility_name);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $row->gender);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $row->group_name);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $row->marital);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $row->partner_name);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(7, $excel_row, $row->created_at);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $row->month_year);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $row->LANGUAGE);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $row->txt_time);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $row->month_year);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, $row->sub_county);
-        //         $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $row->created_at);
-        //         $excel_row++;
-        //     }
-
-
-        //     $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
-        //     //header('Content-Type: application/vnd.ms-excel');
-        //     //header('Content-Disposition: attachment;filename="Client Report.xlsx"');
-        //     $a = $filename . date("Y-m-d H:i:s ") . '.xlsx';
-        //     $object_writer->save(__DIR__ . '/ExtractReport/' . $a);
-        //     $file_location = __DIR__ . '/ExtractReport/' . $a;
-
-        //     $email = $this->session->userdata('email');
-        //     $full_name = $this->session->userdata('Fullname');
-        //     $subject = "Client Tracing Outcome Report";
-        //     $msg = "<h4> Dear  $full_name , </h4> </br> ";
-        //     $msg .= "<p> Please find attached Client report from the  system as per your request </p> <br>";
-        //     $msg .= "Kind Regrards, <br>";
-        //     $msg .= "Ushauri Support Team.  ";
-
-
-        //     $this->send_mail($full_name, $email, $subject, $file_location, $msg);
-
-        //     $info_msg = "Too much data";
-        //     echo json_encode($info_msg);
-        // }
-
-
-        // $data['side_functions'] = $this->data->get_side_modules();
-        // $data['top_functions'] = $this->data->get_top_modules();
-        // $data['output'] = $this->get_access_level();
-
-        // $data['side_functions'] = $this->data->get_side_modules();
-        // $data['top_functions'] = $this->data->get_top_modules();
-        // $data['output'] = $this->get_access_level();
-       
-
-
-        
-
-        // $access_level = $this->session->userdata('access_level');
-        // if ($access_level == 'Facility') {
-        //     redirect("Reports/facility_home", "refresh");
-        // } else {
-        //     $partner_id = $this->session->userdata('partner_id');
-        //     $county_id = $this->session->userdata('county_id');
-        //     $sub_county_id = $this->session->userdata('subcounty_id');
-        //     $facility_id = $this->session->userdata('facility_id');
-        //     $access_level = $this->session->userdata('access_level');
 
 
            $appnts = " SELECT * FROM tbl_outcome_report_raw WHERE 1";
@@ -8456,7 +8304,7 @@ WHERE 1 ";
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8490,7 +8338,7 @@ WHERE 1 ";
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8524,7 +8372,7 @@ WHERE 1 ";
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8556,7 +8404,7 @@ WHERE 1 ";
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8606,7 +8454,7 @@ WHERE
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8641,7 +8489,7 @@ WHERE
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8682,7 +8530,7 @@ WHERE
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8723,7 +8571,7 @@ WHERE
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -8767,7 +8615,7 @@ WHERE
             $county_id = $this->session->userdata('county_id');
             $query .= " AND tbl_partner_facility.partner_id='$county_id' ";
         } else if ($access_level == "Sub County") {
-            $sub_county_id = $this->session->userdata('sub_county_id');
+            $sub_county_id = $this->session->userdata('subcounty_id');
             $query .= " AND tbl_partner_facility.sub_county_id='$sub_county_id' ";
         } else if ($access_level == "Facility") {
             $mfl_code = $this->session->userdata('facility_id');
@@ -9681,6 +9529,7 @@ if ($access_level == 'Facility') {
         $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
         $data['facility_id'] = $facility_id;
+        $data['sub_county_id'] = $sub_county_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
@@ -9720,6 +9569,10 @@ if ($access_level == 'Facility') {
         $query = "Select * from Monthly_Appointment_Summary where 1 ";
         if ($access_level === "Admin"):
 
+        endif;
+
+        if($access_level == "Sub County"):
+            $query .= " AND sub_county_id = '$sub_county_id' ";
         endif;
 
         if ($access_level == "Partner"):
@@ -10101,6 +9954,7 @@ if ($access_level == 'Facility') {
         $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
         $data['facility_id'] = $facility_id;
+        $data['sub_county_id'] = $sub_county_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
@@ -10141,13 +9995,17 @@ if ($access_level == 'Facility') {
         endif;
 
         $this->db->select('*');
-        $this->db->from('client_message_report ');
+        $this->db->from('client_message_report');
         if ($access_level === "Admin"):
 
         endif;
 
         if ($access_level == "Partner"):
             $this->db->where('partner_id', $partner_id);
+        endif;
+
+        if($access_level == "Sub County"):
+           $this->db->where('sub_county_id',  $sub_county_id);
         endif;
 
 
@@ -10261,8 +10119,6 @@ if ($access_level == 'Facility') {
             $lab_investigation .= " AND mfl_code = '$mfl_code' ";
         }
 
-
-
         if (!empty($formated_date_from)) {
             $lab_investigation .= " AND created_at >= '$formated_date_from' ";
         }
@@ -10272,11 +10128,7 @@ if ($access_level == 'Facility') {
             $lab_investigation .= " AND created_at <= '$formated_date_to' ";
         }
 
-
-
         $lab_investigation .= " group by facility_name,`age_group` order by facility_name,age_group,gender ";
-
-
 
         $get_query = $this->db->query($lab_investigation)->result();
 
