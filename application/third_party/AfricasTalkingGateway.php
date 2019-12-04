@@ -415,7 +415,7 @@ class AfricasTalkingGateway
       curl_close($curlHandle_);
     }
 	   
-    catch(Exeption $e) {
+    catch(Exception $e) {
       curl_close($curlHandle_);
       throw $e;
     }
