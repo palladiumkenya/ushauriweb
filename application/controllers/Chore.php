@@ -56,8 +56,8 @@ class Chore extends MY_Controller {
         // exit;
 
         if ($no_outgoing_msgs > 0) {
-            $limit = round($no_outgoing_msgs / 2);
-            $log_message = 'No of outgoing msgs => ' . $no_outgoing_msgs . ' and our limit is => ' . $limit . '<br>';
+            //$limit = round($no_outgoing_msgs / 2);
+            $log_message = 'No of outgoing msgs => ' . $no_outgoing_msgs .  '<br>';
 
 
             log_message("INFO", $log_message);
@@ -84,7 +84,7 @@ class Chore extends MY_Controller {
           WHERE 1 
             AND DATE(tbl_clnt_outgoing.created_at) = CURDATE() 
             AND tbl_clnt_outgoing.STATUS = 'Not Sent' AND tbl_client.status='Active'
-            AND tbl_time.`name` = HOUR(NOW())  GROUP by tbl_client.id, tbl_clnt_outgoing.id  LIMIT $limit  ";
+            AND tbl_time.`name` = HOUR(NOW())  GROUP by tbl_client.id, tbl_clnt_outgoing.id";
 
             //get all Client messages due  today that have not been sent from the  system and limit them to 200 after every 1 minute
             $clnt_outgoing = $this->db->query($new_query)->result();
@@ -156,10 +156,12 @@ class Chore extends MY_Controller {
 
 
                             if ($send_text) {
+                                echo "Message sent. ";
                                 $log_message = "Sent message Successfully for message id =>  $clnt_outgoing_id </br> ";
                                 log_message("INFO", $log_message);
                             }
                         } else {
+                            echo "message delete";
                             $log_message = 'Message has been sent , do not send the  current message<br>';
                             log_message("INFO", $log_message);
                             $this->db->trans_start();
@@ -167,9 +169,9 @@ class Chore extends MY_Controller {
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+                                echo " not complete";
                             } else {
-                                
+                                echo "complete";
                             }
                         }
                     }
@@ -1083,13 +1085,13 @@ class Chore extends MY_Controller {
 
 
             $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW()) 
-            AND clnt_usr_id=$client_id LIMIT 1")->num_rows();
+            AND clnt_usr_id= $client_id LIMIT 1")->num_rows();
             if ($check_clnt_outgoing_msg_existence > 0) {
-                //  echo 'Message found ....<br>';
-                //  exit;
+                  echo 'Message found ....<br>';
+                  //exit;
             } else {
-                //  echo 'No message was found....';
-                //  exit;
+                  echo 'No message was found....';
+                  //exit;
 
 
 
@@ -1116,18 +1118,18 @@ class Chore extends MY_Controller {
                     $appointment_month = date("m", strtotime($appointment_date));
 
                     $days_diff = $current_date2->diff($appointment_date2)->format("%a");
-                    //  echo 'Day difference : => ' . $days_diff . '</br>';
+                      echo 'Day difference : => ' . $days_diff . '</br>';
                     //  exit;
 
                     if ($current_date < $appointment_date) {
-                        // echo $client_name . '</br>' . $appointment_date . '</br> end <br>';
+                         echo $client_name . '</br>' . $appointment_date . '</br> end <br>';
                         // exit;
                         //Booked and Notified
 
                         // $check_existence_booked = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => $notification_type))->num_rows();
                         $check_existence_notified = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => $notification_type))->num_rows();
                         if ($check_existence_notified == 1 && $notification_type == "Notified") {
-                            //  echo 'Check notified found ....<br> ';
+                              echo 'Check notified found ....<br> ';
                             //  exit;
 
                             $target_group = 'All';
@@ -1138,31 +1140,35 @@ class Chore extends MY_Controller {
                             $oneday = '1';
                             if (strcmp($sevendays, $days_diff) == 0) {
 
-                                // echo 'Line No 1076 7 Days to appointment for client name ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $sevendays . '</br>';
+                                 echo 'Line No 1076 7 Days to appointment for client name ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $sevendays . '</br>';
                                 // exit;
 
                                 $logic_flow_id = 2;
+                                echo 'Logic flow in' . $logic_flow_id . '</br>';
+
                             } elseif (strcmp($oneday, $days_diff) == 0) {
-                                // // // // echo 'Line No 1079  One day to appointment..... for ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $oneday . '</br>';
+                                 echo 'Line No 1079  One day to appointment..... for ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $oneday . '</br>';
                                 $logic_flow_id = 3;
                             }
-                            // // // // echo 'Logic flow ' . $logic_flow_id . '</br>';
+                             echo 'Logic flow ' . $logic_flow_id . '</br>';
 
 
 
                             $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW()) 
                             AND clnt_usr_id=$client_id LIMIT 1")->num_rows();
                             if ($check_clnt_outgoing_msg_existence > 0) {
-                                // echo 'Message found ....<br>';                               
+                                 echo 'Message found again bruh....<br>';  
+                                                             
                             } else {
-                                 //echo 'No message was found....';
+                                 echo 'No message was found bruh....';
+                                 
                  
 
                                 $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and logic_flow='$logic_flow_id' 
                                 and language_id='$language_id' LIMIT 1 ")->result();
                                 foreach ($get_content as $value) {
 
-                                    // echo json_encode($value);
+                                     echo json_encode($value);
                                     // exit;
                                     $content_id = $value->id;
                                     $content = $value->message;
@@ -1193,12 +1199,13 @@ class Chore extends MY_Controller {
                                     $this->db->update('appointment', $update_appointment_array);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
+                                        echo "Nothing";
                                         
                                     } else {
 
 
 
-                                        // echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                         echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
                                         // exit;
                                         
                                         if ($smsenable == 'Yes') {
@@ -1226,6 +1233,7 @@ class Chore extends MY_Controller {
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
+                                                
                                                 
                                             } else {
                                                 echo "Client message also sent";
