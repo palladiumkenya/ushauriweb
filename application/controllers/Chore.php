@@ -21,6 +21,7 @@ class Chore extends MY_Controller {
     function sync_tracing_outcome(){
         $latest_ids = $this->db->query("SELECT MAX(Outcome_ID) as Outcome_ID FROM tbl_outcome_report_raw")->result();
         foreach ($latest_ids as $latest) {
+            
           
             $new_clients = $this->db->query("SELECT * FROM partner_outcome_report WHERE Outcome_ID > '$latest->Outcome_ID'")->result();
             foreach($new_clients as $new_client){
@@ -1434,8 +1435,11 @@ class Chore extends MY_Controller {
 
                                         $check_outgoing_msg_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id ='1' and clnt_usr_id='$client_id' and destination='$phone_no' and DATE(created_at) = CURDATE()")->num_rows();
                                         if ($check_outgoing_msg_existence > 0) {
+
+                                            echo 'found' . '<br>';
                                             
                                         } else {
+                                            echo 'not found' . '<br>';
 
 
                                             if ($smsenable == 'Yes') {
@@ -1462,6 +1466,7 @@ class Chore extends MY_Controller {
                                                 $this->db->insert('clnt_outgoing', $outgoing);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
+                                                    echo 'it is failed';
                                                     
                                                 } else {
                                                     
@@ -1609,80 +1614,7 @@ class Chore extends MY_Controller {
 
 
                             echo "Defaulter Updated";
-                            // $check_outgoing_msg_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id ='1' and clnt_usr_id='$client_id' and
-                            // destination='$phone_no' and DATE(created_at) = DATE(NOW()) ")->num_rows();
-                            // if ($check_outgoing_msg_existence > 0) {
-                            //     echo 'Out going message already exists ...<br> ';
-                            // } else {
-                            //     // echo $notification_flow_id . '<br>';
-                            //     $get_content = $this->db->query(" Select * from tbl_content where identifier='$notification_flow_id' and message_type_id='1' and language_id='$language_id' and group_id='$group_id' ")->result();
-                            //     print_r($get_content);
-                            //     foreach ($get_content as $value) {
-                            //         $defaulted = "Defaulted";
-                            //         $content = $value->content;
-                            //         $content_id = $value->id;
-                            //         $message_type_id = $value->message_type_id;
-                            //         //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
-    
-                            //         $new_msg = str_replace("XXX", $client_name, $content);
-                            //         $appointment_date = date("d-m-Y", strtotime($appointment_date));
-                            //         $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-                            //         echo 'Cleaned msg =>' . $cleaned_msg . '</br>';
-                            //         $today = date("Y-m-d H:i:s");
-    
-                            //         $status = "Not Sent";
-                            //         $responded = "No";
-                            //         $yes_notified = 'Yes';
-                            //         $app_status = "Default";
-                            //         $Default_status = "Default Sent";
-                            //         $this->db->trans_start();
-                            //         $update_appointment_array = array(
-                            //             'app_status' => $app_status,
-                            //             'app_msg' => $cleaned_msg,
-                            //             'notified' => $yes_notified,
-                            //             'sent_status' => $Default_status,
-                            //             'updated_by' => '1'
-                            //         );
-                            //         $this->db->where('id', $appointment_id);
-                            //         $this->db->update('appointment', $update_appointment_array);
-                            //         $this->db->trans_complete();
-                            //         if ($this->db->trans_status() === FALSE) {
-                                        
-                            //         } else {
-                            //             if ($smsenable == 'Yes') {
-                            //                 $this->db->trans_start();
-                            //                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
-                            //                 $this->config->load('config', TRUE);
-                            //                 // Retrieve a config item named site_name contained within the blog_settings array
-                            //                 $source = $this->config->item('shortcode', 'config');
-    
-    
-                            //                 $outgoing = array(
-                            //                     'destination' => $phone_no,
-                            //                     'msg' => $cleaned_msg,
-                            //                     'responded' => $responded,
-                            //                     'status' => $status,
-                            //                     'message_type_id' => $message_type_id,
-                            //                     'source' => $source,
-                            //                     'clnt_usr_id' => $client_id,
-                            //                     'recepient_type' => 'Client',
-                            //                     'content_id' => $content_id,
-                            //                     'created_at' => $today,
-                            //                     'created_by' => '1'
-                            //                 );
-                            //                 $this->db->insert('clnt_outgoing', $outgoing);
-                            //                 $this->db->trans_complete();
-                            //                 if ($this->db->trans_status() === FALSE) {
-                                                
-                            //                 } else {
-                                                
-                            //                 }
-                            //             } else {
-                                            
-                            //             }
-                            //         }
-                            //     }
-                            // }
+                            
                             
                         }
                     }
@@ -15023,6 +14955,7 @@ WHERE message_type_id = '6'
             echo "Welcome message has been called...<br>";
             $get_clients = $this->db->query("SELECT * FROM tbl_client WHERE id='$client_id' and smsenable='Yes' ")->result();
             foreach ($get_clients as $value) {
+               
                 $phone_no = $value->phone_no;
                 $client_id = $value->id;
                 $language_id = $value->language_id;
@@ -15058,7 +14991,7 @@ WHERE message_type_id = '6'
                             $send_msg = $this->data->send_message($source, $destination, $msg, $outgoing_id);
                             if ($send_msg) {
                                  echo 'Message sent success';
-                                return true;
+                                //return true;
                             } else {
                                  echo 'Message sending fialure';
                             }
@@ -15115,10 +15048,15 @@ WHERE message_type_id = '6'
                             $msg = $cleaned_msg;
                             $send_msg = $this->data->send_message($source, $destination, $msg, $clnt_outgoing_id_1);
                             if ($send_msg) {
-                                // echo 'Message sent success';
-                                return true;
+                                 echo 'Message sent success';
+                                 $update_clnt_outgoing = array(
+                                    'status' => 'Sent'
+                                );
+                                $this->db->where('id', $clnt_outgoing_id_1);
+                                $this->db->update('clnt_outgoing', $update_clnt_outgoing);
+                                //return true;
                             } else {
-                                // echo 'Message sending fialure';
+                                 echo 'Message sending fialure';
                                 $update_clnt_outgoing = array(
                                     'status' => 'Not Sent'
                                 );
@@ -15161,10 +15099,15 @@ WHERE message_type_id = '6'
                             $msg = $message_2;
                             $send_msg_2 = $this->data->send_message($source, $destination, $msg, $clnt_outgoing_id_2);
                             if ($send_msg_2) {
-                                // echo 'Message sent success';
-                                return true;
+                                 echo 'Message sent success';
+                                 $update_clnt_outgoing = array(
+                                    'status' => 'Sent'
+                                );
+                                $this->db->where('id', $clnt_outgoing_id_2);
+                                $this->db->update('clnt_outgoing', $update_clnt_outgoing);
+                                //return true;
                             } else {
-                                // echo 'Message sending fialure';
+                                 echo 'Message sending fialure';
                                 $update_clnt_outgoing = array(
                                     'status' => 'Not Sent'
                                 );
@@ -15237,10 +15180,15 @@ WHERE message_type_id = '6'
                                 $msg = $cleaned_msg;
                                 $send_msg_3 = $this->data->send_message($source, $destination, $msg, $clnt_outgoing_id_3);
                                 if ($send_msg_3) {
-                                    // echo 'Message sent success';
-                                    return true;
+                                     echo 'Message sent success';
+                                     $update_clnt_outgoing = array(
+                                        'status' => 'Sent'
+                                    );
+                                    $this->db->where('id', $clnt_outgoing_id_3);
+                                    $this->db->update('clnt_outgoing', $update_clnt_outgoing);
+                                    //return true;
                                 } else {
-                                    // echo 'Message sending fialure';
+                                     echo 'Message sending fialure';
                                     $update_clnt_outgoing = array(
                                         'status' => 'Not Sent'
                                     );
