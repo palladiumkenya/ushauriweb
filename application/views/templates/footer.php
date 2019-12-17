@@ -2067,17 +2067,6 @@ if ($function_name == "facility_home") {
             var outcome = value.Outcome;
             var final_outcome = value.Final_Outcome;
             var other_outcome = value.Other_Outcome;
-            // var art_date = value.art_date;
-            // var partner_id = value.partner_id;
-            // var partner_name = value.partner_name;
-            // var county_name = value.county_name;
-            // var sub_county = value.sub_county;
-            // var mfl_code = value.mfl_code;
-            // var facility_name = value.facility_name;
-            // var smsenable = value.smsenable;
-            // var consent_date = value.consent_date;
-            // var motivational_enable = value.motivational_enable;
-            // var wellness_enable = value.wellness_enable;
 
 
         var tr_results = "<tr>\n\
