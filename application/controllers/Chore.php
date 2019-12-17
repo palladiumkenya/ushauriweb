@@ -1305,8 +1305,9 @@ class Chore extends MY_Controller {
             ON tbl_groups.id = tbl_client.group_id 
         WHERE tbl_client.status = 'Active' 
         AND tbl_groups.status = 'Active' 
-        AND tbl_appointment.appntmnt_date = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
-        AND tbl_appointment.active_app = '1' ")->result();
+        AND datediff( CURDATE( ), date( appntmnt_date ) ) BETWEEN 1 
+            AND 4
+        AND tbl_appointment.active_app = '1' AND app_status != 'Missed' ")->result();
 
         foreach ($appointments as $value) {
 
@@ -1362,7 +1363,7 @@ class Chore extends MY_Controller {
                     //Missed and Defaulted check up
                     // echo 'Appointment Date => ' . $appointment_date . '<br> Notification Flow days => ' . $notification_flow_days . ' <br>  Days difference => ' . $days_diff . ' and app status' . $app_status . '</br> .................................<br>     ............................';
 
-                    $check_existence_missed = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => "Missed"))->num_rows();
+                    $check_existence_missed = $this->db->query("SELECT id FROM tbl_notification_flow WHERE 1 <= days <=  '$days_diff' AND notification_type = 'Missed'")->num_rows();
                     if ($check_existence_missed == 1 && $notification_type == "Missed") {
                         // // // echo 'Sent status => ' . $sent_status . '<br>';
                         if ($sent_status == "Missed Sent") {
@@ -1588,9 +1589,12 @@ class Chore extends MY_Controller {
 
                 if ($current_date > $appointment_date) {
                     // Defaulted check up
-                    echo 'Days Diff' . $days_diff . '</br>';
-                    $check_existence_defaulted = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => "Defaulted"))->num_rows();
+                    echo 'Days Diff in here' . $days_diff . '</br>';
+                    $check_existence_defaulted = $this->db->query("SELECT id FROM tbl_notification_flow WHERE 5 <= days <=  '$days_diff' AND notification_type = 'Defaulted'")->num_rows();
+                    
                     if ($check_existence_defaulted == 1 && $notification_type == "Defaulted") {
+
+                        
                         
                     
 
