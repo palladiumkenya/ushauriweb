@@ -334,8 +334,9 @@ var tb = jQuery.noConflict();
                     tb(".gender_name").empty();
                     var isempty = jQuery.isEmptyObject(data);
                     if (isempty) {
-                        swal("Sorry", "Clininc number : " + upn + " was not found in the  system  ", "info");
-                    } else {
+                        swal("Sorry", "Clinic number : " + upn + " is not registered in your facility ", "info");
+                    } 
+                    else {
 
 
                         tb.each(data, function (i, value) {

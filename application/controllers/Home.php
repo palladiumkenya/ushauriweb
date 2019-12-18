@@ -8248,6 +8248,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
     function get_client_profile() {
         $upn = $this->input->post('upn', TRUE);
+        $facility_id = $this->session->userdata('facility_id');
 
         $clients = array(
             'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
@@ -8258,7 +8259,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                 'marital_status' => 'marital_status.id = client.marital',
                 'language' => 'language.id = client.language_id',
                 'groups' => 'groups.id = client.group_id'),
-            'where' => array('client.clinic_number' => $upn)
+            'where' => array('client.clinic_number' => $upn, 'client.mfl_code' => $facility_id)
         );
 
 
