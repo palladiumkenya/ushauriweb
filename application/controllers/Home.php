@@ -8249,6 +8249,25 @@ ORDER BY `appntmnt_date` ASC ")->result();
     function get_client_profile() {
         $upn = $this->input->post('upn', TRUE);
         $facility_id = $this->session->userdata('facility_id');
+        $partner_id = $this->session->userdata('partner_id');
+        
+        $access_level = $this->session->userdata('access_level');
+
+        if ($access_level == "Partner"){
+            // echo $partner_id;
+            // exit;
+            $clients = array(
+                'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
+                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                . 'client.file_no,client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                'table' => 'client',
+                'join' => array('gender' => 'gender.id = client.gender',
+                    'marital_status' => 'marital_status.id = client.marital',
+                    'language' => 'language.id = client.language_id',
+                    'groups' => 'groups.id = client.group_id'),
+                'where' => array('client.clinic_number' => $upn, 'client.partner_id' => $partner_id)
+            );
+        }else{
 
         $clients = array(
             'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
@@ -8261,7 +8280,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                 'groups' => 'groups.id = client.group_id'),
             'where' => array('client.clinic_number' => $upn, 'client.mfl_code' => $facility_id)
         );
-
+    }
 
         $cclient_info = $this->data->commonGet($clients);
 
