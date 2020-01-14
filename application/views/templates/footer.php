@@ -2042,7 +2042,7 @@ if ($function_name == "facility_home") {
     dTbles('.client_listing').DataTable().clear();
     dTbles('.client_listing').DataTable().destroy();
     var table = '  <table class=" display nowrap table table-hover table-striped table-bordered client_listing " cellspacing="0" width="100%">\n\
-        <thead> <tr>  <th>Clinic Number  :</th> <th>Age  :</th> <th>Facility  :</th> <th>Gender  :</th> <th>Sub_County  :</th> <th>File No : </th><th>Appointment Date : </th> <th>Tracer Name : </th>\n\
+        <thead> <tr>  <th>Clinic Number  :</th> <th>Age  :</th> <th>Facility  :</th> <th>Gender  :</th> <th>Sub_County  :</th> <th>File No : </th><th>Appointment Date : </th> <th>Date Came : </th> <th>Tracer Name : </th>\n\
         <th>Days Defaulted: </th> <th>Tracing Date </th> <th>Outcome : </th><th>Final Outcome : </th> <th>Other Outcome : </th> </tr> </thead>  \n\
         <tbody id="results_tbody" class="results_tbody"> </tbody> </table> ';
     dTbles('.client_reports_div').append(table);
@@ -2061,6 +2061,7 @@ if ($function_name == "facility_home") {
             var subcounty = value.Sub_County;
             var file_no = value.File_Number;
             var appmnt_date = value.Appointment_Date;
+            var date_attened = value.Date_Came;
             var tracer = value.Tracer;
             var days_defaulted = value.Days_Defaulted;
             var tracing_date = value.Tracing_Date;
@@ -2077,6 +2078,7 @@ if ($function_name == "facility_home") {
         <td>" + subcounty + "</td>\n\
         <td>" + file_no + "</td>\n\
         <td>" + appmnt_date + "</td>\n\
+        <td>" + date_attened + "</td>\n\
         <td>" + tracer + "</td>\n\
         <td>" + days_defaulted + "</td>\n\
         <td>" + tracing_date + "</td>\n\
