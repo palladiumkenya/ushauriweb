@@ -2043,7 +2043,7 @@ if ($function_name == "facility_home") {
     dTbles('.client_listing').DataTable().destroy();
     var table = '  <table class=" display nowrap table table-hover table-striped table-bordered client_listing " cellspacing="0" width="100%">\n\
         <thead> <tr>  <th>Clinic Number  :</th> <th>Age  :</th> <th>Facility  :</th> <th>Gender  :</th> <th>Sub_County  :</th> <th>File No : </th><th>Appointment Date : </th> <th>Date Came : </th> <th>Tracer Name : </th>\n\
-        <th>Days Defaulted: </th> <th>Tracing Date </th> <th>Outcome : </th><th>Final Outcome : </th> <th>Other Outcome : </th> </tr> </thead>  \n\
+        <th>Days Defaulted: </th> <th>ART Start Date: </th> <th>Tracing Date </th> <th>Outcome : </th><th>Final Outcome : </th> <th>Other Outcome : </th> </tr> </thead>  \n\
         <tbody id="results_tbody" class="results_tbody"> </tbody> </table> ';
     dTbles('.client_reports_div').append(table);
     // if (data === "Too much data") {
@@ -2064,6 +2064,7 @@ if ($function_name == "facility_home") {
             var date_attened = value.Date_Came;
             var tracer = value.Tracer;
             var days_defaulted = value.Days_Defaulted;
+            var art_start_date = value.Art_Start_Date;
             var tracing_date = value.Tracing_Date;
             var outcome = value.Outcome;
             var final_outcome = value.Final_Outcome;
@@ -2081,6 +2082,7 @@ if ($function_name == "facility_home") {
         <td>" + date_attened + "</td>\n\
         <td>" + tracer + "</td>\n\
         <td>" + days_defaulted + "</td>\n\
+        <td>" + art_start_date + "</td>\n\
         <td>" + tracing_date + "</td>\n\
         <td>" + outcome + "</td>\n\
         <td>" + final_outcome + "</td>\n\
