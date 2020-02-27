@@ -8965,7 +8965,7 @@ GROUP BY tbl_appointment.`app_status` ";
             $defaulted_query = "SELECT * FROM tbl_defaulted_query WHERE mfl_code = '$facility_id'";
 
 
-            $ltfu_query = "SELECT * FROM tbl_ltfu_query WHERE mfl_code = '$facility_id'";
+            $ltfu_query = "SELECT * FROM tbl_lost WHERE mfl_code = '$facility_id'";
         } else {
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
