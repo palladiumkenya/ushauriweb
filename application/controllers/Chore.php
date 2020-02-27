@@ -224,6 +224,10 @@ class Chore extends MY_Controller {
         $this->db->query("CREATE TABLE tbl_missed_query AS SELECT * FROM missed_query");
 
     }
+    function lost_query(){
+        $this->db->query("DROP TABLE IF EXISTS tbl_lost");
+        $this->db->query("CREATE TABLE tbl_lost AS SELECT * FROM lost_query");
+    }
     
     function client_list(){
         $this->db->query("DROP TABLE IF EXISTS tbl_client_list_new");
@@ -248,10 +252,7 @@ class Chore extends MY_Controller {
         $this->db->query("DROP TABLE IF EXISTS tbl_defaulted_query");
         $this->db->query("CREATE TABLE tbl_defaulted_query AS SELECT * FROM defaulted_query");
     }
-    function ltfu_query(){
-        $this->db->query("DROP TABLE IF EXISTS tbl_lftu_query");
-        $this->db->query("CREATE TABLE tbl_ltfu_query AS SELECT * FROM ltfu_query");
-    }
+    
     function future_appointments_query(){
         $this->db->query("DROP TABLE IF EXISTS tbl_future_appointments_query");
         $this->db->query("CREATE TABLE tbl_future_appointments_query AS SELECT * FROM future_appointments_query");
@@ -517,7 +518,7 @@ class Chore extends MY_Controller {
     //     tbl_appointment 
     //     INNER JOIN tbl_client 
     //         ON tbl_client.id = tbl_appointment.client_id 
-    //     WHERE tbl_client.status = 'Active' 
+    //     WHERE tbl_client.status = 'Active' AND tbl_client.partner_id = 1
     //     AND active_app = '1' AND date(tbl_appointment.appntmnt_date) > CURDATE() + interval 7 day  ORDER BY appntmnt_date ASC ")->result();
 
     //     foreach ($appointments as $value) {
@@ -541,6 +542,12 @@ class Chore extends MY_Controller {
     //         $group_id = $value->group_id;
     //         $client_name = ucwords(strtolower($f_name)) . " ";
 
+    //         if($language_id == 5){
+    //             $language_id = 1;
+    //         } else {
+    //             $language_id;
+    //         }
+
     //         $check_outgoing_msg_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id ='1' and clnt_usr_id='$client_id' and 
     //         destination='$phone_no' and DATE(created_at) = DATE(NOW()) ")->num_rows();
     //         if ($check_outgoing_msg_existence > 0) {
@@ -555,12 +562,6 @@ class Chore extends MY_Controller {
     //                 $notification_days = $value2->days;
     //                 $notification_value = $value2->value;
     //                 $notification_flow_id = $value2->id;
-    //                 // $notification_type = $value2->notification_type;
-    //                 // $notification_days = $value2->days;
-    //                 // $notification_value = $value2->value;
-    //                 // $notification_flow_id = $value2->id;
-
-    //                 // $notification_type = $value2->notification_type;
 
     //                 $notification_flow_days = $value2->days;
 
@@ -591,6 +592,10 @@ class Chore extends MY_Controller {
                                
     //                             $get_content = $this->db->query("Select * from tbl_content where identifier='$notification_flow_id' and message_type_id='1' and
     //                              language_id='$language_id' and group_id='$group_id' LIMIT 1")->result();
+    //                               echo json_encode($get_content);
+    //                                 exit;
+
+                                 
 
     //                             foreach ($get_content as $value) {
     //                                 $content = $value->content;
@@ -610,10 +615,13 @@ class Chore extends MY_Controller {
     //                                 $app_status = "Booked";
     //                                 $Booked_status = "Booked Sent";
 
+                                     
+
+                                    
+
     //                                 $this->db->trans_start();
 
     //                                 $update_appointment_array = array(
-    //                                     'app_status' => $app_status,
     //                                     'app_msg' => $cleaned_msg,
     //                                     'notified' => $yes_notified,
     //                                     'sent_status' => $Booked_status,
@@ -635,6 +643,7 @@ class Chore extends MY_Controller {
     //                                     $check_if_its_first_appointment = $this->db->query("Select * from tbl_appointment where client_id='$client_id'")->num_rows();
     //                                     if ($check_if_its_first_appointment < 1) {
     //                                         //This is the  first appointment , please ignore messaging
+                                            
     //                                     } else {
     //                                         //This is not the  first appointment , schedule the  message
     //                                     }
@@ -15053,6 +15062,7 @@ WHERE message_type_id = '6'
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
+                            echo "it has failed";
                             
                         } else {
                             $source = $source;
@@ -15222,7 +15232,7 @@ FROM
 	tbl_client 
 WHERE
 	id NOT IN ( SELECT clnt_usr_id FROM tbl_clnt_outgoing WHERE message_type_id = '3' ) 
-    AND tbl_client.smsenable = 'Yes' group by tbl_client.id  LIMIT 250 ")->result();
+    AND tbl_client.smsenable = 'Yes' AND tbl_client.`status` = 'Active' AND phone_no IS NOT NULL group by tbl_client.id")->result();
     var_dump($get_clients);
         foreach ($get_clients as $value) {
             $phone_no = $value->phone_no;
