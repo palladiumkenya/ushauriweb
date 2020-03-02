@@ -382,6 +382,7 @@ class Chore extends MY_Controller {
                                 }
 
                                 echo 'Msg => ' . $msg . '</br>';
+                                echo 'Source' . $source;
                                 
                                 $send_text = $this->data->send_message($source, $destination, $msg, $broadcast_id);
 
