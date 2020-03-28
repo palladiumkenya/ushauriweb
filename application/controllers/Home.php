@@ -55,7 +55,7 @@ class Home extends MY_Controller
 
         echo json_encode($data);
     }
-   
+
     public function highchartDashboard()
     {
         $access_level = $this->session->userdata('access_level');
@@ -68,19 +68,21 @@ class Home extends MY_Controller
         $county_id = $this->input->post('county', true);
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);
-        
+
 
         $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
         $target_active_clients = 0;
         $total_clients = 0;
         $consented_clients = 0;
         $future_appointments = 0;
-    
+        $facilities = 0;
+
         foreach ($records as $record) {
             $target_active_clients =  $target_active_clients + $record['Target_Clients'];
             $total_clients = $total_clients + $record['Clients'];
             $consented_clients = $consented_clients + $record['Consented'];
             $future_appointments = $future_appointments + $record['Future_Appointments'];
+            $facilities = $facilities + $record['mfl_code'];
         }
         $data['data'] = $records;
         $data['target_active_clients'] = $target_active_clients;
@@ -88,7 +90,7 @@ class Home extends MY_Controller
         $data['percentage_uptake'] = round((($total_clients / $target_active_clients) * 100), 1);
         $data['consented_clients'] = $consented_clients;
         $data['future_appointments'] = $future_appointments;
-        $data['facilities'] = count($records);
+        $data['facilities'] = $facilities;
         $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
         $data['facility_id'] = $facility_id;
@@ -113,17 +115,17 @@ class Home extends MY_Controller
         if ($access_level == 'Facility') {
             $client_options = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
-                'where' => array('client.mfl_code' => $facility_id, 'client.status' => 'active','client.clinic_id'=>$clinic_id)
+                'where' => array('client.mfl_code' => $facility_id, 'client.status' => 'active', 'client.clinic_id' => $clinic_id)
             );
         } elseif ($access_level == 'Partner') {
             $client_options = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender', 'partner_facility' => 'client.mfl_code = partner_facility.mfl_code'),
                 'where' => array('partner_facility.partner_id' => $partner_id, 'client.status' => 'Active')
@@ -131,8 +133,8 @@ class Home extends MY_Controller
         } elseif ($access_level == 'County') {
             $client_options = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender', 'partner_facility' => 'client.mfl_code = partner_facility.mfl_code'),
                 'where' => array('partner_facility.county_id' => $county_id, 'client.status' => 'Active')
@@ -140,8 +142,8 @@ class Home extends MY_Controller
         } elseif ($access_level == 'Sub County') {
             $client_options = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender', 'partner_facility' => 'client.mfl_code = partner_facility.mfl_code'),
                 'where' => array('partner_facility.sub_county_id' => $sub_county_id, 'client.status' => 'Active')
@@ -149,8 +151,8 @@ class Home extends MY_Controller
         } else {
             $client_options = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
                 'where' => array('client.status' => 'Active')
@@ -192,34 +194,34 @@ class Home extends MY_Controller
         $access_level = $this->session->userdata('access_level');
         if ($access_level == 'Facility') {
             $query = $this->db->query("SELECT app_status as label  FROM tbl_appointment "
-                            . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
-                            . "  INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
-                            . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
-                            . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.mfl_code='$facility_id' AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
+                . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
+                . "  INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
+                . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
+                . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.mfl_code='$facility_id' AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
         } elseif ($access_level == 'Partner') {
             $query = $this->db->query("SELECT app_status as label  FROM tbl_appointment "
-                            . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
-                            . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
-                            . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
-                            . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.partner_id='$partner_id' AND appntmnt_date > '1970-01-01' and tbl_client.status ='Active' ")->result_array();
+                . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
+                . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
+                . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
+                . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.partner_id='$partner_id' AND appntmnt_date > '1970-01-01' and tbl_client.status ='Active' ")->result_array();
         } elseif ($access_level == 'County') {
             $query = $this->db->query("SELECT app_status as label  FROM tbl_appointment "
-                            . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
-                            . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
-                            . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
-                            . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.county_id='$county_id' AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
+                . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
+                . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
+                . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
+                . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.county_id='$county_id' AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
         } elseif ($access_level == 'Sub County') {
             $query = $this->db->query("SELECT app_status as label  FROM tbl_appointment "
-                            . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
-                            . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
-                            . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
-                            . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.sub_county_id='$sub_county_id' AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
+                . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
+                . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
+                . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
+                . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND tbl_partner_facility.sub_county_id='$sub_county_id' AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
         } else {
             $query = $this->db->query("SELECT app_status as label  FROM tbl_appointment "
-                            . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
-                            . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
-                            . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
-                            . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
+                . " INNER JOIN tbl_notification_flow ON tbl_notification_flow.`notification_type` = tbl_appointment.`app_status` "
+                . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` "
+                . " INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` "
+                . " WHERE app_status IN (SELECT notification_type FROM tbl_notification_flow) AND appntmnt_date > '1970-01-01' and tbl_client.status='Active' ")->result_array();
             //$query = $this->db->query("SELECT app_status as label FROM `tbl_appointment`")->result();
         }
 
@@ -246,15 +248,15 @@ class Home extends MY_Controller
         $county_id = $this->session->userdata('county_id');
         $subcounty_id = $this->session->userdata('subcounty_id');
         $access_level = $this->session->userdata('access_level');
-        
+
         $clinic_id = $this->session->userdata('clinic_id');
 
 
         if ($access_level == "Donor") { //Donor level access
             $clients = array(
                 'select' => 'client.file_no , groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number,national_id,file_no,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number,national_id,file_no,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
                 'where' => array('client.status' => 'Active'),
@@ -269,7 +271,7 @@ class Home extends MY_Controller
                 'where' => array('partner_facility.status' => 'Active')
             );
         } elseif ($access_level == "Partner") { //Partner level access
-            
+
             $clients = array(
                 'select' => '*',
                 'table' => 'tbl_client_raw_report',
@@ -286,17 +288,21 @@ class Home extends MY_Controller
         } elseif ($access_level == "County") { //County level access
             $clients = array(
                 'select' => 'client.file_no ,groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number,national_id,file_no,client.client_status,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number,national_id,file_no,client.client_status,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
-                    'partner_facility' => 'client.mfl_code = partner_facility.mfl_code'),
-                'where' => array('client.status' => 'Active',
-                    'partner_facility.county_id' => $county_id),
+                    'partner_facility' => 'client.mfl_code = partner_facility.mfl_code'
+                ),
+                'where' => array(
+                    'client.status' => 'Active',
+                    'partner_facility.county_id' => $county_id
+                ),
                 'order' => array('enrollment_date' => 'DESC')
             );
 
@@ -304,25 +310,31 @@ class Home extends MY_Controller
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
                 'table' => 'master_facility',
-                'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'county.id = master_facility.county_id',
-                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
                 'where' => array('partner_facility.status' => 'Active', 'master_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") { //Sub County level access
             $clients = array(
                 'select' => 'client.file_no ,groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number,national_id,file_no,client.client_status  ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number,national_id,file_no,client.client_status  ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
-                    'partner_facility' => 'client.mfl_code = partner_facility.mfl_code'),
-                'where' => array('client.status' => 'Active',
-                    'partner_facility.sub_county_id' => $subcounty_id),
+                    'partner_facility' => 'client.mfl_code = partner_facility.mfl_code'
+                ),
+                'where' => array(
+                    'client.status' => 'Active',
+                    'partner_facility.sub_county_id' => $subcounty_id
+                ),
                 'order' => array('enrollment_date' => 'DESC')
             );
 
@@ -330,9 +342,11 @@ class Home extends MY_Controller
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
                 'table' => 'master_facility',
-                'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'county.id = master_facility.county_id',
-                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
                 'where' => array('partner_facility.status' => 'Active', 'sub_county.id' => $subcounty_id)
             );
         } elseif ($access_level == "Facility") {
@@ -395,7 +409,7 @@ class Home extends MY_Controller
             'where' => array('status' => 'Active')
         );
 
-        
+
 
 
 
@@ -411,8 +425,8 @@ class Home extends MY_Controller
         $data['maritals'] = $this->data->commonGet($maritals);
         $data['output'] = $this->get_access_level();
         $this->load->vars($data);
-        
-        
+
+
         $function_name = $this->uri->segment(2);
         //// $this->output->enable_profiler(TRUE);
 
@@ -423,8 +437,8 @@ class Home extends MY_Controller
                 $this->load->template('Home/clients');
             } else {
                 $this->load->template('Home/clients');
-//                echo 'Unauthorised Access';
-//                exit();
+                //                echo 'Unauthorised Access';
+                //                exit();
             }
         }
     }
@@ -443,17 +457,19 @@ class Home extends MY_Controller
         if ($access_level == "Donor") { //Donor level access
             $clients = array(
                 'select' => ' client.file_no ,  groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,'
-                . ' client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name, '
-                . ' gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id , county.name as county_name, sub_county.name as sub_county ,master_facility.name as facility_name',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,'
+                    . ' client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name, '
+                    . ' gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id , county.name as county_name, sub_county.name as sub_county ,master_facility.name as facility_name',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'county' => 'county.id = partner_facility.county_id', 'sub_county' => 'sub_county.id = partner_facility.sub_county_id', 'master_facility' => 'master_facility.code = partner_facility.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'county' => 'county.id = partner_facility.county_id', 'sub_county' => 'sub_county.id = partner_facility.sub_county_id', 'master_facility' => 'master_facility.code = partner_facility.mfl_code'
+                ),
                 'where' => array('client.status' => 'Deceased')
             );
         } elseif ($access_level == "Partner") {
@@ -472,46 +488,56 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => ' client.file_no ,  groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,'
-                . ' client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name, '
-                . ' gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id , county.name as county_name, sub_county.name as sub_county ,master_Facility.name as facility_name',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,'
+                    . ' client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name, '
+                    . ' gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id , county.name as county_name, sub_county.name as sub_county ,master_Facility.name as facility_name',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'county' => 'county.id = partner_facility.county_id', 'sub_county' => 'sub_county.id = partner_facility.sub_county_id', 'master_facility' => 'master_facility.code = partner_facility.mfl_code'),
-                'where' => array('client.status' => 'Disabled',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'county' => 'county.id = partner_facility.county_id', 'sub_county' => 'sub_county.id = partner_facility.sub_county_id', 'master_facility' => 'master_facility.code = partner_facility.mfl_code'
+                ),
+                'where' => array(
+                    'client.status' => 'Disabled',
                     'partner_facility.county_id' => $county_id,
-                    'client.partner_id' => $partner_id)
+                    'client.partner_id' => $partner_id
+                )
             );
         } elseif ($access_level == "Sub County") {
             $facilities = array(
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code'),
-                'where' => array('partner_facility.status' => 'Active',
+                'where' => array(
+                    'partner_facility.status' => 'Active',
                     'partner_facility.partner_id' => $partner_id,
-                    'partner_facility.sub_county_id' => $subcounty_id)
+                    'partner_facility.sub_county_id' => $subcounty_id
+                )
             );
 
             $clients = array(
                 'select' => ' client.file_no ,  groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,'
-                . ' client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name, '
-                . ' gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id , county.name as county_name, sub_county.name as sub_county ,master_Facility.name as facility_name',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,'
+                    . ' client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name, '
+                    . ' gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id , county.name as county_name, sub_county.name as sub_county ,master_Facility.name as facility_name',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'county' => 'county.id = partner_facility.county_id', 'sub_county' => 'sub_county.id = partner_facility.sub_county_id', 'master_facility' => 'master_facility.code = partner_facility.mfl_code'),
-                'where' => array('client.status' => 'Disabled',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'county' => 'county.id = partner_facility.county_id', 'sub_county' => 'sub_county.id = partner_facility.sub_county_id', 'master_facility' => 'master_facility.code = partner_facility.mfl_code'
+                ),
+                'where' => array(
+                    'client.status' => 'Disabled',
                     'partner_facility.sub_county_id' => $subcounty_id,
-                    'client.partner_id' => $partner_id)
+                    'client.partner_id' => $partner_id
+                )
             );
         }
 
@@ -590,8 +616,8 @@ class Home extends MY_Controller
         if ($access_level == "Donor") { //Donor level access
             $clients = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
                 'where' => array('client.status' => 'Deceased')
@@ -599,8 +625,8 @@ class Home extends MY_Controller
         } elseif ($access_level == "Partner") { //Partner level access
             $clients = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
                 'where' => array('client.status' => 'Deceased', 'client.partner_id' => $partner_id)
@@ -614,35 +640,41 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
-                'where' => array('client.status' => 'Deceased', 'client.mfl_code' => $facility_id, 'client.partner_id' => $partner_id,'client.clinic_id'=>$clinic_id)
+                'where' => array('client.status' => 'Deceased', 'client.mfl_code' => $facility_id, 'client.partner_id' => $partner_id, 'client.clinic_id' => $clinic_id)
             );
         } elseif ($access_level == "County") {
             $facilities = array(
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code'),
-                'where' => array('partner_facility.status' => 'Active',
+                'where' => array(
+                    'partner_facility.status' => 'Active',
                     'partner_facility.partner_id' => $partner_id,
-                    'partner_facility.mfl_code' => $facility_id)
+                    'partner_facility.mfl_code' => $facility_id
+                )
             );
 
             $clients = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code '),
-                'where' => array('client.status' => 'Deceased',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code '
+                ),
+                'where' => array(
+                    'client.status' => 'Deceased',
                     'client.mfl_code' => $facility_id,
-                    'partner_facility.county_id' => $county_id)
+                    'partner_facility.county_id' => $county_id
+                )
             );
         } elseif ($access_level == "Sub County") {
             $facilities = array(
@@ -653,23 +685,27 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'gender' => 'gender.id = client.gender',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
-                'where' => array('client.status' => 'Deceased', 'client.mfl_code' => $facility_id,
-                    'partner_facility.sub_county_id' => $sub_county_id)
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
+                'where' => array(
+                    'client.status' => 'Deceased', 'client.mfl_code' => $facility_id,
+                    'partner_facility.sub_county_id' => $sub_county_id
+                )
             );
         } else {
             $clients = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
                 'where' => array('client.status' => 'Deceased')
@@ -740,15 +776,15 @@ class Home extends MY_Controller
         $client_id = $this->uri->segment(3);
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
-       
+
 
 
         $client_details = array(
             'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-            . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-            . 'client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-            . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,client.marital,client.gender'
-            . ',wellness_enable,motivational_enable,client.facility_id',
+                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                . 'client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,client.marital,client.gender'
+                . ',wellness_enable,motivational_enable,client.facility_id',
             'table' => 'client',
             'join' => array('language' => 'language.id = client.language_id', 'marital_status' => 'marital_status.id = client.marital', 'gender' => 'gender.id = client.gender', 'groups' => 'groups.id = client.group_id'),
             'where' => array('client.clinic_number' => $client_id)
@@ -769,15 +805,17 @@ class Home extends MY_Controller
 
         $client_details = array(
             'select' => ' groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-            . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-            . 'client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-            . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,client.marital,client.gender'
-            . ',wellness_enable,motivational_enable,client.facility_id',
+                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                . 'client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,client.marital,client.gender'
+                . ',wellness_enable,motivational_enable,client.facility_id',
             'table' => 'client',
-            'join' => array('language' => 'language.id = client.language_id',
+            'join' => array(
+                'language' => 'language.id = client.language_id',
                 'marital_status' => 'marital_status.id = client.marital',
                 'gender' => 'gender.id = client.gender',
-                'groups' => 'groups.id = client.group_id'),
+                'groups' => 'groups.id = client.group_id'
+            ),
             'where' => array('client.id' => $client_id, 'client.status' => 'Active')
         );
 
@@ -797,8 +835,8 @@ class Home extends MY_Controller
 
         $client_details = array(
             'select' => 'client.id as client_id, client.f_name,client.m_name,client.l_name,'
-            . 'client.phone_no,appointment.id as appointment_id,appointment.appntmnt_date,'
-            . 'appointment.app_type_1 appointment_types.name as appointment_types, appointment_types.id as appointment_types_id ',
+                . 'client.phone_no,appointment.id as appointment_id,appointment.appntmnt_date,'
+                . 'appointment.app_type_1 appointment_types.name as appointment_types, appointment_types.id as appointment_types_id ',
             'table' => 'appointment',
             'join' => array('client' => 'client.id = appointment.client_id', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
             'where' => array('appointment.id' => $appointment_id, 'active_app' => '1', 'client.status' => 'Active'),
@@ -823,8 +861,8 @@ class Home extends MY_Controller
 
         $client_details = array(
             'select' => 'appointment.id as appointment_id,appointment.appntmnt_date,'
-            . 'appointment.app_type_1,'
-            . '      appointment_types.name as appointment_types , appointment_types.id as appointment_types_id',
+                . 'appointment.app_type_1,'
+                . '      appointment_types.name as appointment_types , appointment_types.id as appointment_types_id',
             'table' => 'appointment',
             'join' => array('client' => 'client.id = appointment.client_id', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
             'where' => array('client_id' => $client_id, 'active_app' => '1', 'client.status' => 'Active'),
@@ -847,14 +885,16 @@ class Home extends MY_Controller
 
         $client_details = array(
             'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-            . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-            . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-            . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-            . ',appointment.appntmnt_date,appointment.app_type_1,      appointment_types.id as appointment_types_id, appointment_types.name as appointment_types',
+                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                . ',appointment.appntmnt_date,appointment.app_type_1,      appointment_types.id as appointment_types_id, appointment_types.name as appointment_types',
             'table' => 'client',
-            'join' => array('language' => 'language.id = client.language_id',
+            'join' => array(
+                'language' => 'language.id = client.language_id',
                 'groups' => 'groups.id = client.group_id',
-                'appointment' => 'appointment.client_id = client.id', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                'appointment' => 'appointment.client_id = client.id', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+            ),
             'where' => array('client.status' => 'Active', 'client.id' => $client_id)
         );
 
@@ -940,18 +980,22 @@ class Home extends MY_Controller
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
                 'table' => 'master_facility',
-                'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'county.id = master_facility.county_id',
-                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
                 'where' => array('partner_facility.status' => 'Active', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
                 'table' => 'master_facility',
-                'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'county.id = master_facility.county_id',
-                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
                 'where' => array('partner_facility.status' => 'Active', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } elseif ($access_level == "Facility") {
@@ -1070,18 +1114,22 @@ class Home extends MY_Controller
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
                 'table' => 'master_facility',
-                'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'county.id = master_facility.county_id',
-                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
                 'where' => array('partner_facility.status' => 'Active', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
                 'table' => 'master_facility',
-                'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'county.id = master_facility.county_id',
-                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
                 'where' => array('partner_facility.status' => 'Active', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } elseif ($access_level == "Facility") {
@@ -1381,7 +1429,7 @@ class Home extends MY_Controller
         $facility_id = $this->session->userdata('facility_id');
         $county_id = $this->session->userdata('county_id');
         $sub_county_id = $this->session->userdata('subcounty_id');
-//        $clinic_id = $this->session->userdata('clinic_id');
+        //        $clinic_id = $this->session->userdata('clinic_id');
         //// $this->output->enable_profiler(TRUE);
 
         $access_level = $this->session->userdata('access_level');
@@ -1394,18 +1442,18 @@ class Home extends MY_Controller
             );
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' and active_app='1'  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' and active_app='1'  ";
         } elseif ($access_level == "Facility") {
             $appointments = array(
                 'table' => 'appointment',
@@ -1414,18 +1462,18 @@ class Home extends MY_Controller
             );
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number, tbl_client.file_no,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . "tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id' and active_app='1'";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number, tbl_client.file_no,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . "tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id' and active_app='1'";
         } elseif ($access_level == "County") {
             $appointments = array(
                 'table' => 'appointment',
@@ -1436,18 +1484,18 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . "tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' and active_app='1' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . "tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' and active_app='1' ";
         } elseif ($access_level == "Sub County") {
             $appointments = array(
                 'table' => 'appointment',
@@ -1458,19 +1506,19 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency, tbl_client.file_no,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . " tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' and active_app='1' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency, tbl_client.file_no,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . " tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' and active_app='1' ";
         } else {
             $appointments = array(
                 'table' => 'appointment',
@@ -1484,18 +1532,18 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' and active_app='1' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' and active_app='1' ";
         }
 
 
@@ -1570,18 +1618,18 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' and active_app='0'  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' and active_app='0'  ";
         } elseif ($access_level == "Facility") {
             $appointments = array(
                 'table' => 'appointment',
@@ -1592,18 +1640,18 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id' and active_app='0' and tbl_client.clinic_id='$clinic_id' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id' and active_app='0' and tbl_client.clinic_id='$clinic_id' ";
         } elseif ($access_level == "County") {
             $appointments = array(
                 'table' => 'appointment',
@@ -1614,18 +1662,18 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' and active_app='0' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' and active_app='0' ";
         } elseif ($access_level == "Sub County") {
             $appointments = array(
                 'table' => 'appointment',
@@ -1636,18 +1684,18 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' and active_app='0' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' and active_app='0' ";
         } else {
             $appointments = array(
                 'table' => 'appointment',
@@ -1661,18 +1709,18 @@ class Home extends MY_Controller
 
 
             $query = "Select tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' and active_app='0' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' and active_app='0' ";
         }
 
 
@@ -1755,80 +1803,80 @@ class Home extends MY_Controller
 
             if ($access_level == "Partner") {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE 1   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE 1   ";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND tbl_appointment.appntmnt_date = '$appntmnt_date' and active_app='1'  ";
             } elseif ($access_level == "County") {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " WHERE 1 ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+                    . " WHERE 1 ";
                 $query .= "AND tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date'  and active_app='1'   ";
             } elseif ($access_level == "Sub County") {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " WHERE 1   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+                    . " WHERE 1   ";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' and active_app='1'   ";
             } elseif ($access_level == "Facility") {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE 1 ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE 1 ";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' ";
             } else {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE 1 ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE 1 ";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date = '$appntmnt_date' and active_app='1'  ";
             }
 
@@ -1900,18 +1948,18 @@ class Home extends MY_Controller
             $appntmnt_date = $value->appntmnt_date;
             if ($access_level == "Facility") {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " , CONCAT( tbl_appointment.appntmnt_date, ', Attended: ',  tbl_appointment.unscheduled_date) AS appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE 1 ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " , CONCAT( tbl_appointment.appntmnt_date, ', Attended: ',  tbl_appointment.unscheduled_date) AS appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE 1 ";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' AND visit_type = 'Un-Scheduled'  ";
             }
             $data['appointments'] = $this->db->query($query)->result();
@@ -1934,18 +1982,18 @@ class Home extends MY_Controller
             $appntmnt_date = $value->appntmnt_date;
             if ($access_level == "Facility") {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE 1 ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE 1 ";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' AND active_app = '0' AND date_attended='$appntmnt_date'  ";
             }
             $data['appointments'] = $this->db->query($query)->result();
@@ -1981,18 +2029,18 @@ class Home extends MY_Controller
 
 
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1, "
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1, "
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
             } elseif ($access_level == "County") {
                 $appointments = array(
                     'table' => 'appointment',
@@ -2003,19 +2051,19 @@ class Home extends MY_Controller
 
 
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1, "
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id'  AND tbl_appointment.appntmnt_date = CURDATE()  and active_app='1'  ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1, "
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id'  AND tbl_appointment.appntmnt_date = CURDATE()  and active_app='1'  ";
             } elseif ($access_level == "Sub County") {
                 $appointments = array(
                     'table' => 'appointment',
@@ -2025,19 +2073,19 @@ class Home extends MY_Controller
 
 
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1, "
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1, "
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
             } elseif ($access_level == "Facility") {
                 $appointments = array(
                     'table' => 'appointment',
@@ -2048,18 +2096,18 @@ class Home extends MY_Controller
 
 
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1, "
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id' AND tbl_appointment.appntmnt_date = CURDATE()  ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1, "
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id' AND tbl_appointment.appntmnt_date = CURDATE()  ";
             } else {
                 $appointments = array(
                     'table' => 'appointment',
@@ -2073,18 +2121,18 @@ class Home extends MY_Controller
 
 
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1, "
-                        . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'  ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1, "
+                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'  ";
             }
 
 
@@ -2135,8 +2183,8 @@ class Home extends MY_Controller
                 } else {
                     $this->load->template('Home/today_appointments');
 
-//                    echo 'Unauthorised Access';
-//                    exit();
+                    //                    echo 'Unauthorised Access';
+                    //                    exit();
                 }
             }
         }
@@ -2178,60 +2226,68 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $client_details = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
         } elseif ($access_level == "County") {
             $client_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
         } elseif ($access_level == "Facility") {
             $client_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
         } else {
             $client_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
@@ -2263,60 +2319,68 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $client_details = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
         } elseif ($access_level == "County") {
             $client_details = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
         } elseif ($access_level == "Facility") {
             $client_details = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
         } else {
             $client_details = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,message_types.name as msg_type,tbl_clnt_outgoing.updated_at as sent_on,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable ,client.facility_id,tbl_clnt_outgoing.msg',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.clnt_usr_id = client.id',
                     'message_types' => 'message_types.id = tbl_clnt_outgoing.message_type_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id, 'tbl_clnt_outgoing.recepient_type' => 'Client'),
                 'order ' => array('tbl_clnt_outgoing.updated_at')
             );
@@ -2334,7 +2398,7 @@ class Home extends MY_Controller
         $sub_county_id = $this->session->userdata('subcounty_id');
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
-        
+
         $client_id = $this->uri->segment(3);
         if ($access_level == "Partner") {
             $client_details = array(
@@ -2350,10 +2414,12 @@ class Home extends MY_Controller
 	tbl_partner_facility.sub_county_id,
 	tbl_partner_facility.partner_id  ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_sms_checkin' => 'tbl_sms_checkin.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id),
                 'order ' => array('tbl_sms_checkin.created_at')
             );
@@ -2371,10 +2437,12 @@ class Home extends MY_Controller
 	tbl_partner_facility.sub_county_id,
 	tbl_partner_facility.partner_id  ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_sms_checkin' => 'tbl_sms_checkin.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id),
                 'order ' => array('tbl_sms_checkin.created_at')
             );
@@ -2392,10 +2460,12 @@ class Home extends MY_Controller
 	tbl_partner_facility.sub_county_id,
 	tbl_partner_facility.partner_id  ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_sms_checkin' => 'tbl_sms_checkin.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id),
                 'order ' => array('tbl_sms_checkin.created_at')
             );
@@ -2413,10 +2483,12 @@ class Home extends MY_Controller
 	tbl_partner_facility.sub_county_id,
 	tbl_partner_facility.partner_id  ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'tbl_sms_checkin' => 'tbl_sms_checkin.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'client.id' => $client_id),
                 'order ' => array('tbl_sms_checkin.created_at')
             );
@@ -2466,18 +2538,22 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at, appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at, appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
-                'where' => array('client.status' => 'Active',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
+                'where' => array(
+                    'client.status' => 'Active',
                     'app_status' => 'LTFU',
-                    'client.partner_id' => $partner_id)
+                    'client.partner_id' => $partner_id
+                )
             );
         } elseif ($access_level == "Facility") {
             $appointments = array(
@@ -2491,15 +2567,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'), 'where' => array('app_status' => 'LTFU', 'client.mfl_code' => $facility_id)
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ), 'where' => array('app_status' => 'LTFU', 'client.mfl_code' => $facility_id)
             );
         } elseif ($access_level == "County") {
             $appointments = array(
@@ -2513,15 +2591,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('app_status' => 'LTFU', 'partner_facilty.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
@@ -2536,15 +2616,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('app_status' => 'LTFU', 'partner_facilty.sub_county_id' => $sub_county_id)
             );
         } else {
@@ -2559,15 +2641,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('app_status' => 'LTFU')
             );
         }
@@ -2615,10 +2699,10 @@ class Home extends MY_Controller
 
         if ($access_level == "Partner") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2631,10 +2715,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } elseif ($access_level == "Facility") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2647,10 +2731,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } else {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2693,31 +2777,37 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $checkins = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
+                    . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
                 'table' => 'client',
-                'join' => array('groups' => 'groups.id = client.group_id',
+                'join' => array(
+                    'groups' => 'groups.id = client.group_id',
                     'sms_checkin' => 'sms_checkin.client_id = client.id',
-                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'),
+                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'
+                ),
                 'where' => array('client.status' => 'Active', 'client.partner_id' => $partner_id)
             );
         } elseif ($access_level == "Facility") {
             $checkins = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
+                    . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
                 'table' => 'client',
-                'join' => array('groups' => 'groups.id = client.group_id',
+                'join' => array(
+                    'groups' => 'groups.id = client.group_id',
                     'sms_checkin' => 'sms_checkin.client_id = client.id',
-                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'),
-                'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id,'client.clinic_id'=>$clinic_id)
+                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'
+                ),
+                'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id, 'client.clinic_id' => $clinic_id)
             );
         } else {
             $checkins = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
+                    . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
                 'table' => 'client',
-                'join' => array('groups' => 'groups.id = client.group_id',
+                'join' => array(
+                    'groups' => 'groups.id = client.group_id',
                     'sms_checkin' => 'sms_checkin.client_id = client.id',
-                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'),
+                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'
+                ),
                 'where' => array('client.status' => 'Active')
             );
         }
@@ -2751,11 +2841,13 @@ class Home extends MY_Controller
 
         $checkins = array(
             'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-            . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
+                . 'DATE_FORMAT(tbl_tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
             'table' => 'client',
-            'join' => array('groups' => 'groups.id = client.group_id',
+            'join' => array(
+                'groups' => 'groups.id = client.group_id',
                 'sms_checkin' => 'sms_checkin.client_id = client.id',
-                'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'),
+                'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'
+            ),
             'where' => array('client.status' => 'Active')
         );
 
@@ -2788,31 +2880,37 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $checkins = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'DATE_FORMAT(tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
+                    . 'DATE_FORMAT(tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
                 'table' => 'client',
-                'join' => array('groups' => 'groups.id = client.group_id',
+                'join' => array(
+                    'groups' => 'groups.id = client.group_id',
                     'sms_checkin' => 'sms_checkin.client_id = client.id',
-                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'),
+                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'
+                ),
                 'where' => array('client.status' => 'Active', 'client.partner_id' => $partner_id)
             );
         } elseif ($access_level == "Facility") {
             $checkins = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'DATE_FORMAT(tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
+                    . 'DATE_FORMAT(tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
                 'table' => 'client',
-                'join' => array('groups' => 'groups.id = client.group_id',
+                'join' => array(
+                    'groups' => 'groups.id = client.group_id',
                     'sms_checkin' => 'sms_checkin.client_id = client.id',
-                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'),
-                'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id,'client.clinic_id'=>$clinic_id)
+                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'
+                ),
+                'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id, 'client.clinic_id' => $clinic_id)
             );
         } else {
             $checkins = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'DATE_FORMAT(tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
+                    . 'DATE_FORMAT(tbl_clnt_outgoing.created_at, "%d %M %Y %k %i %s")as  date_sent,tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status,',
                 'table' => 'client',
-                'join' => array('groups' => 'groups.id = client.group_id',
+                'join' => array(
+                    'groups' => 'groups.id = client.group_id',
                     'sms_checkin' => 'sms_checkin.client_id = client.id',
-                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'),
+                    'tbl_clnt_outgoing' => 'tbl_clnt_outgoing.destination = client.phone_no'
+                ),
                 'where' => array('client.status' => 'Active')
             );
         }
@@ -2846,10 +2944,10 @@ class Home extends MY_Controller
         $clinic_id = $this->session->userdata('clinic_id');
         if ($access_level == "Partner") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2862,10 +2960,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } elseif ($access_level == "Facility") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2878,10 +2976,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } else {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2921,10 +3019,10 @@ class Home extends MY_Controller
         $clinic_id = $this->sesion->userdata('clinic_id');
         if ($access_level == "Partner") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2937,10 +3035,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } elseif ($access_level == "Facility") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2953,10 +3051,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } else {
             $this->db->select(" tbl_client.file_no,  groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -2998,10 +3096,10 @@ class Home extends MY_Controller
         $clinic_id = $this->session->userdata('clinic_id');
         if ($access_level == "Partner") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -3013,10 +3111,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } elseif ($access_level == "Facility") {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent , "
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent , "
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -3029,10 +3127,10 @@ class Home extends MY_Controller
             $checkins = $this->db->get();
         } else {
             $this->db->select(" tbl_client.file_no, groups.name as group_name,groups.id as group_id, "
-                    . " f_name,m_name,l_name,dob,client.status,phone_no, "
-                    . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
-                    . "sms_checkin.msg,sms_checkin.created_at as response_date,"
-                    . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
+                . " f_name,m_name,l_name,dob,client.status,phone_no, "
+                . " client.clinic_number,DATE_FORMAT(tbl_clnt_outgoing.created_at, '%d %M %Y %k %i %s')as  date_sent,"
+                . "sms_checkin.msg,sms_checkin.created_at as response_date,"
+                . "tbl_clnt_outgoing.responded,client.id as client_id,client.clinic_number,client.client_status");
             $this->db->from('client');
             $this->db->join('groups', 'groups.id=client.group_id');
             $this->db->join('sms_checkin', 'sms_checkin.client_id = client.id');
@@ -3102,15 +3200,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Booked', 'client.partner_id' => $partner_id)
             );
         } elseif ($access_level == "Facility") {
@@ -3124,16 +3224,18 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
-                'where' => array('client.status' => 'Active', 'app_status' => 'Booked', 'client.mfl_code' => $facility_id , 'client.clinic_id'=>$clinic_id)
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
+                'where' => array('client.status' => 'Active', 'app_status' => 'Booked', 'client.mfl_code' => $facility_id, 'client.clinic_id' => $clinic_id)
             );
         } elseif ($access_level == "County") {
             $appointments = array(
@@ -3147,15 +3249,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Booked', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
@@ -3170,15 +3274,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Booked', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } else {
@@ -3193,15 +3299,17 @@ class Home extends MY_Controller
 
             $notified_details = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1 ',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Booked')
             );
         }
@@ -3255,15 +3363,17 @@ class Home extends MY_Controller
 
             $missed_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Missed', 'client.partner_id' => $partner_id)
             );
         } elseif ($access_level == "Facility") {
@@ -3277,16 +3387,18 @@ class Home extends MY_Controller
 
             $missed_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
-                'where' => array('client.status' => 'Active', 'app_status' => 'Missed', 'client.mfl_code' => $facility_id,'client.clinic_id'=>$clinic_id)
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
+                'where' => array('client.status' => 'Active', 'app_status' => 'Missed', 'client.mfl_code' => $facility_id, 'client.clinic_id' => $clinic_id)
             );
         } elseif ($access_level == "County") {
             $appointments = array(
@@ -3298,15 +3410,17 @@ class Home extends MY_Controller
 
             $missed_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Missed', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
@@ -3320,15 +3434,17 @@ class Home extends MY_Controller
 
             $missed_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Missed', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } else {
@@ -3341,15 +3457,17 @@ class Home extends MY_Controller
 
             $missed_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Missed')
             );
         }
@@ -3418,15 +3536,17 @@ class Home extends MY_Controller
 
             $defaulted_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Defaulted', 'client.partner_id' => $partner_id)
             );
         } elseif ($access_level == "County") {
@@ -3440,15 +3560,17 @@ class Home extends MY_Controller
 
             $defaulted_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Defaulted', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
@@ -3462,15 +3584,17 @@ class Home extends MY_Controller
 
             $defaulted_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Defaulted', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } elseif ($access_level == "Facility") {
@@ -3484,16 +3608,18 @@ class Home extends MY_Controller
 
             $defaulted_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
-                'where' => array('client.status' => 'Active', 'app_status' => 'Defaulted', 'client.mfl_code' => $facility_id,'client.clinic_id'=>$clinic_id)
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
+                'where' => array('client.status' => 'Active', 'app_status' => 'Defaulted', 'client.mfl_code' => $facility_id, 'client.clinic_id' => $clinic_id)
             );
         } else {
             $appointments = array(
@@ -3506,15 +3632,17 @@ class Home extends MY_Controller
 
             $defaulted_clients = array(
                 'select' => ' tbl_client.file_no, appointment.id as appointment_id,groups.name as group_name,groups.id as group_id,language.name as language_name ,app_type_1,appointment_types.name as appointment_types,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
-                . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable'
+                    . ',appointment.appntmnt_date,appointment.app_msg,appointment.updated_at,appointment.app_type_1,      appointment.no_calls,appointment.no_msgs,appointment.home_visits',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'appointment_types' => 'appointment_types.id = appointment.app_type_1'
+                ),
                 'where' => array('client.status' => 'Active', 'app_status' => 'Defaulted')
             );
         }
@@ -3581,16 +3709,15 @@ class Home extends MY_Controller
 
 
             $notified_details = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,app_type_1,tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
-                    . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
-                    . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
-                    . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
-                    . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                    . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_client.partner_id='$partner_id'"
-            ;
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
+                . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
+                . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
+                . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
+                . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
+                . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_client.partner_id='$partner_id'";
         } elseif ($access_level == "County") {
             $appointments = array(
                 'table' => 'appointment',
@@ -3600,17 +3727,17 @@ class Home extends MY_Controller
 
 
             $notified_details = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,app_type_1,tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
-                    . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
-                    . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
-                    . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
-                    . " inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code"
-                    . " inner JOIN tbl_county  ON tbl_county.id = tbl_master_facility.county_id"
-                    . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                    . " where tbl_client.status='Active' and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_master_facility.county_id='$county_id'";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
+                . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
+                . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
+                . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
+                . " inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code"
+                . " inner JOIN tbl_county  ON tbl_county.id = tbl_master_facility.county_id"
+                . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
+                . " where tbl_client.status='Active' and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_master_facility.county_id='$county_id'";
         } elseif ($access_level == "Sub County") {
             $appointments = array(
                 'table' => 'appointment',
@@ -3622,16 +3749,16 @@ class Home extends MY_Controller
 
 
             $notified_details = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,app_type_1,tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
-                    . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
-                    . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
-                    . " inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code"
-                    . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
-                    . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                    . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_master_facility.Sub_County_ID='$sub_county_id'";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
+                . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
+                . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
+                . " inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code"
+                . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
+                . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
+                . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_master_facility.Sub_County_ID='$sub_county_id'";
         } elseif ($access_level == "Facility") {
             $appointments = array(
                 'table' => 'appointment',
@@ -3639,17 +3766,17 @@ class Home extends MY_Controller
                 'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id)
             );
             $notified_details = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,app_type_1,tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
-                    . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
-                    . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
-                    . "inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code "
-                    . "inner JOIN `tbl_county`  ON `tbl_county`.`id` = `tbl_master_facility`.county_id "
-                    . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
-                    . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                    . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_client.mfl_code='$facility_id' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
+                . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
+                . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
+                . "inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code "
+                . "inner JOIN `tbl_county`  ON `tbl_county`.`id` = `tbl_master_facility`.county_id "
+                . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
+                . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
+                . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_client.mfl_code='$facility_id' ";
         } else {
             $appointments = array(
                 'table' => 'appointment',
@@ -3658,15 +3785,15 @@ class Home extends MY_Controller
             );
 
             $notified_details = " Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,app_type_1,tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
-                    . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
-                    . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
-                    . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
-                    . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                    . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
+                . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
+                . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
+                . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
+                . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
+                . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' ";
         }
         $groupings = array(
             'table' => 'groups',
@@ -3705,8 +3832,8 @@ class Home extends MY_Controller
                 $this->load->template('Home/notified');
             } else {
                 $this->load->template('Home/notified');
-//                echo 'Unauthorised Access';
-//                exit();
+                //                echo 'Unauthorised Access';
+                //                exit();
             }
         }
     }
@@ -3784,8 +3911,8 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $client_groups = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('groups' => 'groups.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'client.partner_id' => $partner_id)
@@ -3793,17 +3920,17 @@ class Home extends MY_Controller
         } elseif ($access_level == "Facility") {
             $client_groups = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('groups' => 'groups.id = client.group_id'),
-                'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id, 'client.clinic_id'=>$clinic_id)
+                'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id, 'client.clinic_id' => $clinic_id)
             );
         } else {
             $client_groups = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('groups' => 'groups.id = client.group_id'),
                 'where' => array('client.status' => 'Active')
@@ -3841,8 +3968,8 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinci.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.clinic_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '2', 'client.partner_id' => $partner_id)
@@ -3850,8 +3977,8 @@ class Home extends MY_Controller
         } elseif ($access_level == "Facility") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '2', 'client.mfl_code' => $facility_id)
@@ -3859,8 +3986,8 @@ class Home extends MY_Controller
         } else {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '2')
@@ -3901,8 +4028,8 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '3', 'client.partner_id' => $partner_id)
@@ -3910,28 +4037,30 @@ class Home extends MY_Controller
         } elseif ($access_level == "County") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
-                'join' => array('clinic' => 'clinic.id = client.group_id'
-                    , 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                'join' => array(
+                    'clinic' => 'clinic.id = client.group_id', 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '3', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "County") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
-                'join' => array('clinic' => 'clinic.id = client.group_id'
-                    , 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                'join' => array(
+                    'clinic' => 'clinic.id = client.group_id', 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '3', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } elseif ($access_level == "Facility") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '3', 'client.mfl_code' => $facility_id)
@@ -3939,8 +4068,8 @@ class Home extends MY_Controller
         } else {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '3')
@@ -3979,8 +4108,8 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '1', 'client.partner_id' => $partner_id)
@@ -3988,28 +4117,32 @@ class Home extends MY_Controller
         } elseif ($access_level == "County") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
-                'join' => array('clinic' => 'clinic.id = client.group_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                'join' => array(
+                    'clinic' => 'clinic.id = client.group_id',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '1', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
             $client_clinic = array(
                 'select' => 'tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
-                'join' => array('clinic' => 'clinic.id = client.group_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                'join' => array(
+                    'clinic' => 'clinic.id = client.group_id',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '1', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } elseif ($access_level == "Facility") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '1', 'client.mfl_code' => $facility_id)
@@ -4017,8 +4150,8 @@ class Home extends MY_Controller
         } else {
             $client_clinic = array(
                 'select' => 'tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '1')
@@ -4057,8 +4190,8 @@ class Home extends MY_Controller
         if ($access_level == "Partner") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '4', 'client.partner_id' => $partner_id)
@@ -4066,28 +4199,32 @@ class Home extends MY_Controller
         } elseif ($access_level == "County") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
-                'join' => array('clinic' => 'clinic.id = client.group_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                'join' => array(
+                    'clinic' => 'clinic.id = client.group_id',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '4', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "Sub County") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
-                'join' => array('clinic' => 'clinic.id = client.group_id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                'join' => array(
+                    'clinic' => 'clinic.id = client.group_id',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '4', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } elseif ($access_level == "Facility") {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '4', 'client.mfl_code' => $facility_id)
@@ -4095,8 +4232,8 @@ class Home extends MY_Controller
         } else {
             $client_clinic = array(
                 'select' => ' tbl_client.file_no, clinic.name as group_name,clinic.id as group_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name',
                 'table' => 'client',
                 'join' => array('clinic' => 'clinic.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'clinic.id' => '4')
@@ -4140,9 +4277,9 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
                 'table' => 'client',
                 'join' => array('language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id'),
                 'where' => array('client.status' => 'Active', 'smsenable' => 'Yes', 'client.partner_id' => $partner_id)
@@ -4156,14 +4293,16 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'smsenable' => 'Yes', 'partner_facility.county_id' => $county_id)
             );
         } elseif ($access_level == "County") {
@@ -4175,14 +4314,16 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
                 'table' => 'client',
-                'join' => array('language' => 'language.id = client.language_id',
+                'join' => array(
+                    'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'appointment' => 'appointment.client_id = client.id',
-                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'),
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code'
+                ),
                 'where' => array('client.status' => 'Active', 'smsenable' => 'Yes', 'partner_facility.sub_county_id' => $sub_county_id)
             );
         } elseif ($access_level == "Facility") {
@@ -4194,9 +4335,9 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
                 'table' => 'client',
                 'join' => array('language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'appointment' => 'appointment.client_id = client.id'),
                 'where' => array('client.status' => 'Active', 'smsenable' => 'Yes', 'client.mfl_code' => $facility_id)
@@ -4210,9 +4351,9 @@ class Home extends MY_Controller
 
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
-                . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
-                . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,client.clinic_number,'
+                    . 'client.created_at as enrollment_date,client.updated_at,client.id as client_id,client.clinic_number,client.client_status,client.txt_frequency,'
+                    . 'client.txt_time,client.alt_phone_no,client.shared_no_name,client.smsenable,appointment.appntmnt_date AS appntmnt_date',
                 'table' => 'client',
                 'join' => array('language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'appointment' => 'appointment.client_id = client.id'),
                 'where' => array('smsenable' => 'Yes', 'client.status' => 'Active')
@@ -4459,7 +4600,7 @@ class Home extends MY_Controller
         } elseif ($access_level === "Admin") {
 
             //Administration in the  System
-//            $sql .= "Select count(DISTINCT tbl_users.id) as no_users from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
+            //            $sql .= "Select count(DISTINCT tbl_users.id) as no_users from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
             //Administration in the  System
             $sql .= "Select count(DISTINCT tbl_users.id) as no_users from tbl_users  ";
             // $sql .= "inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id";
@@ -4824,7 +4965,7 @@ class Home extends MY_Controller
                             $notification_msg .= $this->session->set_flashdata('success', 'Data Imported Succesfully');
                         } elseif ($check_donation_id_existence >= 1) {
                             //echo 'Donation id : ' . $check_donation_id_existence . '<br>';
-                            $dntn_id .= $row ['SID'] . ', ';
+                            $dntn_id .= $row['SID'] . ', ';
                             $notification_msg .= $this->session->set_flashdata('success', 'SID: ' . $dntn_id . 'Already exists in the system,Kindly check your data and try again');
                         }
                     }
@@ -4878,7 +5019,7 @@ class Home extends MY_Controller
                 $this->session->set_flashdata('success', 'Data Imported Succesfully');
                 redirect(base_url() . 'home/csv');
 
-            //echo "<pre>"; print_r($insert_data);
+                //echo "<pre>"; print_r($insert_data);
             } else {
                 $data['error'] = "Error occured,Please Try Again!";
                 // $this->load->view('upload_results', $data);
@@ -5102,17 +5243,19 @@ FROM tbl_client where age_group IS NOT NULL")->result();
         if ($access_level == "Donor") { //Donor level access
             $clients = array(
                 'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,master_facility.name as facility,county.name as county, sub_county.name as sub_county , '
-                . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,master_facility.name as facility,county.name as county, sub_county.name as sub_county , '
+                    . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id',
                     'partner_facility' => 'partner_facility.mfl_code = client.mfl_code',
                     'master_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'master_facility.county_id = county.id',
-                    'sub_county' => 'master_facility.sub_county_id = sub_county.id'),
+                    'sub_county' => 'master_facility.sub_county_id = sub_county.id'
+                ),
                 'where' => array('client.status' => 'Active', 'client.smsenable' => 'Yes'),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -5125,8 +5268,8 @@ FROM tbl_client where age_group IS NOT NULL")->result();
         } elseif ($access_level == "Partner") { //Partner level access
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,master_facility.name as facility,county.name as county, sub_county.name as sub_county , '
-                . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,master_facility.name as facility,county.name as county, sub_county.name as sub_county , '
+                    . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'master_facility' => 'master_facility.code = partner_facility.mfl_code', 'county' => 'master_facility.county_id = county.id', 'sub_county' => 'master_facility.sub_county_id = sub_county.name'),
                 'where' => array('client.status' => 'Active', 'client.smsenable' => 'Yes', 'client.partner_id' => $partner_id),
@@ -5147,8 +5290,8 @@ FROM tbl_client where age_group IS NOT NULL")->result();
 
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.clinic_number,client.client_status  ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.clinic_number,client.client_status  ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
                 'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'gender' => 'gender.id = client.gender'),
                 'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id, 'client.smsenable' => 'Yes'),
@@ -5157,13 +5300,15 @@ FROM tbl_client where age_group IS NOT NULL")->result();
         } else {
             $clients = array(
                 'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,master_facility.name as facility,county.name as county, sub_county.name as sub_county , '
-                . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,'
-                . 'client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,master_facility.name as facility,county.name as county, sub_county.name as sub_county , '
+                    . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,'
+                    . 'client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id',
                     'groups' => 'groups.id = client.group_id', 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'master_facility' => 'master_facility.code = partner_facility.mfl_code',
-                    'county' => 'master_facility.county_id = county.id', 'sub_county' => 'master_facility.sub_county_id = sub_county.id'),
+                    'county' => 'master_facility.county_id = county.id', 'sub_county' => 'master_facility.sub_county_id = sub_county.id'
+                ),
                 'where' => array('client.status' => 'Active', 'client.smsenable' => 'Yes'),
                 'order' => array('enrollment_date' => 'DESC')
             );
@@ -5234,7 +5379,7 @@ FROM tbl_client where age_group IS NOT NULL")->result();
                 $this->load->template('Home/consent_report');
 
                 // echo 'Unauthorised Access';
-//exit();
+                //exit();
             }
         }
     }
@@ -5668,8 +5813,8 @@ ORDER BY `appntmnt_date` ASC ")->result();
                 $objPHPExcel->getActiveSheet()->setCellValue("G$lower_column", $treatment_supporter_no);
                 $objPHPExcel->getActiveSheet()->setCellValue("H$upper_column", $physical_address);
 
-                $upper_column ++;
-                $lower_column ++;
+                $upper_column++;
+                $lower_column++;
             }
 
 
@@ -5809,7 +5954,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                     $objPHPExcel->getActiveSheet()->setCellValue("H$first_column", $date_attended);
                     $objPHPExcel->getActiveSheet()->setCellValue("I$first_column", $next_re_fill_appointment);
                     $objPHPExcel->getActiveSheet()->setCellValue("J$first_column", $next_clinical_appointment);
-                    $first_column ++;
+                    $first_column++;
                 } elseif ($first_column > 43 and $second_column <= 43) {
                     $objPHPExcel->getActiveSheet()->setCellValue("L$second_column", $clinic_number);
                     $objPHPExcel->getActiveSheet()->setCellValue("M$second_column", $client_name);
@@ -5820,7 +5965,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                     $objPHPExcel->getActiveSheet()->setCellValue("R$second_column", $date_attended);
                     $objPHPExcel->getActiveSheet()->setCellValue("S$second_column", $next_re_fill_appointment);
                     $objPHPExcel->getActiveSheet()->setCellValue("T$second_column", $next_clinical_appointment);
-                    $second_column ++;
+                    $second_column++;
                 }
             }
 
@@ -5853,7 +5998,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                     $objPHPExcel->getActiveSheet()->setCellValue("H$third_column", $missed_appointment_date);
                     $objPHPExcel->getActiveSheet()->setCellValue("I$third_column", $fnl_outcome_dte);
                     $objPHPExcel->getActiveSheet()->setCellValue("J$third_column", $next_clinical_appointment_date);
-                    $third_column ++;
+                    $third_column++;
                 } elseif ($third_column > 55 and $fourth_column <= 55) {
                     $objPHPExcel->getActiveSheet()->setCellValue("L$fourth_column", $clinic_number);
                     $objPHPExcel->getActiveSheet()->setCellValue("M$fourth_column", $client_name);
@@ -5864,7 +6009,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                     $objPHPExcel->getActiveSheet()->setCellValue("R$fourth_column", $missed_appointment_date);
                     $objPHPExcel->getActiveSheet()->setCellValue("S$fourth_column", $fnl_outcome_dte);
                     $objPHPExcel->getActiveSheet()->setCellValue("T$fourth_column", $next_clinical_appointment_date);
-                    $fourth_column ++;
+                    $fourth_column++;
                 }
             }
 
@@ -5899,7 +6044,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                     $objPHPExcel->getActiveSheet()->setCellValue("H$fifth_column", $date_booked);
                     $objPHPExcel->getActiveSheet()->setCellValue("I$fifth_column", $next_re_fill_appointment);
                     $objPHPExcel->getActiveSheet()->setCellValue("J$fifth_column", $next_clinical_appointment);
-                    $fifth_column ++;
+                    $fifth_column++;
                 } elseif ($fifth_column > 67 and $sixth_column <= 67) {
                     $objPHPExcel->getActiveSheet()->setCellValue("L$sixth_column", $clinic_number);
                     $objPHPExcel->getActiveSheet()->setCellValue("M$sixth_column", $client_name);
@@ -5910,7 +6055,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
                     $objPHPExcel->getActiveSheet()->setCellValue("R$sixth_column", $date_booked);
                     $objPHPExcel->getActiveSheet()->setCellValue("S$sixth_column", $next_re_fill_appointment);
                     $objPHPExcel->getActiveSheet()->setCellValue("T$sixth_column", $next_clinical_appointment);
-                    $sixth_column ++;
+                    $sixth_column++;
                 }
             }
 
@@ -5997,17 +6142,17 @@ ORDER BY `appntmnt_date` ASC ")->result();
                 );
 
                 $query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id,tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id  INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                        . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id,tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id  INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
+                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
 
 
                 $scheduled_visits = "SELECT * FROM vw_scheduled_appointments where partner_id='$partner_id' group by partner_id";
@@ -6031,18 +6176,18 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
 
                 $query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id ,tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_Type from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code INNER JOIN tbl_appointment_types ON tbl_appointment_types.id = tbl_appointment.app_type_i "
-                        . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id'  AND tbl_appointment.appntmnt_date = CURDATE()  and active_app='1'   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id ,tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_Type from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code INNER JOIN tbl_appointment_types ON tbl_appointment_types.id = tbl_appointment.app_type_i "
+                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id'  AND tbl_appointment.appntmnt_date = CURDATE()  and active_app='1'   ";
 
 
                 $scheduled_visits = "SELECT * FROM vw_scheduled_appointments";
@@ -6067,18 +6212,18 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
 
                 $query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id , tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types  from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                        . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id , tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types  from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
 
 
 
@@ -6105,17 +6250,17 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
 
                 $query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id, tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id, tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'   ";
 
 
                 $scheduled_visits = "SELECT * FROM vw_scheduled_appointments where mfl_code='$facility_id' ";
@@ -6139,17 +6284,17 @@ ORDER BY `appntmnt_date` ASC ")->result();
                 );
 
                 $query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                        . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                        . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                        . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                        . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                        . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                        . " tbl_appointment.app_type_1,"
-                        . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id , tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types  from tbl_client"
-                        . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                        . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                        . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'  ";
+                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                    . " tbl_appointment.app_type_1,"
+                    . "   tbl_  no_calls,no_msgs,home_visits,tbl_appointment.id as appointment_id , tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types  from tbl_client"
+                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                    . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1'  ";
 
 
                 $scheduled_visits = "SELECT * FROM vw_scheduled_appointments";
@@ -6227,8 +6372,8 @@ ORDER BY `appntmnt_date` ASC ")->result();
                     $this->load->template('Home/appointment_diary');
                 } else {
                     $this->load->template('Home/appointment_diary');
-//                    echo 'Unauthorised Access';
-//                    exit();
+                    //                    echo 'Unauthorised Access';
+                    //                    exit();
                 }
             }
         }
@@ -6238,9 +6383,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $request_type = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment "
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join "
-                        . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                        . " where active_app is NOT NULL")->result();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join "
+            . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+            . " where active_app is NOT NULL")->result();
 
         foreach ($query as $value) {
             $num = $value->num;
@@ -6256,9 +6401,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $request_type = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment"
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join"
-                        . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where active_app='1' and appntmnt_date > CURDATE()")->result();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join"
+            . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where active_app='1' and appntmnt_date > CURDATE()")->result();
 
         foreach ($query as $value) {
             $num = $value->num;
@@ -6274,9 +6419,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $request_type = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment"
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where active_app='1' and appntmnt_date < CURDATE() and app_status='Missed' and tbl_client.status='Active' ")->result();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where active_app='1' and appntmnt_date < CURDATE() and app_status='Missed' and tbl_client.status='Active' ")->result();
 
         foreach ($query as $value) {
             $num = $value->num;
@@ -6292,9 +6437,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $request_type = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment  "
-                        . "inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where active_app='1' and appntmnt_date < CURDATE() and app_status='Defaulted' and tbl_client.status='Active' ")->result();
+            . "inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where active_app='1' and appntmnt_date < CURDATE() and app_status='Defaulted' and tbl_client.status='Active' ")->result();
 
         foreach ($query as $value) {
             $num = $value->num;
@@ -6310,9 +6455,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $request_type = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment"
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where active_app='1' and appntmnt_date < CURDATE() and app_status='LTFU' and tbl_client.status='Active'")->result();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where active_app='1' and appntmnt_date < CURDATE() and app_status='LTFU' and tbl_client.status='Active'")->result();
 
         foreach ($query as $value) {
             $num = $value->num;
@@ -6328,9 +6473,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $request_type = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment "
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . " inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                        . " where active_app='1' and appntmnt_date = CURDATE() and tbl_client.status='Active'")->result();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . " inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+            . " where active_app='1' and appntmnt_date = CURDATE() and tbl_client.status='Active'")->result();
 
         foreach ($query as $value) {
             $num = $value->num;
@@ -6362,29 +6507,29 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
         $this->db->from('appointment');
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6430,13 +6575,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6444,16 +6589,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('gender', 'gender.id = client.gender');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6499,13 +6644,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6513,16 +6658,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('marital_status', 'marital_status.id = client.marital');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6568,13 +6713,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6582,16 +6727,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6637,13 +6782,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6651,16 +6796,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6706,29 +6851,29 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
         $this->db->from('appointment');
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6774,13 +6919,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6788,16 +6933,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('gender', 'gender.id = client.gender');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6843,13 +6988,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6857,16 +7002,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('marital_status', 'marital_status.id = client.marital');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6912,13 +7057,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6926,16 +7071,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -6981,13 +7126,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6995,16 +7140,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7050,29 +7195,29 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
         $this->db->from('appointment');
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7119,13 +7264,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7133,16 +7278,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('gender', 'gender.id = client.gender');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7189,13 +7334,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7203,16 +7348,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('marital_status', 'marital_status.id = client.marital');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7259,13 +7404,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7273,16 +7418,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7329,13 +7474,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7343,16 +7488,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7372,8 +7517,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
             $this->db->where('tbl_appointment.appntmnt_date <=', $formated_date_to);
         }
         $this->db->where('tbl_appointment.appntmnt_date <= ', 'CURDATE()', false);
-        $this->db->where('tbl_appointment.app_status ', 'Missed');
-        ;
+        $this->db->where('tbl_appointment.app_status ', 'Missed');;
         $this->db->group_by("client.client_status"); // Produces: GROUP BY Gender
         $get_query = $this->db->get()->result_array();
 
@@ -7400,29 +7544,29 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
         $this->db->from('appointment');
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7469,13 +7613,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7483,16 +7627,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('gender', 'gender.id = client.gender');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7539,13 +7683,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7553,16 +7697,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('marital_status', 'marital_status.id = client.marital');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7609,13 +7753,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7623,16 +7767,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7679,13 +7823,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7693,16 +7837,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7722,8 +7866,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
             $this->db->where('tbl_appointment.appntmnt_date <=', $formated_date_to);
         }
         $this->db->where('tbl_appointment.appntmnt_date <= ', 'CURDATE()', false);
-        $this->db->where('tbl_appointment.app_status ', 'Defaulted');
-        ;
+        $this->db->where('tbl_appointment.app_status ', 'Defaulted');;
         $this->db->group_by("client.client_status"); // Produces: GROUP BY Gender
         $get_query = $this->db->get()->result_array();
 
@@ -7750,29 +7893,29 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
         $this->db->from('appointment');
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7819,13 +7962,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7833,16 +7976,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('gender', 'gender.id = client.gender');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7889,13 +8032,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7903,16 +8046,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('marital_status', 'marital_status.id = client.marital');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -7959,13 +8102,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7973,16 +8116,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -8029,13 +8172,13 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -8043,16 +8186,16 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $this->db->join('client', 'client.id = appointment.client_id');
         $this->db->join('groups', 'groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -8072,8 +8215,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
             $this->db->where('tbl_appointment.appntmnt_date <=', $formated_date_to);
         }
         $this->db->where('tbl_appointment.appntmnt_date <= ', 'CURDATE()', false);
-        $this->db->where('tbl_appointment.app_status ', 'Defaulted');
-        ;
+        $this->db->where('tbl_appointment.app_status ', 'Defaulted');;
         $this->db->group_by("client.client_status"); // Produces: GROUP BY Gender
         $get_query = $this->db->get()->result_array();
 
@@ -8129,7 +8271,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
             } else {
                 $this->load->template('Home/client_profile');
                 //echo 'Unauthorised Access';
-//exit();
+                //exit();
             }
         }
     }
@@ -8139,7 +8281,7 @@ ORDER BY `appntmnt_date` ASC ")->result();
         $upn = $this->input->post('upn', true);
         $facility_id = $this->session->userdata('facility_id');
         $partner_id = $this->session->userdata('partner_id');
-        
+
         $access_level = $this->session->userdata('access_level');
 
         if ($access_level == "Partner") {
@@ -8147,27 +8289,31 @@ ORDER BY `appntmnt_date` ASC ")->result();
             // exit;
             $clients = array(
                 'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-                . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-                . 'client.file_no,client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.file_no,client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
                     'marital_status' => 'marital_status.id = client.marital',
                     'language' => 'language.id = client.language_id',
-                    'groups' => 'groups.id = client.group_id'),
+                    'groups' => 'groups.id = client.group_id'
+                ),
                 'where' => array('client.clinic_number' => $upn, 'client.partner_id' => $partner_id)
             );
         } else {
             $clients = array(
-            'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
-            . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
-            . 'client.file_no,client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
-            'table' => 'client',
-            'join' => array('gender' => 'gender.id = client.gender',
-                'marital_status' => 'marital_status.id = client.marital',
-                'language' => 'language.id = client.language_id',
-                'groups' => 'groups.id = client.group_id'),
-            'where' => array('client.clinic_number' => $upn, 'client.mfl_code' => $facility_id)
-        );
+                'select' => 'groups.name as group_name,groups.id as group_id,language.name as language_name ,'
+                    . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,'
+                    . 'client.file_no,client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
+                'table' => 'client',
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
+                    'marital_status' => 'marital_status.id = client.marital',
+                    'language' => 'language.id = client.language_id',
+                    'groups' => 'groups.id = client.group_id'
+                ),
+                'where' => array('client.clinic_number' => $upn, 'client.mfl_code' => $facility_id)
+            );
         }
 
         $cclient_info = $this->data->commonGet($clients);
@@ -8179,9 +8325,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->input->post('upn', true);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment "
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join "
-                        . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                        . " where active_app is NOT NULL  and tbl_client.clinic_number='$upn'")->result_array();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join "
+            . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+            . " where active_app is NOT NULL  and tbl_client.clinic_number='$upn'")->result_array();
 
         echo json_encode($query);
     }
@@ -8190,9 +8336,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->input->post('upn', true);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment"
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join"
-                        . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where 1 and active_app='1' and DATE(appntmnt_date) >= CURDATE()  and tbl_client.clinic_number='$upn'")->result_array();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id inner join"
+            . " tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where 1 and active_app='1' and DATE(appntmnt_date) >= CURDATE()  and tbl_client.clinic_number='$upn'")->result_array();
 
         echo json_encode($query);
     }
@@ -8201,9 +8347,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment"
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where 1 and active_app='0' and DATE(appntmnt_date) < CURDATE() and appointment_kept='Yes'  and tbl_client.clinic_number='$upn'")->result_array();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where 1 and active_app='0' and DATE(appntmnt_date) < CURDATE() and appointment_kept='Yes'  and tbl_client.clinic_number='$upn'")->result_array();
 
         echo json_encode($query);
     }
@@ -8212,9 +8358,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->uri->segment(3);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment"
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where 1 and DATE(appntmnt_date) < CURDATE() and app_status='Missed'  and tbl_client.clinic_number='$upn'")->result_array();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where 1 and DATE(appntmnt_date) < CURDATE() and app_status='Missed'  and tbl_client.clinic_number='$upn'")->result_array();
 
         echo json_encode($query);
     }
@@ -8223,9 +8369,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->input->post('upn', true);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment  "
-                        . "inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where 1 and DATE(appntmnt_date) < CURDATE() and app_status='Defaulted'  and tbl_client.clinic_number='$upn'")->result_array();
+            . "inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where 1 and DATE(appntmnt_date) < CURDATE() and app_status='Defaulted'  and tbl_client.clinic_number='$upn'")->result_array();
 
         echo json_encode($query);
     }
@@ -8234,9 +8380,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->input->post('upn', true);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment"
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                        . " where 1 and DATE(appntmnt_date) < CURDATE() and app_status='LTFU'  and tbl_client.clinic_number='$upn'")->result_array();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+            . " where 1 and DATE(appntmnt_date) < CURDATE() and app_status='LTFU'  and tbl_client.clinic_number='$upn'")->result_array();
 
         echo json_encode($query);
     }
@@ -8245,9 +8391,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->input->post('upn', true);
         $query = $this->db->query("Select count(tbl_appointment.id)as num from tbl_appointment "
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . " inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                        . " where 1 and DATE(appntmnt_date) = CURDATE() and tbl_client.clinic_number='$upn'")->result();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . " inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+            . " where 1 and DATE(appntmnt_date) = CURDATE() and tbl_client.clinic_number='$upn'")->result();
 
         foreach ($query as $value) {
             $num = $value->num;
@@ -8259,9 +8405,9 @@ ORDER BY `appntmnt_date` ASC ")->result();
     {
         $upn = $this->input->post('upn', true);
         $query = $this->db->query("Select count(DISTINCT tbl_appointment.id)as num, tbl_appointment_types.name as app_type from tbl_appointment "
-                        . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
-                        . " inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                        . " where tbl_client.clinic_number='$upn' group by app_type_1")->result_array();
+            . " inner join tbl_client on tbl_client.id = tbl_appointment.client_id "
+            . " inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+            . " where tbl_client.clinic_number='$upn' group by app_type_1")->result_array();
 
         echo json_encode($query);
     }
