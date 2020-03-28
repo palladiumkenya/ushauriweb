@@ -877,9 +877,9 @@ class Chore extends MY_Controller {
 
             $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(updated_at) = DATE(NOW()) AND clnt_usr_id=$client_id LIMIT 1")->num_rows();
             if ($check_clnt_outgoing_msg_existence > 0) {
-                echo 'Message found ....<br>';
+                //echo 'Message found ....<br>';
             } else {
-                echo 'No message was found....';
+                //echo 'No message was found....';
 
 
 
@@ -903,10 +903,10 @@ class Chore extends MY_Controller {
                     $appointment_month = date("m", strtotime($appointment_date));
 
                     $days_diff = $current_date2->diff($appointment_date2)->format("%a");
-                    echo 'Day difference : => ' . $days_diff . '</br>';
+                    //echo 'Day difference : => ' . $days_diff . '</br>';
 
                     if ($current_date < $appointment_date) {
-                        echo $client_name . '</br>' . $appointment_date . '</br> end <br>';
+                        //echo $client_name . '</br>' . $appointment_date . '</br> end <br>';
                         //Booked and Notified
 
                       //  $check_existence_booked = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => $notification_type))->num_rows();
@@ -953,10 +953,12 @@ class Chore extends MY_Controller {
                                     $today = date("Y-m-d H:i:s");
 
                                     $new_msg = str_replace("XXX", $client_name, $content);
+                                    // echo 'nini hii' . $new_msg;
+                                    // exit;
                                     $appointment_date = date("d-m-Y", strtotime($appointment_date));
                                     $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
 
-                                    echo $cleaned_msg;
+                                   
                                     $status = "Not Sent";
                                     $responded = "No";
                                     $yes_notified = 'Yes';
@@ -986,8 +988,6 @@ class Chore extends MY_Controller {
                                             $this->config->load('config', TRUE);
                                             // Retrieve a config item named site_name contained within the blog_settings array
                                             $source = $this->config->item('shortcode', 'config');
-
-
                                             $message_type_id = 1;
                                             $clnt_outgoing = array(
                                                 'destination' => $phone_no,
