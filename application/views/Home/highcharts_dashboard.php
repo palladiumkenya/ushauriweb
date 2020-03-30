@@ -7,11 +7,9 @@
         </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a
-                        href="<?php echo base_url(); ?>">Home</a>
+                <li class="breadcrumb-item"><a href="<?php echo base_url(); ?>">Home</a>
                 </li>
-                <li class="breadcrumb-item active"><a
-                        href="<?php echo base_url(); ?><?php echo $this->uri->segment(1); ?>/<?php echo $this->uri->segment(2); ?>">
+                <li class="breadcrumb-item active"><a href="<?php echo base_url(); ?><?php echo $this->uri->segment(1); ?>/<?php echo $this->uri->segment(2); ?>">
                         Clients Extract</a></li>
             </ol>
         </div>
@@ -24,63 +22,55 @@
         <?php echo $access_level ?>
         <div class="row">
             <form class="form-inline">
-                <input type='hidden' id="access_level"
-                    value="<?php echo $access_level; ?>" />
-                <input type='hidden' id="partner_id"
-                    value="<?php echo $partner_id; ?>" />
-                <input type='hidden' id="facility_id"
-                    value="<?php echo $facility_id; ?>" />
+                <input type='hidden' id="access_level" value="<?php echo $access_level; ?>" />
+                <input type='hidden' id="partner_id" value="<?php echo $partner_id; ?>" />
+                <input type='hidden' id="facility_id" value="<?php echo $facility_id; ?>" />
 
-                <?php if ($access_level == 'Admin' || $access_level == 'Donor') {?>
+                <?php if ($access_level == 'Admin' || $access_level == 'Donor') { ?>
 
-                <select class="form-control filter_partner  input-rounded input-sm select2" name="filter_partner"
-                    id="filter_partner">
-                    <option value="">Please select Partner</option>
-                    <?php
+                    <select class="form-control filter_partner  input-rounded input-sm select2" name="filter_partner" id="filter_partner">
+                        <option value="">Please select Partner</option>
+                        <?php
                         foreach ($filtered_partner as $value) {
-                            ?>
-                    <option
-                        value="<?php echo $value->partner_id; ?>">
-                        <?php echo $value->partner_name; ?>
-                    </option>
-                    <?php
+                        ?>
+                            <option value="<?php echo $value->partner_id; ?>">
+                                <?php echo $value->partner_name; ?>
+                            </option>
+                        <?php
                         }
                         ?>
-                    <option></option>
-                </select>
+                        <option></option>
+                    </select>
                 <?php } ?>
 
-                <?php if ($access_level == 'Admin' || $access_level == 'Donor' || $access_level == 'Partner') {?>
+                <?php if ($access_level == 'Admin' || $access_level == 'Donor' || $access_level == 'Partner') { ?>
 
-                <select class="form-control filter_county  input-rounded input-sm select2" name="filter_county"
-                    id="filter_county">
-                    <option value="">Please select County</option>
-                    <?php
+                    <select class="form-control filter_county  input-rounded input-sm select2" name="filter_county" id="filter_county">
+                        <option value="">Please select County</option>
+                        <?php
                         foreach ($filtered_county as $value) {
-                            ?>
-                    <option value="<?php echo $value->county_id; ?>">
-                        <?php echo $value->county_name; ?>
-                    </option>
-                    <?php
+                        ?>
+                            <option value="<?php echo $value->county_id; ?>">
+                                <?php echo $value->county_name; ?>
+                            </option>
+                        <?php
                         }
                         ?>
-                    <option></option>
-                </select>
+                        <option></option>
+                    </select>
 
-                <span class="filter_sub_county_wait" style="display: none;">Loading , Please Wait ...</span>
-                <select class="form-control filter_sub_county input-rounded input-sm select2" name="filter_sub_county"
-                    id="filter_sub_county">
-                    <option value="">Please Select Sub County : </option>
-                </select>
+                    <span class="filter_sub_county_wait" style="display: none;">Loading , Please Wait ...</span>
+                    <select class="form-control filter_sub_county input-rounded input-sm select2" name="filter_sub_county" id="filter_sub_county">
+                        <option value="">Please Select Sub County : </option>
+                    </select>
 
-                <span class="filter_facility_wait" style="display: none;">Loading , Please Wait ...</span>
+                    <span class="filter_facility_wait" style="display: none;">Loading , Please Wait ...</span>
 
-                <select class="form-control filter_facility input-rounded input-sm select2" name="filter_facility"
-                    id="filter_facility">
-                    <option value="">Please select Facility : </option>
-                </select>
+                    <select class="form-control filter_facility input-rounded input-sm select2" name="filter_facility" id="filter_facility">
+                        <option value="">Please select Facility : </option>
+                    </select>
 
-                <!-- <?php }?>
+                    <!-- <?php } ?>
 
                 <input type="text" name="date_from" id="date_from"
                     class="form-controL date_from input-rounded input-sm " placeholder="Date From : " />
@@ -88,10 +78,8 @@
                 <input type="text" name="date_to" id="date_to" class="form-control date_to input-rounded input-sm "
                     placeholder="Date To : " /> -->
 
-                <button class="btn btn-default filter_highcharts_dashboard btn-round  btn-small btn-primary  "
-                    type="button" name="filter_highcharts_dashboard" id="filter_highcharts_dashboard"> <i
-                        class="fa fa-filter"></i>
-                    Filter</button>
+                    <button class="btn btn-default filter_highcharts_dashboard btn-round  btn-small btn-primary  " type="button" name="filter_highcharts_dashboard" id="filter_highcharts_dashboard"> <i class="fa fa-filter"></i>
+                        Filter</button>
 
             </form>
 
@@ -202,12 +190,12 @@
             colorAxis: {
                 min: 1,
                 type: 'logarithmic',
-                minColor: '#EEEEFF',
-                maxColor: '#000022',
+                minColor: '#fa520a',
+                maxColor: '#ed3512',
                 stops: [
-                    [0, '#EFEFFF'],
-                    [0.67, '#4444FF'],
-                    [1, '#000022']
+                    [0, '#fa520a'],
+                    [0.67, '#ed3512'],
+                    [1, '#ed3512']
                 ]
             },
             series: [{
@@ -225,7 +213,7 @@
                     format: '{point.properties.COUNTY}'
                 },
                 tooltip: {
-                    pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br>'
+                    pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
                 }
             }]
         });
