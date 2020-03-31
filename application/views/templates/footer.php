@@ -4,26 +4,21 @@
 <script src="<?php echo base_url(); ?>/assets/js/lib/jquery/jquery.min.js">
 </script>
 <!-- Bootstrap tether Core JavaScript -->
-<script
-    src="<?php echo base_url(); ?>/assets/js/lib/bootstrap/js/popper.min.js">
+<script src="<?php echo base_url(); ?>/assets/js/lib/bootstrap/js/popper.min.js">
 </script>
-<script
-    src="<?php echo base_url(); ?>/assets/js/lib/bootstrap/js/bootstrap.min.js">
+<script src="<?php echo base_url(); ?>/assets/js/lib/bootstrap/js/bootstrap.min.js">
 </script>
 <!-- slimscrollbar scrollbar JavaScript -->
 <script src="<?php echo base_url(); ?>/assets/js/jquery.slimscroll.js"></script>
 <!--Menu sidebar -->
 <script src="<?php echo base_url(); ?>/assets/js/sidebarmenu.js"></script>
 <!--stickey kit -->
-<script
-    src="<?php echo base_url(); ?>/assets/js/lib/sticky-kit-master/dist/sticky-kit.min.js">
+<script src="<?php echo base_url(); ?>/assets/js/lib/sticky-kit-master/dist/sticky-kit.min.js">
 </script>
 
-<script
-    src="<?php echo base_url(); ?>/assets/js/lib/owl-carousel/owl.carousel.min.js">
+<script src="<?php echo base_url(); ?>/assets/js/lib/owl-carousel/owl.carousel.min.js">
 </script>
-<script
-    src="<?php echo base_url(); ?>/assets/js/lib/owl-carousel/owl.carousel-init.js">
+<script src="<?php echo base_url(); ?>/assets/js/lib/owl-carousel/owl.carousel-init.js">
 </script>
 
 <!--Custom JavaScript -->
@@ -39,23 +34,23 @@
         $function_name = $this->uri->segment(2);
 
         if ($function_name == "appointment_diary") {
-            ?>
-        $(".download_excel").click(function() {
-            var href =
-                "<?php echo base_url(); ?>home/download_app_diary";
-            window.location.href = href; //causes the browser to refresh and load the requested url
-        });
-        $(".download_register").click(function() {
-            var href =
-                "<?php echo base_url(); ?>home/download_defaulter_register";
-            window.location.href = href; //causes the browser to refresh and load the requested url
-        });
+        ?>
+            $(".download_excel").click(function() {
+                var href =
+                    "<?php echo base_url(); ?>home/download_app_diary";
+                window.location.href = href; //causes the browser to refresh and load the requested url
+            });
+            $(".download_register").click(function() {
+                var href =
+                    "<?php echo base_url(); ?>home/download_defaulter_register";
+                window.location.href = href; //causes the browser to refresh and load the requested url
+            });
         <?php
         } else {
-            ?>
+        ?>
         <?php
         }
-?>
+        ?>
         $('.filter_partner').on('change', function() {
             // Does some stuff and logs the event to the console
             $(".filter_county").hide();
@@ -245,13 +240,11 @@
     });
 </script>
 
-<link rel="stylesheet" type="text/css"
-    href="https://cdn.datatables.net/v/dt/jq-3.2.1/jszip-2.5.0/dt-1.10.16/af-2.2.2/b-1.5.1/b-colvis-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/cr-1.4.1/fc-3.2.4/fh-3.1.3/kt-2.3.2/r-2.2.1/rg-1.0.2/rr-1.2.3/sc-1.4.4/sl-1.2.5/datatables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.2.1/jszip-2.5.0/dt-1.10.16/af-2.2.2/b-1.5.1/b-colvis-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/cr-1.4.1/fc-3.2.4/fh-3.1.3/kt-2.3.2/r-2.2.1/rg-1.0.2/rr-1.2.3/sc-1.4.4/sl-1.2.5/datatables.min.css" />
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-<script type="text/javascript"
-    src="https://cdn.datatables.net/v/dt/jq-3.2.1/jszip-2.5.0/dt-1.10.16/af-2.2.2/b-1.5.1/b-colvis-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/cr-1.4.1/fc-3.2.4/fh-3.1.3/kt-2.3.2/r-2.2.1/rg-1.0.2/rr-1.2.3/sc-1.4.4/sl-1.2.5/datatables.min.js">
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.2.1/jszip-2.5.0/dt-1.10.16/af-2.2.2/b-1.5.1/b-colvis-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/cr-1.4.1/fc-3.2.4/fh-3.1.3/kt-2.3.2/r-2.2.1/rg-1.0.2/rr-1.2.3/sc-1.4.4/sl-1.2.5/datatables.min.js">
 </script>
 <script src="https://code.highcharts.com/maps/highmaps.js"></script>
 <script src="https://code.highcharts.com/maps/modules/data.js"></script>
@@ -261,6 +254,7 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
 
 <style>
     .dataTables_wrapper {
@@ -279,90 +273,90 @@
     dTbles(document).ready(function() {
         <?php
         if ($function_name == "facility_home") {
-            ?>
-        dTbles('.today_app_table').DataTable({
-            dom: 'Bfrtip',
-            responsive: true,
-            "lengthMenu": [
-                [5, 10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            buttons: [
-                dTbles.extend(true, {}, {
-                    extend: 'copyHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'excelHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'pdfHtml5'
-                })
-            ],
-            title: 'Today Appointments'
-        });
-        dTbles('.missed_table').DataTable({
-            dom: 'Bfrtip',
-            responsive: true,
-            "lengthMenu": [
-                [5, 10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            buttons: [
-                dTbles.extend(true, {}, {
-                    extend: 'copyHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'excelHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'pdfHtml5'
-                })
-            ],
-            title: 'Missed Appointments'
-        });
-        dTbles('.defaulted_table').DataTable({
-            dom: 'Bfrtip',
-            responsive: true,
-            "lengthMenu": [
-                [5, 10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            buttons: [
-                dTbles.extend(true, {}, {
-                    extend: 'copyHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'excelHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'pdfHtml5'
-                })
-            ],
-            title: 'Defaulted Appointments'
-        });
-        dTbles('.ltfu_table').DataTable({
-            dom: 'Bfrtip',
-            responsive: true,
-            "lengthMenu": [
-                [5, 10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            buttons: [
-                dTbles.extend(true, {}, {
-                    extend: 'copyHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'excelHtml5'
-                }),
-                dTbles.extend(true, {}, {
-                    extend: 'pdfHtml5'
-                })
-            ],
-            title: 'LTFU Appointments'
-        });
+        ?>
+            dTbles('.today_app_table').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                "lengthMenu": [
+                    [5, 10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                buttons: [
+                    dTbles.extend(true, {}, {
+                        extend: 'copyHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'excelHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'pdfHtml5'
+                    })
+                ],
+                title: 'Today Appointments'
+            });
+            dTbles('.missed_table').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                "lengthMenu": [
+                    [5, 10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                buttons: [
+                    dTbles.extend(true, {}, {
+                        extend: 'copyHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'excelHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'pdfHtml5'
+                    })
+                ],
+                title: 'Missed Appointments'
+            });
+            dTbles('.defaulted_table').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                "lengthMenu": [
+                    [5, 10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                buttons: [
+                    dTbles.extend(true, {}, {
+                        extend: 'copyHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'excelHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'pdfHtml5'
+                    })
+                ],
+                title: 'Defaulted Appointments'
+            });
+            dTbles('.ltfu_table').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                "lengthMenu": [
+                    [5, 10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                buttons: [
+                    dTbles.extend(true, {}, {
+                        extend: 'copyHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'excelHtml5'
+                    }),
+                    dTbles.extend(true, {}, {
+                        extend: 'pdfHtml5'
+                    })
+                ],
+                title: 'LTFU Appointments'
+            });
         <?php
         }
-    ?>
+        ?>
         var report_name = $(".report_name").val();
         dTbles('.table').DataTable({
             dom: 'Bfrtip',
@@ -2244,12 +2238,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.min.css" />
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.css" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript">
