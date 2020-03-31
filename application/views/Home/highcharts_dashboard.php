@@ -142,6 +142,8 @@
 
                     <div class="card-body row">
                         <div class="col-6" id="map"></div>
+                        <div class="col-6" id="column"></div>
+
                     </div>
 
                     <div class="card-body row">
@@ -167,148 +169,148 @@
 <!-- End Page wrapper  -->
 
 <script type='text/javascript'>
-    var data = '<?php echo json_encode($data); ?>';
-    //maps(data)
-    // async function maps(data) {
-    //     let geojson = await fetchJSON('/kenyan-counties.geojson');
-    //     // Initiate the chart
-    //     Highcharts.mapChart('map', {
-    //         chart: {
-    //             map: geojson,
-    //             height: 600
-    //         },
-    //         title: {
-    //             text: 'Uptake by County'
-    //         },
-    //         legend: {
-    //             layout: 'horizontal',
-    //             borderWidth: 0,
-    //             backgroundColor: 'rgba(255,255,255,0.85)',
-    //             floating: true,
-    //             verticalAlign: 'top',
-    //             y: 25
-    //         },
-    //         exporting: {
-    //             sourceWidth: 600,
-    //             sourceHeight: 500
-    //         },
-    //         mapNavigation: {
-    //             enabled: true
-    //         },
-    //         colorAxis: {
-    //             min: 1,
-    //             type: 'logarithmic',
-    //             minColor: '#fa520a',
-    //             maxColor: '#ed3512',
-    //             stops: [
-    //                 [0, '#fa520a'],
-    //                 [0.67, '#ed3512'],
-    //                 [1, '#ed3512']
-    //             ]
-    //         },
-    //         series: [{
-    //             data: JSON.parse(data),
-    //             keys: ['Clients'],
-    //             joinBy: 'county_id',
-    //             name: 'Results by County',
-    //             states: {
-    //                 hover: {
-    //                     color: '#f76411'
-    //                 }
-    //             },
-    //             dataLabels: {
-    //                 enabled: false,
-    //                 format: '{point.properties.COUNTY}'
-    //             },
-    //             tooltip: {
-    //                 pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
-    //             }
-    //         }]
-    //     });
-    // }
-    Highcharts.chart('container', {
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: 'Historic World Population by Region'
-        },
-        subtitle: {
-            text: 'Source: <a href="https://en.wikipedia.org/wiki/World_population">Wikipedia.org</a>'
-        },
-        xAxis: {
-            categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
-            title: {
-                text: null
-            }
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Population (millions)',
-                align: 'high'
-            },
-            labels: {
-                overflow: 'justify'
-            }
-        },
-        tooltip: {
-            valueSuffix: ' millions'
-        },
-        plotOptions: {
-            bar: {
-                dataLabels: {
+    $(document).ready(function() {
+        var data = '<?php echo json_encode($data); ?>';
+        var bar_data = '<?php echo json_encode($bar_data); ?>';
+        maps(data)
+        columnChart(bar_data);
+        async function maps(data) {
+            let geojson = await fetchJSON('/kenyan-counties.geojson');
+            // Initiate the chart
+            Highcharts.mapChart('map', {
+                chart: {
+                    map: geojson,
+                    height: 600
+                },
+                title: {
+                    text: 'Uptake by County'
+                },
+                legend: {
+                    layout: 'horizontal',
+                    borderWidth: 0,
+                    backgroundColor: 'rgba(255,255,255,0.85)',
+                    floating: true,
+                    verticalAlign: 'top',
+                    y: 25
+                },
+                exporting: {
+                    sourceWidth: 600,
+                    sourceHeight: 500
+                },
+                mapNavigation: {
                     enabled: true
-                }
-            }
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -40,
-            y: 80,
-            floating: true,
-            borderWidth: 1,
-            backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-            shadow: true
-        },
-        credits: {
-            enabled: false
-        },
-        series: [{
-            name: 'Year 1800',
-            data: [107, 31, 635, 203, 2]
-        }, {
-            name: 'Year 1900',
-            data: [133, 156, 947, 408, 6]
-        }, {
-            name: 'Year 2000',
-            data: [814, 841, 3714, 727, 31]
-        }, {
-            name: 'Year 2016',
-            data: [1216, 1001, 4436, 738, 40]
-        }]
-    });
-
-
-
-    function fetchJSON(url) {
-        return fetch(url)
-            .then(function(response) {
-                return response.json();
+                },
+                colorAxis: {
+                    min: 1,
+                    type: 'logarithmic',
+                    minColor: '#fa520a',
+                    maxColor: '#ed3512',
+                    stops: [
+                        [0, '#fa520a'],
+                        [0.67, '#ed3512'],
+                        [1, '#ed3512']
+                    ]
+                },
+                series: [{
+                    data: JSON.parse(data),
+                    keys: ['Clients'],
+                    joinBy: 'county_id',
+                    name: 'Results by County',
+                    states: {
+                        hover: {
+                            color: '#004D1A'
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false,
+                        format: '{point.properties.COUNTY}'
+                    },
+                    tooltip: {
+                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
+                    }
+                }]
             });
-    }
-    // var chart = null;
-    // $(document).ready(function() {
-    //     chart = new Highcharts.Chart({
-    //         chart: {
-    //             renderTo: 'container',
-    //             type: 'bar'
-    //         },
-    //         title: {
-    //             text: '${model.title}'
-    //         },
-    //     })
-    // });
+        }
+
+        function columnChart(barData) {
+            barData = JSON.parse(barData);
+            let categories = new Set();
+            let series = []
+            for (let i = 0; i < barData.length; i++) {
+                categories.add(barData[i].MONTH)
+            }
+            let clientsArray = [];
+            let consentedArray = [];
+            let appointmentsArray = [];
+            for (let category of categories) {
+                let categoryDatas = barData.filter(function(categoryData) {
+                    return categoryData.MONTH == category;
+                });
+                let clientsCount = 0;
+                let consentedCount = 0;
+                let appointmentsCount = 0;
+                for (let j in categoryDatas) {
+                    clientsCount = clientsCount + parseInt(categoryDatas[j].clients)
+                    consentedCount = consentedCount + parseInt(categoryDatas[j].consented)
+                    appointmentsCount = appointmentsCount + parseInt(categoryDatas[j].appointments)
+                }
+                clientsArray.push(clientsCount)
+                consentedArray.push(consentedCount)
+                appointmentsArray.push(appointmentsCount)
+            }
+            series.push({
+                name: 'Registered Clients',
+                data: clientsArray
+            })
+            series.push({
+                name: 'Consented Clients',
+                data: consentedArray
+            })
+            series.push({
+                name: 'Total Appointments',
+                data: appointmentsArray
+            })
+            Highcharts.chart('column', {
+                chart: {
+                    type: 'bar',
+                    height: 600
+                },
+                title: {
+                    text: 'Monthly Numbers Series'
+                },
+                xAxis: {
+                    categories: [...categories],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Count'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: series
+            });
+        }
+
+        function fetchJSON(url) {
+            return fetch(url)
+                .then(function(response) {
+                    return response.json();
+                });
+        }
+    });
 </script>

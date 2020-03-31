@@ -69,8 +69,9 @@ class Home extends MY_Controller
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);
 
-
+        $bar_data = $this->data->getAggregateBarData($partner_id, $county_id, $sub_county_id, $mfl_code);
         $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
+        
         $target_active_clients = 0;
         $total_clients = 0;
         $consented_clients = 0;
@@ -85,6 +86,7 @@ class Home extends MY_Controller
             $facilities = $facilities + $record['mfl_code'];
         }
         $data['data'] = $records;
+        $data['bar_data'] = $bar_data;
         $data['target_active_clients'] = $target_active_clients;
         $data['total_clients'] = $total_clients;
         $data['percentage_uptake'] = round((($total_clients / $target_active_clients) * 100), 1);
@@ -5019,7 +5021,7 @@ class Home extends MY_Controller
                 $this->session->set_flashdata('success', 'Data Imported Succesfully');
                 redirect(base_url() . 'home/csv');
 
-                //echo "<pre>"; print_r($insert_data);
+            //echo "<pre>"; print_r($insert_data);
             } else {
                 $data['error'] = "Error occured,Please Try Again!";
                 // $this->load->view('upload_results', $data);
@@ -6509,11 +6511,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6577,11 +6579,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6646,11 +6648,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6715,11 +6717,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6784,11 +6786,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6853,11 +6855,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6921,11 +6923,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -6990,11 +6992,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7059,11 +7061,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7128,11 +7130,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7197,11 +7199,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7266,11 +7268,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7336,11 +7338,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7406,11 +7408,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7476,11 +7478,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7517,7 +7519,8 @@ ORDER BY `appntmnt_date` ASC ")->result();
             $this->db->where('tbl_appointment.appntmnt_date <=', $formated_date_to);
         }
         $this->db->where('tbl_appointment.appntmnt_date <= ', 'CURDATE()', false);
-        $this->db->where('tbl_appointment.app_status ', 'Missed');;
+        $this->db->where('tbl_appointment.app_status ', 'Missed');
+        ;
         $this->db->group_by("client.client_status"); // Produces: GROUP BY Gender
         $get_query = $this->db->get()->result_array();
 
@@ -7546,11 +7549,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7615,11 +7618,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7685,11 +7688,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7755,11 +7758,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7825,11 +7828,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7866,7 +7869,8 @@ ORDER BY `appntmnt_date` ASC ")->result();
             $this->db->where('tbl_appointment.appntmnt_date <=', $formated_date_to);
         }
         $this->db->where('tbl_appointment.appntmnt_date <= ', 'CURDATE()', false);
-        $this->db->where('tbl_appointment.app_status ', 'Defaulted');;
+        $this->db->where('tbl_appointment.app_status ', 'Defaulted');
+        ;
         $this->db->group_by("client.client_status"); // Produces: GROUP BY Gender
         $get_query = $this->db->get()->result_array();
 
@@ -7895,11 +7899,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('DATE_FORMAT(tbl_appointment.appntmnt_date, "%M %Y") AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -7964,11 +7968,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('gender.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -8034,11 +8038,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('marital_status.marital AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -8104,11 +8108,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('groups.name AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -8174,11 +8178,11 @@ ORDER BY `appntmnt_date` ASC ")->result();
 
         if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
         if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client.client_status AS name ,COUNT(tbl_appointment.`id`) AS value');
@@ -8215,7 +8219,8 @@ ORDER BY `appntmnt_date` ASC ")->result();
             $this->db->where('tbl_appointment.appntmnt_date <=', $formated_date_to);
         }
         $this->db->where('tbl_appointment.appntmnt_date <= ', 'CURDATE()', false);
-        $this->db->where('tbl_appointment.app_status ', 'Defaulted');;
+        $this->db->where('tbl_appointment.app_status ', 'Defaulted');
+        ;
         $this->db->group_by("client.client_status"); // Produces: GROUP BY Gender
         $get_query = $this->db->get()->result_array();
 
