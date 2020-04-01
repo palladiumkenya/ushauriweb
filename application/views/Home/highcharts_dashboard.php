@@ -92,7 +92,7 @@
                     <div class="card-body row">
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey">
+                                <div class="card-body grey" id="targetClients">
                                     <b><?php echo $target_active_clients; ?><br></b>
                                     Target Active Clients
                                 </div>
@@ -100,7 +100,7 @@
                         </div>
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey">
+                                <div class="card-body grey" id="totalClients">
                                     <b><?php echo $total_clients; ?><br></b>
                                     No. of Clients
                                 </div>
@@ -108,7 +108,7 @@
                         </div>
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey">
+                                <div class="card-body grey" id="percentageUptake">
                                     <b><?php echo $percentage_uptake; ?><br></b>
                                     % No. of Active Clients
                                 </div>
@@ -116,7 +116,7 @@
                         </div>
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey">
+                                <div class="card-body grey" id="consentedClients">
                                     <b><?php echo $consented_clients; ?><br></b>
                                     Consented Clients
                                 </div>
@@ -124,7 +124,7 @@
                         </div>
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey">
+                                <div class="card-body grey" id="furuteAppointments">
                                     <b><?php echo $future_appointments; ?><br></b>
                                     Future Appointments
                                 </div>
@@ -132,18 +132,16 @@
                         </div>
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey">
-                                    <b><?php echo $facilities; ?><br></b>
+                                <div class="card-body grey" id="facilities" <b><?php echo $facilities; ?><br></b>
                                     No. of Facilities
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card-body row">
-                        <div class="col-6" id="map"></div>
-                        <div class="col-6" id="column"></div>
-
+                    <div class="card-body">
+                        <div class="row" id="column"></div>
+                        <div class="row" id="map"></div>
                     </div>
 
                     <!-- <div class="card-body row">
@@ -171,9 +169,12 @@
 <script type='text/javascript'>
     $(document).ready(function() {
         var data = '<?php echo json_encode($data); ?>';
-        var bar_data = '<?php echo json_encode($bar_data); ?>';
+        var bar_clients_data =
+            '<?php echo json_encode($bar_clients_data); ?>';
+        var bar_appointments_data =
+            '<?php echo json_encode($bar_appointments_data); ?>';
         maps(data)
-        columnChart(bar_data);
+        columnChart(bar_clients_data, bar_appointments_data);
         async function maps(data) {
             let geojson = await fetchJSON('/kenyan-counties.geojson');
             // Initiate the chart
@@ -232,20 +233,42 @@
             });
         }
 
+<<<<<<< HEAD
         function columnChart(barData) {
             barData = JSON.parse(barData);
             //console.log(barData)
+=======
+        function columnChart(bar_clients_data, bar_appointments_data) {
+            bar_clients_data = JSON.parse(bar_clients_data);
+            bar_appointments_data = JSON.parse(bar_appointments_data);
+            let barData = bar_clients_data.concat(bar_appointments_data)
+            let result = barData.reduce((acc, el) => {
+                var existEl = acc.find(e => e.MONTH == el.MONTH && e.mfl_code == el.mfl_code);
+                if (existEl) {
+                    existEl.appointments = el.appointments;
+                } else {
+                    acc.push(el);
+                }
+                return acc;
+            }, []);
+            result = result.map(elem => {
+                if (!elem.clients) elem.clients = 0
+                if (!elem.consented) elem.consented = 0
+                if (!elem.appointments) elem.appointments = 0
+                return elem
+            })
+>>>>>>> edeb98fe0173bf49ffab402354277ffddecec6eb
             let categories = new Set();
             let series = []
-            for (let i = 0; i < barData.length; i++) {
-                categories.add(barData[i].MONTH)
+            for (let i = 0; i < result.length; i++) {
+                categories.add(result[i].MONTH)
             }
 
             let clientsArray = [];
             let consentedArray = [];
             let appointmentsArray = [];
             for (let category of categories) {
-                let categoryDatas = barData.filter(function(categoryData) {
+                let categoryDatas = result.filter(function(categoryData) {
                     return categoryData.MONTH == category;
                 });
                 let clientsCount = 0;
@@ -272,10 +295,11 @@
                 name: 'Total Appointments',
                 data: appointmentsArray
             })
+            // console.log(series)
             Highcharts.chart('column', {
                 chart: {
-                    type: 'bar',
-                    height: 600
+                    type: 'column',
+                    height: 300
                 },
                 title: {
                     text: 'Monthly Numbers Series'
@@ -307,12 +331,11 @@
                 series: series
             });
         }
-
-        function fetchJSON(url) {
-            return fetch(url)
-                .then(function(response) {
-                    return response.json();
-                });
-        }
+        // function fetchJSON(url) {
+        //     return fetch(url)
+        //         .then(function(response) {
+        //             return response.json();
+        //         });
+        // }
     });
 </script>

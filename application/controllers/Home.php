@@ -51,7 +51,34 @@ class Home extends MY_Controller
         $county_id = $this->input->post('county', true);
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);
-        $data = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
+
+        $bar_clients_data = $this->data->getAggregateBarClientsData($partner_id, $county_id, $sub_county_id, $mfl_code);
+        $bar_appointmens_data = $this->data->getAggregateBarAppointmentsData($partner_id, $county_id, $sub_county_id, $mfl_code);
+        $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
+        
+        $target_active_clients = 0;
+        $total_clients = 0;
+        $consented_clients = 0;
+        $future_appointments = 0;
+
+        foreach ($records as $record) {
+            $target_active_clients =  $target_active_clients + $record['Target_Clients'];
+            $total_clients = $total_clients + $record['Clients'];
+            $consented_clients = $consented_clients + $record['Consented'];
+            $future_appointments = $future_appointments + $record['Future_Appointments'];
+        }
+        if ($target_active_clients < 1) {
+            $target_active_clients = 1;
+        }
+        $data['data'] = $records;
+        $data['bar_clients_data'] = $bar_clients_data;
+        $data['bar_appointments_data'] = $bar_appointmens_data;
+        $data['target_active_clients'] = $target_active_clients;
+        $data['total_clients'] = $total_clients;
+        $data['percentage_uptake'] = round((($total_clients / $target_active_clients) * 100), 1);
+        $data['consented_clients'] = $consented_clients;
+        $data['future_appointments'] = $future_appointments;
+        $data['facilities'] = count($records);
 
         echo json_encode($data);
     }
@@ -69,30 +96,33 @@ class Home extends MY_Controller
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);
 
-        $bar_data = $this->data->getAggregateBarData($partner_id, $county_id, $sub_county_id, $mfl_code);
+        $bar_clients_data = $this->data->getAggregateBarClientsData($partner_id, $county_id, $sub_county_id, $mfl_code);
+        $bar_appointmens_data = $this->data->getAggregateBarAppointmentsData($partner_id, $county_id, $sub_county_id, $mfl_code);
+      
+
         $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
 
         $target_active_clients = 0;
         $total_clients = 0;
         $consented_clients = 0;
         $future_appointments = 0;
-        $facilities = 0;
 
         foreach ($records as $record) {
             $target_active_clients =  $target_active_clients + $record['Target_Clients'];
             $total_clients = $total_clients + $record['Clients'];
             $consented_clients = $consented_clients + $record['Consented'];
             $future_appointments = $future_appointments + $record['Future_Appointments'];
-            $facilities = $facilities + $record['mfl_code'];
+            ;
         }
         $data['data'] = $records;
-        $data['bar_data'] = $bar_data;
+        $data['bar_clients_data'] = $bar_clients_data;
+        $data['bar_appointments_data'] = $bar_appointmens_data;
         $data['target_active_clients'] = $target_active_clients;
         $data['total_clients'] = $total_clients;
         $data['percentage_uptake'] = round((($total_clients / $target_active_clients) * 100), 1);
         $data['consented_clients'] = $consented_clients;
         $data['future_appointments'] = $future_appointments;
-        $data['facilities'] = $facilities;
+        $data['facilities'] = count($records);
         $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
         $data['facility_id'] = $facility_id;
