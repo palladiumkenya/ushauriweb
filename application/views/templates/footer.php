@@ -254,13 +254,13 @@
     src="https://cdn.datatables.net/v/dt/jq-3.2.1/jszip-2.5.0/dt-1.10.16/af-2.2.2/b-1.5.1/b-colvis-1.5.1/b-flash-1.5.1/b-html5-1.5.1/b-print-1.5.1/cr-1.4.1/fc-3.2.4/fh-3.1.3/kt-2.3.2/r-2.2.1/rg-1.0.2/rr-1.2.3/sc-1.4.4/sl-1.2.5/datatables.min.js">
 </script>
 <script src="https://code.highcharts.com/maps/highmaps.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/bullet.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+<script src="https://code.highcharts.com/modules/bullet.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
 <style>
     .dataTables_wrapper {
@@ -1585,8 +1585,184 @@
                     facility: facility,
                     tokenizer: tokenizer
                 },
-                success: function(data) {
-                    console.log(data);
+                success: function(results) {
+                    result = JSON.parse(results)
+                    console.log(result)
+                    $("#targetClients").empty();
+                    $("#targetClients").append("  <b> " + result.target_active_clients +
+                        "<br></b> Target Active Clients");
+                    $("#totalClients").empty();
+                    $("#totalClients").append("  <b> " + result.total_clients +
+                        "<br></b> No. of Clients");
+                    $("#percentageUptake").empty();
+                    $("#percentageUptake").append("  <b> " + result.percentage_uptake +
+                        "<br></b>   % No. of Active Clients");
+                    $("#consentedClients").empty();
+                    $("#consentedClients").append("  <b> " + result.consented_clients +
+                        "<br></b> Consented Clients");
+                    $("#furuteAppointments").empty();
+                    $("#furuteAppointments").append("  <b> " + result.future_appointments +
+                        "<br></b> Future Appointments");
+                    $("#facilities").empty();
+                    $("#facilities").append("  <b> " + result.facilities +
+                        "<br></b> Facilities");
+                    $("#map").empty();
+                    $("#column").empty();
+                    maps(result.data)
+                    columnChart(result.bar_clients_data, result.bar_appointments_data);
+                    async function maps(data) {
+                        let geojson = await fetchJSON('/kenyan-counties.geojson');
+                        // Initiate the chart
+                        Highcharts.mapChart('map', {
+                            chart: {
+                                map: geojson,
+                                height: 600
+                            },
+                            title: {
+                                text: 'Uptake by County'
+                            },
+                            legend: {
+                                layout: 'horizontal',
+                                borderWidth: 0,
+                                backgroundColor: 'rgba(255,255,255,0.85)',
+                                floating: true,
+                                verticalAlign: 'top',
+                                y: 25
+                            },
+                            exporting: {
+                                sourceWidth: 600,
+                                sourceHeight: 500
+                            },
+                            mapNavigation: {
+                                enabled: true
+                            },
+                            colorAxis: {
+                                min: 1,
+                                type: 'logarithmic',
+                                minColor: '#fa520a',
+                                maxColor: '#ed3512',
+                                stops: [
+                                    [0, '#fa520a'],
+                                    [0.67, '#ed3512'],
+                                    [1, '#ed3512']
+                                ]
+                            },
+                            series: [{
+                                data: data,
+                                keys: ['Clients'],
+                                joinBy: 'county_id',
+                                name: 'Results by County',
+                                states: {
+                                    hover: {
+                                        color: '#004D1A'
+                                    }
+                                },
+                                dataLabels: {
+                                    enabled: false,
+                                    format: '{point.properties.COUNTY}'
+                                },
+                                tooltip: {
+                                    pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
+                                }
+                            }]
+                        });
+                    }
+
+                    function columnChart(bar_clients_data, bar_appointments_data) {
+                        let barData = bar_clients_data.concat(bar_appointments_data)
+                        let result = barData.reduce((acc, el) => {
+                            var existEl = acc.find(e => e.MONTH == el.MONTH && e
+                                .mfl_code ==
+                                el.mfl_code);
+                            if (existEl) {
+                                existEl.appointments = el.appointments;
+                            } else {
+                                acc.push(el);
+                            }
+                            return acc;
+                        }, []);
+                        result = result.map(elem => {
+                            if (!elem.clients) elem.clients = 0
+                            if (!elem.consented) elem.consented = 0
+                            if (!elem.appointments) elem.appointments = 0
+                            return elem
+                        })
+                        let categories = new Set();
+                        let series = []
+                        for (let i = 0; i < result.length; i++) {
+                            categories.add(result[i].MONTH)
+                        }
+                        let clientsArray = [];
+                        let consentedArray = [];
+                        let appointmentsArray = [];
+                        for (let category of categories) {
+                            let categoryDatas = result.filter(function(categoryData) {
+                                return categoryData.MONTH == category;
+                            });
+                            let clientsCount = 0;
+                            let consentedCount = 0;
+                            let appointmentsCount = 0;
+                            for (let j in categoryDatas) {
+                                clientsCount = clientsCount + parseInt(categoryDatas[j]
+                                    .clients)
+                                consentedCount = consentedCount + parseInt(categoryDatas[j]
+                                    .consented)
+                                appointmentsCount = appointmentsCount + parseInt(
+                                    categoryDatas[j]
+                                    .appointments)
+                            }
+                            clientsArray.push(clientsCount)
+                            consentedArray.push(consentedCount)
+                            appointmentsArray.push(appointmentsCount)
+                        }
+                        series.push({
+                            name: 'Registered Clients',
+                            data: clientsArray
+                        })
+                        series.push({
+                            name: 'Consented Clients',
+                            data: consentedArray
+                        })
+                        series.push({
+                            name: 'Total Appointments',
+                            data: appointmentsArray
+                        })
+                        // console.log(series)
+                        Highcharts.chart('column', {
+                            chart: {
+                                type: 'column',
+                                height: 300
+                            },
+                            title: {
+                                text: 'Monthly Numbers Series'
+                            },
+                            xAxis: {
+                                categories: [...categories],
+                                crosshair: true
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Count'
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: series
+                        });
+                    }
                 }
             });
         }
@@ -1620,7 +1796,8 @@
                 selected_date_to = "To : " + dTbles(".date_to").val();
             }
             if (partner != "") {
-                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() +
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected")
+                    .text() +
                     "";
             } else {
                 if (access_level == 'Partner') {
@@ -1628,7 +1805,8 @@
                 }
             }
             if (county != "") {
-                selected_county = "For " + dTbles(".filter_county option:selected").text() + " County ";
+                selected_county = "For " + dTbles(".filter_county option:selected").text() +
+                    " County ";
             }
             if (sub_county != "") {
                 selected_sub_county = ", " + dTbles(".filter_sub_county option:selected").text() +
@@ -1641,7 +1819,8 @@
                 selected_facility + " ";
             var description_two = " " + selected_date_from + " " + selected_date_to + " ";
             var tokenizer = dTbles(".tokenizer").val();
-            generate_client_report(county, sub_county, facility, date_from, date_to, description_one,
+            generate_client_report(county, sub_county, facility, date_from, date_to,
+                description_one,
                 description_two, tokenizer);
         });
 
@@ -1788,7 +1967,8 @@
                 selected_date_to = "To : " + dTbles(".date_to").val();
             }
             if (partner != "") {
-                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() +
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected")
+                    .text() +
                     "";
             } else {
                 if (access_level == 'Partner') {
@@ -1796,7 +1976,8 @@
                 }
             }
             if (county != "") {
-                selected_county = "For " + dTbles(".filter_county option:selected").text() + " County ";
+                selected_county = "For " + dTbles(".filter_county option:selected").text() +
+                    " County ";
             }
             if (sub_county != "") {
                 selected_sub_county = ", " + dTbles(".filter_sub_county option:selected").text() +
@@ -1809,7 +1990,8 @@
                 selected_facility + " ";
             var description_two = " " + selected_date_from + " " + selected_date_to + " ";
             var tokenizer = dTbles(".tokenizer").val();
-            generate_tracing_outcome(county, sub_county, facility, date_from, date_to, description_one,
+            generate_tracing_outcome(county, sub_county, facility, date_from, date_to,
+                description_one,
                 description_two, tokenizer);
         });
         //TRACING OUTCOME FUNCTION
@@ -1932,7 +2114,8 @@
                 selected_date_to = "To : " + dTbles(".date_to").val();
             }
             if (county != "") {
-                selected_county = "For " + dTbles(".filter_county option:selected").text() + " County ";
+                selected_county = "For " + dTbles(".filter_county option:selected").text() +
+                    " County ";
             }
             if (sub_county != "") {
                 selected_sub_county = ", " + dTbles(".filter_sub_county option:selected").text() +
@@ -2079,7 +2262,8 @@
                 selected_date_to = "To : " + dTbles(".date_to").val();
             }
             if (partner != "") {
-                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() +
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected")
+                    .text() +
                     "";
             } else {
                 if (access_level == 'Partner') {
@@ -2087,7 +2271,8 @@
                 }
             }
             if (county != "") {
-                selected_county = "For " + dTbles(".filter_county option:selected").text() + " County ";
+                selected_county = "For " + dTbles(".filter_county option:selected").text() +
+                    " County ";
             }
             if (sub_county != "") {
                 selected_sub_county = ", " + dTbles(".filter_sub_county option:selected").text() +
@@ -2100,7 +2285,8 @@
                 selected_facility + " ";
             var description_two = " " + selected_date_from + " " + selected_date_to + " ";
             var tokenizer = dTbles(".tokenizer").val();
-            generate_message_report(county, sub_county, facility, date_from, date_to, description_one,
+            generate_message_report(county, sub_county, facility, date_from, date_to,
+                description_one,
                 description_two, tokenizer);
         });
 
@@ -2219,8 +2405,10 @@
                         dTbles(".facility_type").empty();
                         dTbles(".facility_county").empty();
                         console.log("Facility Name : " + value.name +
-                            "MFL Code : " + value.code + "Facility Type : " +
-                            value.facility_type + "Location : " + value.owner);
+                            "MFL Code : " + value.code +
+                            "Facility Type : " +
+                            value.facility_type + "Location : " + value
+                            .owner);
                         dTbles(".facility_name").val(value.name);
                         dTbles(".mfl_code").val(value.code);
                         dTbles(".facility_type").val(value.facility_type);
@@ -2444,8 +2632,15 @@ our animation centered, and no-repeating */
         bh.src = 'https://www.bugherd.com/sidebarv2.js?apikey=3epwqunezmhjfnd2iq0cea';
         s.parentNode.insertBefore(bh, s);
     })(document, 'script');
+
+    function fetchJSON(url) {
+        return fetch(url)
+            .then(function(response) {
+                return response.json();
+            });
+    }
 </script>
 
-</body>
+</bodfy>
 
 </html>
