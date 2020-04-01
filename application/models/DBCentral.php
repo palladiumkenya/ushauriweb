@@ -1530,27 +1530,27 @@ class DBCentral extends CI_Model
         $count_row = $get_user_details->num_rows();
         if ($count_row > 0) :
             $get_row = $get_user_details->result();
-        foreach ($get_row as $value) :
+            foreach ($get_row as $value) :
                 $phone_no = $value->phone_no;
-        $get_password = $this->cryptPass($phone_no);
-        $this->db->trans_start();
+                $get_password = $this->cryptPass($phone_no);
+                $this->db->trans_start();
 
-        $post_data = array(
+                $post_data = array(
                     'first_access' => "Yes",
                     'password' => $get_password,
                     'updated_by' => $updated_by
                 );
-        $this->db->where('id', $user_id);
-        $this->db->update('users', $post_data);
-        $this->db->trans_complete();
-        if ($this->db->trans_status() === false) {
-            return false;
-        } else {
-            $description = "Password reset for User ID : $user_id in the  System .";
-            $this->log_action($description);
-            return true;
-        }
-        endforeach;
+                $this->db->where('id', $user_id);
+                $this->db->update('users', $post_data);
+                $this->db->trans_complete();
+                if ($this->db->trans_status() === false) {
+                    return false;
+                } else {
+                    $description = "Password reset for User ID : $user_id in the  System .";
+                    $this->log_action($description);
+                    return true;
+                }
+            endforeach;
         endif;
     }
 
@@ -2927,8 +2927,7 @@ class DBCentral extends CI_Model
             $art_date = date("Y-m-d", strtotime($art_date));
             $enrollment_date = str_replace('/', '-', $enrollment_date);
             $enrollment_date = date("Y-m-d", strtotime($enrollment_date));
-        }
-        {
+        } {
         }
 
 
@@ -4758,7 +4757,7 @@ ORDER BY tbl_module.order ASC";
         if (!empty($mfl_code)) {
             $this->db->where('mfl_code', $mfl_code);
         }
-      
+
         if ($access_level == 'Partner') {
             $this->db->where('partner_id', $partner_id);
         }
@@ -4796,7 +4795,81 @@ ORDER BY tbl_module.order ASC";
         if (!empty($mfl_code)) {
             $this->db->where('mfl_code', $mfl_code);
         }
-      
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateTableData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('age_distinction');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateMarriageData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('mariage_distribution');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
         if ($access_level == 'Partner') {
             $this->db->where('partner_id', $partner_id);
         }

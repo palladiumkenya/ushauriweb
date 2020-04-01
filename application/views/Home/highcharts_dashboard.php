@@ -146,11 +146,11 @@
 
                     </div>
 
-                    <div class="card-body row">
+                    <!-- <div class="card-body row">
                         <figure class="highcharts-figure">
                             <div class="col-6" id="container"></div>
                         </figure>
-                    </div>
+                    </div> -->
 
 
                 </div>
@@ -162,7 +162,7 @@
     </div>
     <!-- End Container fluid  -->
     <!-- footer -->
-    <footer class="footer"> © 2018 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth
+    <footer class="footer"> © 2020 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth
             Kenya Ltd</a></footer>
     <!-- End footer -->
 </div>
@@ -234,11 +234,13 @@
 
         function columnChart(barData) {
             barData = JSON.parse(barData);
+            //console.log(barData)
             let categories = new Set();
             let series = []
             for (let i = 0; i < barData.length; i++) {
                 categories.add(barData[i].MONTH)
             }
+
             let clientsArray = [];
             let consentedArray = [];
             let appointmentsArray = [];
