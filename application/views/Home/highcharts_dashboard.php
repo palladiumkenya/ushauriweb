@@ -233,11 +233,6 @@
             });
         }
 
-<<<<<<< HEAD
-        function columnChart(barData) {
-            barData = JSON.parse(barData);
-            //console.log(barData)
-=======
         function columnChart(bar_clients_data, bar_appointments_data) {
             bar_clients_data = JSON.parse(bar_clients_data);
             bar_appointments_data = JSON.parse(bar_appointments_data);
@@ -257,7 +252,6 @@
                 if (!elem.appointments) elem.appointments = 0
                 return elem
             })
->>>>>>> edeb98fe0173bf49ffab402354277ffddecec6eb
             let categories = new Set();
             let series = []
             for (let i = 0; i < result.length; i++) {

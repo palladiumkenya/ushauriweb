@@ -90,9 +90,12 @@
             <div class="col-12">
 
                 <div class="card-body row">
-                    <div id="container" class="col" style="height: 340px;margin-top:40px;"></div> <br />
-                    <div id="marriage" class="col" style="height: 340px;margin-top:40px;"></div>
-
+                    <div id="container" class="col" style="height: 450px;margin-top:40px;"></div> <br />
+                    <div id="marriage" class="col" style="height: 450px;margin-top:40px;"></div>
+                </div>
+                <div class="card-body row">
+                    <div id="art" class="col" style="height: 450px;margin-top:40px;"></div>
+                    <div id="gender" class="col" style="height: 450px;margin-top:40px;"></div>
                 </div>
             </div>
         </div>
@@ -112,13 +115,163 @@
 <script type="text/javascript" src="http://code.highcharts.com/modules/exporting.js"></script>
 <!-- End footer -->
 <script type="text/javascript">
+    let condition_records = '<?php echo json_encode($condition_records); ?>';
+    parseCondition = JSON.parse(condition_records);
+
+    let art = 0;
+    let on_care = 0;
+    let pre_art = 0;
+    let no_condition = 0;
+
+    let art_consent = 0;
+    let on_care_consent = 0;
+    let pre_art_consent = 0;
+    let no_condition_consent = 0;
+
+
+    var conditionReg = [];
+    var conditionConsent = [];
+    var conditionPercent = [];
+
+    for (let i = 0; i < parseCondition.length; i++) {
+        art = art + parseInt(parseCondition[i].art);
+        on_care = on_care + parseInt(parseCondition[i].on_care);
+        pre_art = pre_art + parseInt(parseCondition[i].pre_art);
+        no_condition = no_condition + parseInt(parseCondition[i].no_condition);
+        art_consent = art_consent + parseInt(parseCondition[i].art_consent);
+        on_care_consent = on_care_consent + parseInt(parseCondition[i].on_care_consent);
+        pre_art_consent = pre_art_consent + parseInt(parseCondition[i].pre_art_consent);
+        no_condition_consent = no_condition_consent + parseInt(parseCondition[i].not_condition_consent);
+
+    }
+    conditionPercent.push((art_consent / art) * 100);
+    conditionPercent.push((on_care_consent / on_care) * 100);
+    conditionPercent.push((pre_art_consent / pre_art) * 100);
+    conditionPercent.push((no_condition_consent / no_condition) * 100);
+
+    conditionReg.push(art);
+    conditionReg.push(on_care);
+    conditionReg.push(pre_art);
+    conditionReg.push(no_condition);
+
+    conditionConsent.push(art_consent);
+    conditionConsent.push(on_care_consent);
+    conditionConsent.push(pre_art_consent);
+    conditionConsent.push(no_condition_consent);
+</script>
+<script type="text/javascript">
+    let gender_records = '<?php echo json_encode($gender_records); ?>';
+    parseGender = JSON.parse(gender_records);
+
+    let female = 0;
+    let male = 0;
+    let trans_gender = 0;
+    let unspecified = 0;
+
+    let female_consent = 0;
+    let male_consent = 0;
+    let trans_gender_consent = 0;
+    let unspecified_consent = 0;
+
+    var genderReg = [];
+    var genderConsent = [];
+    var genderPercent = [];
+
+    for (let i = 0; i < parseGender.length; i++) {
+        female = female + parseInt(parseGender[i].female);
+        male = male + parseInt(parseGender[i].male);
+        trans_gender = trans_gender + parseInt(parseGender[i].trans_gender);
+        unspecified = unspecified + parseInt(parseGender[i].not_specified_gender);
+        female_consent = female_consent + parseInt(parseGender[i].female_consent);
+        male_consent = male_consent + parseInt(parseGender[i].male_consent);
+        trans_gender_consent = trans_gender_consent + parseInt(parseGender[i].trans_gender_consent);
+        unspecified_consent = unspecified_consent + parseInt(parseGender[i].not_specified_gender_consent);
+
+    }
+    genderPercent.push((female_consent / female) * 100);
+    genderPercent.push((male_consent / male) * 100);
+    genderPercent.push((trans_gender_consent / trans_gender) * 100);
+    genderPercent.push((unspecified_consent / unspecified) * 100);
+
+    genderReg.push(female);
+    genderReg.push(male);
+    genderReg.push(trans_gender);
+    genderReg.push(unspecified);
+
+    genderConsent.push(female_consent);
+    genderConsent.push(male_consent);
+    genderConsent.push(trans_gender_consent);
+    genderConsent.push(unspecified_consent);
+</script>
+<script type="text/javascript">
     let marriage_records = '<?php echo json_encode($marriage_records); ?>';
     parseMarriage = JSON.parse(marriage_records);
+
+    let single = 0;
+    let monogamous = 0;
+    let divorced = 0;
+    let widowed = 0;
+    let cohabiting = 0;
+    let unavailable = 0;
+    let polygamous = 0;
+
+    let singleConsent = 0;
+    let monogamousConsent = 0;
+    let divorcedConsent = 0;
+    let widowedConsent = 0;
+    let cohabitingConsent = 0;
+    let unavailableConsent = 0;
+    let pologamousConsent = 0;
+
+    var marriedConsented = [];
+    var marriedRegistered = [];
+    var marriedPercent = [];
+
+    for (let i = 0; i < parseMarriage.length; i++) {
+        single = single + parseInt(parseMarriage[i].single);
+        monogamous = monogamous + parseInt(parseMarriage[i].married_monogamous);
+        divorced = divorced + parseInt(parseMarriage[i].divorced);
+        widowed = widowed + parseInt(parseMarriage[i].widowed);
+        cohabiting = cohabiting + parseInt(parseMarriage[i].cohabiting);
+        unavailable = unavailable + parseInt(parseMarriage[i].unavailable);
+        polygamous = polygamous + parseInt(parseMarriage[i].maried_polygamous);
+        singleConsent = singleConsent + parseInt(parseMarriage[i].single_consent);
+        monogamousConsent = monogamousConsent + parseInt(parseMarriage[i].married_monogamous_consent);
+        divorcedConsent = divorcedConsent + parseInt(parseMarriage[i].divorced_consented);
+        widowedConsent = widowedConsent + parseInt(parseMarriage[i].widowed_consented);
+        cohabitingConsent = cohabitingConsent + parseInt(parseMarriage[i].cohabiting_consented);
+        unavailableConsent = unavailableConsent + parseInt(parseMarriage[i].unavailable_consented);
+        pologamousConsent = pologamousConsent + parseInt(parseMarriage[i].married_polygomous_consented);
+
+    }
+    marriedPercent.push((singleConsent / single) * 100);
+    marriedPercent.push((monogamousConsent / monogamous) * 100);
+    marriedPercent.push((divorcedConsent / divorced) * 100);
+    marriedPercent.push((widowedConsent / widowed) * 100);
+    marriedPercent.push((cohabitingConsent / cohabiting) * 100);
+    marriedPercent.push((unavailableConsent / unavailable) * 100);
+    marriedPercent.push((pologamousConsent / polygamous) * 100);
+
+
+    marriedRegistered.push(single);
+    marriedRegistered.push(monogamous);
+    marriedRegistered.push(divorced);
+    marriedRegistered.push(widowed);
+    marriedRegistered.push(cohabiting);
+    marriedRegistered.push(unavailable);
+    marriedRegistered.push(polygamous);
+
+    marriedConsented.push(singleConsent);
+    marriedConsented.push(monogamousConsent);
+    marriedConsented.push(divorcedConsent);
+    marriedConsented.push(widowedConsent);
+    marriedConsented.push(cohabitingConsent);
+    marriedConsented.push(unavailableConsent);
+    marriedConsented.push(pologamousConsent);
 </script>
 <script type="text/javascript">
     let data = '<?php echo json_encode($data); ?>';
     parseData = JSON.parse(data);
-    console.log(parseMarriage)
     let toNineReg = 0;
     let toFourteenReg = 0;
     let toNineteenReg = 0;
@@ -169,8 +322,8 @@
 
 
         // user options
-        var tableTop = 60,
-            colWidth = 100,
+        var tableTop = 55,
+            colWidth = 150,
             tableLeft = 40,
             rowHeight = 40,
             cellPadding = 4,
@@ -350,12 +503,12 @@
         },
 
         title: {
-            text: 'Client Registration by Age Group'
+            text: 'Client Registration by Marital Status'
         },
 
         xAxis: {
             visible: false,
-            categories: ['0-9', '10-14', '15-19', '20-24', '25+']
+            categories: ['Single', 'Married Monogamous', 'Divorced', 'Widowed', 'Cohabiting', 'Unavailable', 'Married Polygamous']
         },
 
         yAxis: {
@@ -373,13 +526,99 @@
 
         series: [{
             name: 'Registered',
-            data: registeredArray
+            data: marriedRegistered
         }, {
             name: 'Consented',
-            data: consentedArray
+            data: marriedConsented
         }, {
             name: 'Percentage',
-            data: percentageArray
+            data: marriedPercent
+        }]
+    });
+    window.chart = new Highcharts.Chart({
+
+        chart: {
+            renderTo: 'gender',
+            events: {
+                load: Highcharts.drawTable
+            },
+            borderWidth: 2
+        },
+
+        title: {
+            text: 'Client Registration by Gender'
+        },
+
+        xAxis: {
+            visible: false,
+            categories: ['Female', 'Male', 'Trans Gender', 'Unspecified']
+        },
+
+        yAxis: {
+            visible: false
+        },
+
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                visible: false
+            }
+        },
+
+        series: [{
+            name: 'Registered',
+            data: genderReg
+        }, {
+            name: 'Consented',
+            data: genderConsent
+        }, {
+            name: 'Percentage',
+            data: genderPercent
+        }]
+    });
+    window.chart = new Highcharts.Chart({
+
+        chart: {
+            renderTo: 'art',
+            events: {
+                load: Highcharts.drawTable
+            },
+            borderWidth: 2
+        },
+
+        title: {
+            text: 'Client Registration by Treatment Category'
+        },
+
+        xAxis: {
+            visible: false,
+            categories: ['Art', 'On Care', 'Pre-Art', 'No Condition']
+        },
+
+        yAxis: {
+            visible: false
+        },
+
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                visible: false
+            }
+        },
+
+        series: [{
+            name: 'Registered',
+            data: conditionReg
+        }, {
+            name: 'Consented',
+            data: conditionConsent
+        }, {
+            name: 'Percentage',
+            data: conditionPercent
         }]
     });
 </script>

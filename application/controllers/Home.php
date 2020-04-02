@@ -55,7 +55,7 @@ class Home extends MY_Controller
         $bar_clients_data = $this->data->getAggregateBarClientsData($partner_id, $county_id, $sub_county_id, $mfl_code);
         $bar_appointmens_data = $this->data->getAggregateBarAppointmentsData($partner_id, $county_id, $sub_county_id, $mfl_code);
         $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
-        
+
         $target_active_clients = 0;
         $total_clients = 0;
         $consented_clients = 0;
@@ -98,7 +98,7 @@ class Home extends MY_Controller
 
         $bar_clients_data = $this->data->getAggregateBarClientsData($partner_id, $county_id, $sub_county_id, $mfl_code);
         $bar_appointmens_data = $this->data->getAggregateBarAppointmentsData($partner_id, $county_id, $sub_county_id, $mfl_code);
-      
+
 
         $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
 
@@ -111,8 +111,7 @@ class Home extends MY_Controller
             $target_active_clients =  $target_active_clients + $record['Target_Clients'];
             $total_clients = $total_clients + $record['Clients'];
             $consented_clients = $consented_clients + $record['Consented'];
-            $future_appointments = $future_appointments + $record['Future_Appointments'];
-            ;
+            $future_appointments = $future_appointments + $record['Future_Appointments'];;
         }
         $data['data'] = $records;
         $data['bar_clients_data'] = $bar_clients_data;
@@ -149,10 +148,14 @@ class Home extends MY_Controller
 
         $table_records = $this->data->getAggregateTableData($partner_id, $county_id, $sub_county_id, $mfl_code);
         $marriage_records = $this->data->getAggregateMarriageData($partner_id, $county_id, $sub_county_id, $mfl_code);
+        $gender_records = $this->data->getAggregateGenderData($partner_id, $county_id, $sub_county_id, $mfl_code);
+        $condition_records = $this->data->getAggregateConditionData($partner_id, $county_id, $sub_county_id, $mfl_code);
 
 
         $data['data'] = $table_records;
         $data['marriage_records'] = $marriage_records;
+        $data['gender_records'] = $gender_records;
+        $data['condition_records'] = $condition_records;
         $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
         $data['facility_id'] = $facility_id;
@@ -162,7 +165,7 @@ class Home extends MY_Controller
         $data['filtered_partner'] = $this->get_partner_filters();
         $data['filtered_county'] = $this->get_county_filtered_values();
         $this->load->vars($data);
-        //echo json_encode($data);
+        //echo json_encode($condition_records);
         $this->load->template('Home/tablechart');
     }
 

@@ -4795,7 +4795,7 @@ ORDER BY tbl_module.order ASC";
         if (!empty($mfl_code)) {
             $this->db->where('mfl_code', $mfl_code);
         }
-      
+
         if ($access_level == 'Partner') {
             $this->db->where('partner_id', $partner_id);
         }
@@ -4894,6 +4894,80 @@ ORDER BY tbl_module.order ASC";
         $sub_county_id = $this->session->userdata('subcounty_id');
         $this->db->select('*');
         $this->db->from('mariage_distribution');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateGenderData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('gender_report');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateConditionData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('condition_report');
         if (!empty($partner)) {
             $this->db->where('partner_id', $partner);
         }
