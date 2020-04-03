@@ -78,7 +78,7 @@
                 <input type="text" name="date_to" id="date_to" class="form-control date_to input-rounded input-sm "
                     placeholder="Date To : " /> -->
 
-                    <button class="btn btn-default filter_highcharts_dashboard btn-round  btn-small btn-primary  " type="button" name="filter_highcharts_dashboard" id="filter_highcharts_dashboard"> <i class="fa fa-filter"></i>
+                    <button class="btn btn-default filter_tablecharts_dashboard btn-round  btn-small btn-primary  " type="button" name="filter_tablecharts_dashboard" id="filter_tablecharts_dashboard"> <i class="fa fa-filter"></i>
                         Filter</button>
 
             </form>
