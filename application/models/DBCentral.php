@@ -10,13 +10,12 @@ ini_set('memory_limit', '2048M');
 
 class DBCentral extends CI_Model
 {
-
-    function getAllData($table_name)
+    public function getAllData($table_name)
     {
         return $this->db->get("$table_name")->result_array();
     }
 
-    function get_Active_Data($table_name, $status)
+    public function get_Active_Data($table_name, $status)
     {
         return $this->db->get_where("$table_name", array("status" => "$status"))->result_array();
     }
@@ -29,15 +28,12 @@ class DBCentral extends CI_Model
     //        return $query->result();
     //    }
 
-    function search_master_facility($q)
+    public function search_master_facility($q)
     {
-
-
         $query = "Select * from tbl_master_facility where name like '%$q%' or code like'%$q%'";
         $query = $this->db->query($query);
 
         foreach ($query->result_array() as $value) {
-
             $new_row['label'] = htmlentities($value['code'] . "  " . $value['name']);
             $new_row['value'] = htmlentities($value['code']);
             $row_set[] = $new_row; //build an array
@@ -46,7 +42,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function search_incoming($search_value)
+    public function search_incoming($search_value)
     {
         // $this->output->enable_profiler(TRUE);
         $access_level = $this->session->userdata('access_level');
@@ -68,7 +64,7 @@ class DBCentral extends CI_Model
         return $query->result();
     }
 
-    function search_outgoing($search_value)
+    public function search_outgoing($search_value)
     {
         // $this->output->enable_profiler(TRUE);
         $access_level = $this->session->userdata('access_level');
@@ -90,7 +86,7 @@ class DBCentral extends CI_Model
         return $query->result();
     }
 
-    function search_audit_trail($search_value)
+    public function search_audit_trail($search_value)
     {
         // $this->output->enable_profiler(TRUE);
         $access_level = $this->session->userdata('access_level');
@@ -108,7 +104,7 @@ class DBCentral extends CI_Model
         return $query->result();
     }
 
-    function search_facility($search_value)
+    public function search_facility($search_value)
     {
         // $this->output->enable_profiler(TRUE);
         $access_level = $this->session->userdata('access_level');
@@ -120,7 +116,6 @@ class DBCentral extends CI_Model
 
         $this->db->select('tbl_master_facility.id as facility_id,tbl_master_facility.name as facility_name, tbl_master_facility.code as mfl_code,tbl_master_facility.county_id as county_id, tbl_master_facility.sub_county_id as sub_county_id,tbl_master_facility.consituency_id as consituentcy_id,tbl_master_facility.owner, county.name as county_name , sub_county.name as sub_county_name , consituency.name as consituency_name ');
         if ($access_level == 'County') {
-
             $this->db->where('tbl_master_facility.county_id', $county_id);
         }
         if ($access_level == 'Sub County') {
@@ -145,7 +140,6 @@ class DBCentral extends CI_Model
 
     public function commonGet($options)
     {
-
         $select = false;
         $table = false;
         $join = false;
@@ -161,19 +155,23 @@ class DBCentral extends CI_Model
 
         extract($options);
 
-        if ($select != false)
+        if ($select != false) {
             $this->db->select($select);
+        }
 
-        if ($table != false)
+        if ($table != false) {
             $this->db->from($table);
+        }
 
-        if ($where != false)
+        if ($where != false) {
             $this->db->where($where);
+        }
 
         if ($where_not_in != false) {
             foreach ($where_not_in as $key => $value) {
-                if (count($value) > 0)
+                if (count($value) > 0) {
                     $this->db->where_not_in($key, $value);
+                }
             }
         }
 
@@ -181,11 +179,11 @@ class DBCentral extends CI_Model
             $this->db->like($like);
         }
 
-        if ($or_where != false)
+        if ($or_where != false) {
             $this->db->or_where($or_where);
+        }
 
         if ($limit != false) {
-
             if (!is_array($limit)) {
                 $this->db->limit($limit);
             } else {
@@ -197,9 +195,7 @@ class DBCentral extends CI_Model
 
 
         if ($order != false) {
-
             foreach ($order as $key => $value) {
-
                 if (is_array($value)) {
                     foreach ($order as $orderby => $orderval) {
                         $this->db->order_by($orderby, $orderval);
@@ -212,18 +208,13 @@ class DBCentral extends CI_Model
 
 
         if ($group != false) {
-
-
             $this->db->group_by($group);
         }
 
 
         if ($join != false) {
-
             foreach ($join as $key => $value) {
-
                 if (is_array($value)) {
-
                     if (count($value) == 3) {
                         $this->db->join($value[0], $value[1], $value[2]);
                     } else {
@@ -248,7 +239,7 @@ class DBCentral extends CI_Model
         return $query->result();
     }
 
-    function Set_session($id)
+    public function Set_session($id)
     {
         $subcounty_id = "";
         $this->db->trans_start();
@@ -288,7 +279,7 @@ class DBCentral extends CI_Model
                         'user_id' => $id,
                         'Fullname' => $fname . ' ' . $mname . ' ' . $lname,
                         'email' => $email,
-                        'logged_in' => TRUE,
+                        'logged_in' => true,
                         'status' => $status,
                         'partner_id' => $partner_id,
                         'donor_id' => $donor_id,
@@ -301,8 +292,7 @@ class DBCentral extends CI_Model
                         'donor_name' => $donor_name
                     );
                 }
-            } else if (!empty($partner_id) and $partner_id > 0 and $access_level == 'Partner') {
-
+            } elseif (!empty($partner_id) and $partner_id > 0 and $access_level == 'Partner') {
                 $get_partner_logo = $this->db->get_where('partner', array('id' => $partner_id))->result();
                 foreach ($get_partner_logo as $value) {
                     $partner_logo = $value->name;
@@ -311,7 +301,7 @@ class DBCentral extends CI_Model
                         'user_id' => $id,
                         'Fullname' => $fname . ' ' . $mname . ' ' . $lname,
                         'email' => $email,
-                        'logged_in' => TRUE,
+                        'logged_in' => true,
                         'status' => $status,
                         'partner_id' => $partner_id,
                         'donor_id' => $donor_id,
@@ -325,7 +315,7 @@ class DBCentral extends CI_Model
                     );
                     $this->session->set_userdata($newsession);
                 }
-            } else if (!empty($county_id) and $county_id > 0 and $access_level == 'County') {
+            } elseif (!empty($county_id) and $county_id > 0 and $access_level == 'County') {
                 $get_county = $this->db->get_where('county', array('id' => $county_id))->result();
                 foreach ($get_county as $value) {
                     $county_name = $value->name;
@@ -334,7 +324,7 @@ class DBCentral extends CI_Model
                         'user_id' => $id,
                         'Fullname' => $fname . ' ' . $mname . ' ' . $lname,
                         'email' => $email,
-                        'logged_in' => TRUE,
+                        'logged_in' => true,
                         'status' => $status,
                         'partner_id' => $partner_id,
                         'donor_id' => $donor_id,
@@ -346,7 +336,7 @@ class DBCentral extends CI_Model
                         'county_name' => $county_name
                     );
                 }
-            } else if (!empty($subcounty_id) and $subcounty_id > 0 and $access_level == 'Sub County') {
+            } elseif (!empty($subcounty_id) and $subcounty_id > 0 and $access_level == 'Sub County') {
                 $get_sub_county = $this->db->get_where('sub_county', array('id' => $subcounty_id))->result();
                 foreach ($get_sub_county as $value) {
                     $sub_county_name = $value->name;
@@ -354,7 +344,7 @@ class DBCentral extends CI_Model
                         'user_id' => $id,
                         'Fullname' => $fname . ' ' . $mname . ' ' . $lname,
                         'email' => $email,
-                        'logged_in' => TRUE,
+                        'logged_in' => true,
                         'status' => $status,
                         'partner_id' => $partner_id,
                         'donor_id' => $donor_id,
@@ -367,12 +357,11 @@ class DBCentral extends CI_Model
                     );
                 }
             } else {
-
                 $newsession = array(
                     'user_id' => $id,
                     'Fullname' => $fname . ' ' . $mname . ' ' . $lname,
                     'email' => $email,
-                    'logged_in' => TRUE,
+                    'logged_in' => true,
                     'status' => $status,
                     'partner_id' => $partner_id,
                     'donor_id' => $donor_id,
@@ -385,7 +374,6 @@ class DBCentral extends CI_Model
                 );
             }
             if (!empty($facility_id) and $facility_id > 0 and $access_level == 'Facility') {
-
                 $get_facility_name = $this->db->get_where('master_facility', array('code' => $facility_id))->result();
                 foreach ($get_facility_name as $value) {
                     $facility_name = $value->name;
@@ -400,7 +388,7 @@ class DBCentral extends CI_Model
                             'user_id' => $id,
                             'Fullname' => $fname . ' ' . $mname . ' ' . $lname,
                             'email' => $email,
-                            'logged_in' => TRUE,
+                            'logged_in' => true,
                             'status' => $status,
                             'partner_id' => $partner_id,
                             'donor_id' => $donor_id,
@@ -426,12 +414,12 @@ class DBCentral extends CI_Model
             $this->log_action($description);
         }
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
+        if ($this->db->trans_status() === false) {
         } else {
         }
     }
 
-    function generate_otp($length = 6)
+    public function generate_otp($length = 6)
     {
         $str = "";
         $characters = array_merge(range('A', 'Z'), range('a', 'z'), range('0', '9'));
@@ -443,20 +431,17 @@ class DBCentral extends CI_Model
         return $str;
     }
 
-    function check_auth()
+    public function check_auth()
     {
-
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
 
 
         if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-
             $check_existence = $this->db->get_where('users', array('e_mail' => $username, 'status' => 'Active'))->num_rows();
             $get_user_pass = $this->db->get_where('users', array('e_mail' => $username, 'status' => 'Active'))->result_array();
         } else {
-
             $check_existence = $this->db->get_where('users', array('phone_no' => $username, 'status' => 'Active'))->num_rows();
             $get_user_pass = $this->db->get_where('users', array('phone_no' => $username, 'status' => 'Active'))->result_array();
         }
@@ -465,8 +450,6 @@ class DBCentral extends CI_Model
 
 
         if ($check_existence == 1) {
-
-
             foreach ($get_user_pass as $value) {
                 $pass = $value['password'];
                 $id = $value['id'];
@@ -476,10 +459,7 @@ class DBCentral extends CI_Model
                 $crypted_pass = crypt($password, $value['password']);
 
                 if ($crypted_pass === $pass) {
-
-
                     if ($first_access == 'Yes') {
-
                         $Set_session = $this->Set_session($user_id);
                     } else {
 
@@ -576,7 +556,6 @@ class DBCentral extends CI_Model
                         return 'Login success';
                     }
                 } else {
-
                     return 'Wrong password';
                 }
             }
@@ -585,7 +564,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function reset_password($password, $user_id)
+    public function reset_password($password, $user_id)
     {
         $this->db->trans_start();
         $new_password = $this->cryptPass($password);
@@ -600,28 +579,28 @@ class DBCentral extends CI_Model
         $this->db->where('id', $user_id);
         $this->db->update('users', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "User :$user_id reset his/her password.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function check_username($username)
+    public function check_username($username)
     {
         return $this->db->get_where('users', array('username' => $username))->result_array();
     }
 
-    function check_phoneno($phoneno)
+    public function check_phoneno($phoneno)
     {
         return $this->db->get_where('users', array('phone_no' => $phoneno));
     }
 
-    function assign_partner_facility($mfl_code, $status, $partner_id, $today)
+    public function assign_partner_facility($mfl_code, $status, $partner_id, $today)
     {
-        $avg_active_clients = $this->input->post('avg_active_clients', TRUE);
+        $avg_active_clients = $this->input->post('avg_active_clients', true);
         $user_id = $this->session->userdata('user_id');
         $this->db->trans_start();
         $assigned = 1;
@@ -658,45 +637,45 @@ class DBCentral extends CI_Model
 
 
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Assigned partner a facility with MFL Code : $mfl_code.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function check_email($e_mail)
+    public function check_email($e_mail)
     {
         return $this->db->get_where('users', array('e_mail' => $e_mail));
     }
 
-    function check_user()
+    public function check_user()
     {
-        $f_name = $this->input->post('f_name', TRUE);
-        $l_name = $this->input->post('m_name', TRUE);
-        $m_name = $this->input->post('l_name', TRUE);
-        $status = $this->input->post('status', TRUE);
-        $partner_id = $this->input->post('partner_id', TRUE);
-        $facility_id = $this->input->post('facility_id', TRUE);
-        $donor_id = $this->input->post('donor_id', TRUE);
+        $f_name = $this->input->post('f_name', true);
+        $l_name = $this->input->post('m_name', true);
+        $m_name = $this->input->post('l_name', true);
+        $status = $this->input->post('status', true);
+        $partner_id = $this->input->post('partner_id', true);
+        $facility_id = $this->input->post('facility_id', true);
+        $donor_id = $this->input->post('donor_id', true);
         $dob = $this->input->post('dob');
         $e_mail = $this->input->post('e_mail');
         $phone_no = $this->input->post('phone_no');
-        $access_level = $this->input->post('access_level', TRUE);
-        $daily_report = $this->input->post('daily_report', TRUE);
-        $weekly_report = $this->input->post('weekly_report', TRUE);
-        $monthly_report = $this->input->post('monthly_report', TRUE);
-        $month3_report = $this->input->post('month3_report', TRUE);
-        $month6_report = $this->input->post('month6_report', TRUE);
-        $yearly_report = $this->input->post('yearly_report', TRUE);
-        $role_names = $this->input->post('role_names', TRUE);
-        $view_bio_data = $this->input->post('bio_data', TRUE);
-        $rcv_app_list = $this->input->post('rcv_app_list', TRUE);
-        $county_id = $this->input->post('county_id', TRUE);
-        $sub_county_id = $this->input->post('subcounty_id', TRUE);
-        $clinic_id = $this->input->post('clinic_id', TRUE);
+        $access_level = $this->input->post('access_level', true);
+        $daily_report = $this->input->post('daily_report', true);
+        $weekly_report = $this->input->post('weekly_report', true);
+        $monthly_report = $this->input->post('monthly_report', true);
+        $month3_report = $this->input->post('month3_report', true);
+        $month6_report = $this->input->post('month6_report', true);
+        $yearly_report = $this->input->post('yearly_report', true);
+        $role_names = $this->input->post('role_names', true);
+        $view_bio_data = $this->input->post('bio_data', true);
+        $rcv_app_list = $this->input->post('rcv_app_list', true);
+        $county_id = $this->input->post('county_id', true);
+        $sub_county_id = $this->input->post('subcounty_id', true);
+        $clinic_id = $this->input->post('clinic_id', true);
         $today = date("Y-m-d H:i:s");
 
         $check_dob = str_replace('/', '-', $dob);
@@ -723,7 +702,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function add_user($created_by, $f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_names, $view_bio_data, $rcv_app_list, $county_id, $sub_county_id, $clinic_id)
+    public function add_user($created_by, $f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_names, $view_bio_data, $rcv_app_list, $county_id, $sub_county_id, $clinic_id)
     {
         if (empty($clinic_id)) {
             $clinic_id = '1';
@@ -787,7 +766,6 @@ class DBCentral extends CI_Model
                 );
             }
         } elseif ($access_level == "Facility") {
-
             $partner_id = $this->db->get_where('partner_facility', array('mfl_code' => $facility_id))->result();
             foreach ($partner_id as $value) {
                 $new_partner_id = $value->partner_id;
@@ -820,7 +798,6 @@ class DBCentral extends CI_Model
                 );
             }
         } elseif ($access_level == "County") {
-
             $partner_id = $this->db->get_where('partner_facility', array('county_id' => $county_id))->result();
             foreach ($partner_id as $value) {
                 $new_partner_id = $value->partner_id;
@@ -927,13 +904,13 @@ class DBCentral extends CI_Model
             $this->db->insert('user_permission', $data);
         }
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         }
     }
 
 
-    function delete_user_roles($user_id)
+    public function delete_user_roles($user_id)
     {
         $this->db->trans_start();
         $query = $this->db->query("select id from tbl_user_permission where user_id='$user_id'");
@@ -942,15 +919,14 @@ class DBCentral extends CI_Model
             $this->db->delete('user_permission', array('id' => $id));
         }
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
-            return TRUE;
+            return true;
         }
     }
 
-    function update_user($f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $user_id, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_name)
+    public function update_user($f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $user_id, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_name)
     {
         //  echo 'Output => f NAME => ' . $f_name . '</br> m NAME ' . $m_name . '</br> L NAME ' . $l_name . '</br> DOB  ' . $dob . '</br> EMAIL ' . $e_mail . '</br> STATUS ' . $status . '</br> PARTNER ID ' . $partner_id . '</br> DONOR ID  ' . $donor_id . '</br> FACILTY ID  ' . $facility_id . '</br> TODAY  ' . $today . '</br> PHONE NO  ' . $phone_no . '</br> USER ID  ' . $user_id . '</br> ACCESS LEVEL  ' . $access_level . '</br> DAILY REPORT ' .
         // $daily_report . '</br> WEEKLY REPORT ' . $weekly_report . '</br> MONTHLY REPORT ' . $monthly_report . '</br> MONTH 3 REPORT  ' . $month3_report . '</br> MONTH 6 REPORT  ' . $month6_report . '</br> YEARLY REPORT  ' . $yearly_report . '</br> ROLE ID  ' . $role_name;
@@ -1013,7 +989,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function edit_user($f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $user_id, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_name, $view_bio_data, $rcv_app_list, $county_id, $subcounty_id, $clinic_id)
+    public function edit_user($f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $user_id, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_name, $view_bio_data, $rcv_app_list, $county_id, $subcounty_id, $clinic_id)
     {
         if (empty($clinic_id)) {
             $clinic_id = '3';
@@ -1037,7 +1013,6 @@ class DBCentral extends CI_Model
             $msg = "Under Age";
             return $msg;
         } else {
-
             if ($check_email_existence > 1 or $check_phoneno_existence > 1) {
                 $get_email_count = $check_email->results();
                 $get_phoneno_count = $check_phoneno->results();
@@ -1059,16 +1034,11 @@ class DBCentral extends CI_Model
                 }
                 return $msg;
             } else {
-
                 $this->db->trans_start();
 
 
                 if ($access_level == "Partner") {
-
                     if (empty($facility_id)) {
-
-
-
                         $post_data = array(
                             'f_name' => $f_name,
                             'm_name' => $m_name,
@@ -1092,7 +1062,6 @@ class DBCentral extends CI_Model
                         $this->db->where('id', $user_id);
                         $this->db->update('users', $post_data);
                     } else {
-
                         $new_partner_id = $this->session->userdata('partner_id');
                         if ($new_partner_id == '0') {
                             $partner_id = $partner_id;
@@ -1155,7 +1124,6 @@ class DBCentral extends CI_Model
                         $this->db->update('users', $post_data);
                     }
                 } elseif ($access_level == "County") {
-
                     $post_data = array(
                         'f_name' => $f_name,
                         'm_name' => $m_name,
@@ -1180,7 +1148,6 @@ class DBCentral extends CI_Model
                     $this->db->where('id', $user_id);
                     $this->db->update('users', $post_data);
                 } elseif ($access_level == "Sub County") {
-
                     $post_data = array(
                         'f_name' => $f_name,
                         'm_name' => $m_name,
@@ -1205,7 +1172,6 @@ class DBCentral extends CI_Model
                     $this->db->where('id', $user_id);
                     $this->db->update('users', $post_data);
                 } elseif ($access_level == "Donor") {
-
                     $post_data = array(
                         'f_name' => $f_name,
                         'm_name' => $m_name,
@@ -1229,7 +1195,6 @@ class DBCentral extends CI_Model
                     $this->db->where('id', $user_id);
                     $this->db->update('users', $post_data);
                 } elseif ($access_level == "Admin") {
-
                     $post_data = array(
                         'f_name' => $f_name,
                         'm_name' => $m_name,
@@ -1252,7 +1217,6 @@ class DBCentral extends CI_Model
                     $this->db->where('id', $user_id);
                     $this->db->update('users', $post_data);
                 } else {
-
                     $post_data = array(
                         'f_name' => $f_name,
                         'm_name' => $m_name,
@@ -1277,7 +1241,7 @@ class DBCentral extends CI_Model
                 }
 
                 $this->db->trans_complete();
-                if ($this->db->trans_status() === FALSE) {
+                if ($this->db->trans_status() === false) {
                 } else {
                     $description = "User details updated  for User ID : $user_id";
                     $this->log_action($description);
@@ -1326,7 +1290,7 @@ class DBCentral extends CI_Model
                                         $this->db->insert('user_permission', $data_insert);
 
                                         $this->db->trans_complete();
-                                        if ($this->db->trans_status() === FALSE) {
+                                        if ($this->db->trans_status() === false) {
                                         } else {
                                             $description = "New User permissions created  for User ID : $user_id";
                                             $this->log_action($description);
@@ -1335,7 +1299,7 @@ class DBCentral extends CI_Model
                                 }
                             } else {
                                 //echo '1=> Role has changed    2=> Update table user permission mark all permission to be active <br> ';
-                                //Role has changed 
+                                //Role has changed
                                 //Update table user permission mark all permission to be active
                                 $get_current_user_permission_qry = $this->db->query("Select * from tbl_user_permission where user_id='$user_id' and role_id='$role_id'  ")->result();
                                 foreach ($get_current_user_permission_qry as $value) {
@@ -1349,7 +1313,7 @@ class DBCentral extends CI_Model
                                     $this->db->where('id', $user_pessmision_id);
                                     $this->db->update('user_permission', $user_permission_update);
                                     $this->db->trans_complete();
-                                    if ($this->db->trans_status() === FALSE) {
+                                    if ($this->db->trans_status() === false) {
                                     } else {
                                         $description = "User permissions updated  for User ID : $user_id";
                                         $this->log_action($description);
@@ -1375,7 +1339,7 @@ class DBCentral extends CI_Model
                                     $this->db->insert('user_permission', $user_permission_insert);
 
                                     $this->db->trans_complete();
-                                    if ($this->db->trans_status() === FALSE) {
+                                    if ($this->db->trans_status() === false) {
                                     } else {
                                         $description = "New User permissions created  for User ID : $user_id";
                                         $this->log_action($description);
@@ -1409,7 +1373,7 @@ class DBCentral extends CI_Model
                                 } else {
                                     //echo 'Do something ....';
                                     //echo 'User permission ID => ' . $user_permission_id . '<br>';
-                                    //Update the  user permission from 
+                                    //Update the  user permission from
                                     $this->db->trans_start();
                                     $data_array = array(
                                         'status' => 'Disabled',
@@ -1418,7 +1382,7 @@ class DBCentral extends CI_Model
                                     $this->db->where('id', $user_permission_id);
                                     $this->db->update('user_permission', $data_array);
                                     $this->db->trans_complete();
-                                    if ($this->db->trans_status() === FALSE) {
+                                    if ($this->db->trans_status() === false) {
                                     } else {
                                         $description = "User permissions updated  for User ID : $user_id";
                                         $this->log_action($description);
@@ -1429,7 +1393,7 @@ class DBCentral extends CI_Model
                         }
                     } else {
                         //Role Does not Exist
-                        //Role has changed 
+                        //Role has changed
                         //Update table user permission mark all permission to be active
                         //echo '1=> Role Does not Exist Role has changed   Update table user permission mark all permission to be active <br>  ';
                         $get_current_user_permission_qry = $this->db->query("Select * from tbl_user_permission where user_id='$user_id' ")->result();
@@ -1444,7 +1408,7 @@ class DBCentral extends CI_Model
                             $this->db->where('id', $user_pessmision_id);
                             $this->db->update('user_permission', $user_permission_update);
                             $this->db->trans_complete();
-                            if ($this->db->trans_status() === FALSE) {
+                            if ($this->db->trans_status() === false) {
                             } else {
                                 $description = "User permissions updated  for User ID : $user_id";
                                 $this->log_action($description);
@@ -1470,24 +1434,24 @@ class DBCentral extends CI_Model
                             $this->db->insert('user_permission', $user_permission_insert);
 
                             $this->db->trans_complete();
-                            if ($this->db->trans_status() === FALSE) {
-                                return FALSE;
+                            if ($this->db->trans_status() === false) {
+                                return false;
                             } else {
                                 $description = "New user permissions created  for User ID : $user_id";
                                 $this->log_action($description);
-                                return TRUE;
+                                return true;
                             }
                         }
                     }
                 }
 
 
-                return TRUE;
+                return true;
             }
         }
     }
 
-    function edit_partner_facility($mfl_code, $partner_name, $avg_clients, $partner_facility_id, $today)
+    public function edit_partner_facility($mfl_code, $partner_name, $avg_clients, $partner_facility_id, $today)
     {
         $this->db->trans_start();
         $status = "Active";
@@ -1500,16 +1464,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $partner_facility_id);
         $this->db->update('partner_facility', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated :$partner_facility_id  from the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_partner_facility($partner_facility_id)
+    public function delete_partner_facility($partner_facility_id)
     {
         $this->db->trans_start();
         $get_mfl_code = $this->db->get_where('partner_facility', array('id' => $partner_facility_id));
@@ -1522,17 +1486,17 @@ class DBCentral extends CI_Model
                 $this->db->where('code', $mfl_code);
                 $this->db->update('master_facility', $data_update);
                 $this->db->trans_complete();
-                if ($this->db->trans_status() === FALSE) {
+                if ($this->db->trans_status() === false) {
                 } else {
                     $this->db->trans_start();
                     $this->db->delete('partner_facility', array('id' => $partner_facility_id));
                     $this->db->trans_complete();
-                    if ($this->db->trans_status() === FALSE) {
-                        return FALSE;
+                    if ($this->db->trans_status() === false) {
+                        return false;
                     } else {
                         $description = "Permanently deleted :$partner_facility_id  from the  system.";
                         $this->log_action($description);
-                        return TRUE;
+                        return true;
                     }
                 }
             }
@@ -1540,7 +1504,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function delete_user($user_id)
+    public function delete_user($user_id)
     {
         $this->db->trans_start();
         $status = "Disabled";
@@ -1550,16 +1514,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $user_id);
         $this->db->update('users', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporarily deleted :$user_id  from the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function reset_user($user_id)
+    public function reset_user($user_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $get_user_details = $this->db->get_where('users', array('id' => $user_id));
@@ -1579,18 +1543,18 @@ class DBCentral extends CI_Model
                 $this->db->where('id', $user_id);
                 $this->db->update('users', $post_data);
                 $this->db->trans_complete();
-                if ($this->db->trans_status() === FALSE) {
-                    return FALSE;
+                if ($this->db->trans_status() === false) {
+                    return false;
                 } else {
                     $description = "Password reset for User ID : $user_id in the  System .";
                     $this->log_action($description);
-                    return TRUE;
+                    return true;
                 }
             endforeach;
         endif;
     }
 
-    function cryptPass($input, $rounds = 9)
+    public function cryptPass($input, $rounds = 9)
     {
         $salt = "";
         $saltChars = array_merge(range('A', 'Z'), range('a', 'z'), range(0, 9));
@@ -1600,7 +1564,7 @@ class DBCentral extends CI_Model
         return crypt($input, sprintf("$2y$%02d$", $rounds) . $salt);
     }
 
-    function add_module($name, $controller, $function, $status, $today, $level, $description, $span, $icon)
+    public function add_module($name, $controller, $function, $status, $today, $level, $description, $span, $icon)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1619,16 +1583,16 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('module', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added Module $name  to the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_module($module_id, $name, $controller, $function, $status, $today, $level, $description, $span, $icon)
+    public function edit_module($module_id, $name, $controller, $function, $status, $today, $level, $description, $span, $icon)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1648,16 +1612,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $module_id);
         $this->db->update('module', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated  Module $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_module($module_id)
+    public function delete_module($module_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1669,16 +1633,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $module_id);
         $this->db->update('module', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporarily deleted  Module ID $module_id  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function add_partner($name, $description, $location, $status, $partner_type_id, $e_mail, $phone_no, $today)
+    public function add_partner($name, $description, $location, $status, $partner_type_id, $e_mail, $phone_no, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1695,16 +1659,16 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('partner', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added  Partner $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_partner($partner_id, $name, $description, $location, $status, $partner_type_id, $e_mail, $phone_no, $today)
+    public function edit_partner($partner_id, $name, $description, $location, $status, $partner_type_id, $e_mail, $phone_no, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1722,17 +1686,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $partner_id);
         $this->db->update('partner', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated  Partner $name  details in  the  system.";
 
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_partner($partner_id)
+    public function delete_partner($partner_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1744,16 +1708,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $partner_id);
         $this->db->update('partner', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Teemporarily deleted  Partner $partner_id  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function add_role($name, $description, $status, $access_level, $today)
+    public function add_role($name, $description, $status, $access_level, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1767,16 +1731,16 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('role', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added  Role $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_role($role_id, $name, $description, $status, $access_level, $today)
+    public function edit_role($role_id, $name, $description, $status, $access_level, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1790,16 +1754,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $role_id);
         $this->db->update('role', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated  Role $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_role($role_id)
+    public function delete_role($role_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1811,18 +1775,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $role_id);
         $this->db->update('role', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporarily deleted Role ID $role_id  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function add_donor($name, $description, $status, $e_mail, $phone_no, $today)
+    public function add_donor($name, $description, $status, $e_mail, $phone_no, $today)
     {
-
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
         $post_data = array(
@@ -1836,16 +1799,16 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('donor', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added  Donor $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_donor($donor_id, $name, $description, $status, $e_mail, $phone_no)
+    public function edit_donor($donor_id, $name, $description, $status, $e_mail, $phone_no)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1860,16 +1823,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $donor_id);
         $this->db->update('donor', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated  Donor $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_donor($donor_id)
+    public function delete_donor($donor_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1881,16 +1844,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $donor_id);
         $this->db->update('donor', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporarily deleted Donor ID $donor_id  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function add_group($name, $description, $status, $today)
+    public function add_group($name, $description, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1903,16 +1866,16 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('groups', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added  Group $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_group($group_id, $name, $description, $status)
+    public function edit_group($group_id, $name, $description, $status)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1925,16 +1888,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $group_id);
         $this->db->update('groups', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated  Group $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_group($group_id)
+    public function delete_group($group_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1946,16 +1909,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $group_id);
         $this->db->update('groups', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporarily deleted Group ID $group_id  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function add_county($name, $code, $status, $today)
+    public function add_county($name, $code, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1968,16 +1931,16 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('county', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added  Group $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_county($county_id, $name, $code, $status)
+    public function edit_county($county_id, $name, $code, $status)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -1990,16 +1953,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $county_id);
         $this->db->update('county', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated  Group $name  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_county($county_id)
+    public function delete_county($county_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2011,16 +1974,16 @@ class DBCentral extends CI_Model
         $this->db->where('id', $county_id);
         $this->db->update('county', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporarily deleted Group ID $county_id  details in  the  system.";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function add_sender($name, $status, $today)
+    public function add_sender($name, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2032,18 +1995,17 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('sender', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Added  Language $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_sender($sender_id, $name, $status, $today)
+    public function edit_sender($sender_id, $name, $status, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2056,18 +2018,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $sender_id);
         $this->db->update('sender', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Updated  Language $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_sender($sender_id)
+    public function delete_sender($sender_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2079,17 +2040,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $sender_id);
         $this->db->update('sender', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporariy deleted  Language $sender_id  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function add_language($name, $status, $today)
+    public function add_language($name, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2101,18 +2062,17 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('language', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Added  Language $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_language($language_id, $name, $status, $today)
+    public function edit_language($language_id, $name, $status, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2125,18 +2085,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $language_id);
         $this->db->update('language', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Updated  Language $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_language($language_id)
+    public function delete_language($language_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2148,17 +2107,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $language_id);
         $this->db->update('language', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporariy deleted  Language $language_id  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function add_frequency($name, $status, $today)
+    public function add_frequency($name, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2170,18 +2129,17 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('frequency', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Added  Frequency  $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_frequency($frequency_id, $name, $status, $today)
+    public function edit_frequency($frequency_id, $name, $status, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2194,18 +2152,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $frequency_id);
         $this->db->update('frequency', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Updated   Frequency $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_frequency($frequency_id)
+    public function delete_frequency($frequency_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2217,18 +2174,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $frequency_id);
         $this->db->update('frequency', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Temporarily deleted $frequency_id  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function add_time($name, $status, $today)
+    public function add_time($name, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2240,18 +2196,17 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('time', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Added  Time  $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_time($time_id, $name, $status, $today)
+    public function edit_time($time_id, $name, $status, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2264,18 +2219,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $time_id);
         $this->db->update('time', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Updated   Time $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_time($time_id)
+    public function delete_time($time_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2287,18 +2241,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $time_id);
         $this->db->update('time', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Temporarily deleted $time_id  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function add_content($content, $response, $status, $message_type_id, $language_id, $groups_id, $today)
+    public function add_content($content, $response, $status, $message_type_id, $language_id, $groups_id, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2314,18 +2267,17 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('content', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Added  Content $content  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_content($content_id, $content, $response, $status, $message_type_id, $language_id, $groups_id, $today)
+    public function edit_content($content_id, $content, $response, $status, $message_type_id, $language_id, $groups_id, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2342,18 +2294,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $content_id);
         $this->db->update('content', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Updated  Content $content  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_content($content_id)
+    public function delete_content($content_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2365,18 +2316,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $content_id);
         $this->db->update('content', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Temporarily deleted content ID :  $content_id  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function add_message($message, $response, $status, $message_type_id, $language_id, $groups_id, $today)
+    public function add_message($message, $response, $status, $message_type_id, $language_id, $groups_id, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2391,18 +2341,17 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('messages', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Added  Content $message  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_message($message_id, $message, $response, $status, $message_type_id, $language_id, $groups_id, $today)
+    public function edit_message($message_id, $message, $response, $status, $message_type_id, $language_id, $groups_id, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2418,18 +2367,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $message_id);
         $this->db->update('messages', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Updated  Content $message  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_message($message_id)
+    public function delete_message($message_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -2441,18 +2389,17 @@ class DBCentral extends CI_Model
         $this->db->where('id', $message_id);
         $this->db->update('messages', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Temporarily deleted message ID :  $message_id  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function add_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $sent_flag, $status, $gender, $marital, $enrollment_date, $art_date, $motivational_enable)
+    public function add_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $sent_flag, $status, $gender, $marital, $enrollment_date, $art_date, $motivational_enable)
     {
         // $check_clinic_number = $this->db->get_where('client', array('clinic_number' => $clinic_number))->num_rows();
         $created_by = $this->session->userdata('user_id');
@@ -2461,12 +2408,8 @@ class DBCentral extends CI_Model
         $check_clinic_number = $this->db->get_where('client', array('clinic_number' => $upn))->num_rows();
 
         if ($check_clinic_number > 0) {
-            return TRUE;
+            return true;
         } else {
-
-
-
-
             $this->db->trans_start();
             $enrollment_date2 = $enrollment_date;
 
@@ -2499,7 +2442,6 @@ class DBCentral extends CI_Model
 
             if (empty($art_date)) {
             } else {
-
                 $art_date = str_replace('/', '-', $art_date);
                 $art_date = date("Y-m-d", strtotime($art_date));
 
@@ -2531,7 +2473,6 @@ class DBCentral extends CI_Model
 
             if (empty($art_date) and empty($enrollment_date)) {
             } else {
-
                 $check_art_date = str_replace('/', '-', $art_date);
                 $check_art_date = date("Y-m-d", strtotime($check_art_date));
                 $unix_art_date = strtotime($check_art_date);
@@ -2561,7 +2502,7 @@ class DBCentral extends CI_Model
                 $client_type = "New";
             } elseif ($registration_type == "Transfer") {
                 $client_type = "Transfer";
-                $facility_id = $this->input->post('facility_id', TRUE);
+                $facility_id = $this->input->post('facility_id', true);
 
                 $upn = $facility_id . $clinic_number;
             }
@@ -2584,7 +2525,7 @@ class DBCentral extends CI_Model
             if ($diff >= 3650 and $diff <= 6935) {
                 //Adolescent
                 $category .= 2;
-            } else if ($diff >= 7300) {
+            } elseif ($diff >= 7300) {
                 //Adult
                 $category .= 1;
             }
@@ -2663,9 +2604,8 @@ class DBCentral extends CI_Model
 
 
             $this->db->trans_complete();
-            if ($this->db->trans_status() === FALSE) {
-
-                return FALSE;
+            if ($this->db->trans_status() === false) {
+                return false;
             } else {
                 $this->db->trans_start();
 
@@ -2676,7 +2616,7 @@ class DBCentral extends CI_Model
                 $this->db->update('client', $data_update);
 
                 $this->db->trans_complete();
-                if ($this->db->trans_status() === FALSE) {
+                if ($this->db->trans_status() === false) {
                 } else {
                 }
                 $description = "Added  Client $clinic_number  details in  the  system.";
@@ -2685,12 +2625,12 @@ class DBCentral extends CI_Model
                 $description = "Booked  Client $clinic_number for an appointment on $appdate in  the  system.";
                 $this->log_action($description);
 
-                return TRUE;
+                return true;
             }
         }
     }
 
-    function transfer_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $sent_flag, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable)
+    public function transfer_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $sent_flag, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable)
     {
         $this->db->trans_start();
 
@@ -2725,7 +2665,6 @@ class DBCentral extends CI_Model
 
         if (empty($art_date)) {
         } else {
-
             $art_date = str_replace('/', '-', $art_date);
             $art_date = date("Y-m-d", strtotime($art_date));
 
@@ -2757,7 +2696,6 @@ class DBCentral extends CI_Model
 
         if (empty($art_date) and empty($enrollment_date)) {
         } else {
-
             $check_art_date = str_replace('/', '-', $art_date);
             $check_art_date = date("Y-m-d", strtotime($check_art_date));
             $unix_art_date = strtotime($check_art_date);
@@ -2780,12 +2718,12 @@ class DBCentral extends CI_Model
 
         if ($registration_type == "New") {
             $client_type = "Transfer";
-            $facility_id = $this->input->post('facility_id', TRUE);
+            $facility_id = $this->input->post('facility_id', true);
 
             $upn = $facility_id . $clinic_number;
         } elseif ($registration_type == "Transfer") {
             $client_type = "Transfer";
-            $facility_id = $this->input->post('facility_id', TRUE);
+            $facility_id = $this->input->post('facility_id', true);
 
             $upn = $facility_id . $clinic_number;
         }
@@ -2798,7 +2736,6 @@ class DBCentral extends CI_Model
             $get_client_results = $check_clinic_no->result();
 
             foreach ($get_client_results as $value) {
-
                 $client_id = $value->id;
                 $previous_mfl_no = $value->mfl_code;
                 $partner_id = $this->session->userdata('partner_id');
@@ -2842,7 +2779,7 @@ class DBCentral extends CI_Model
             //Insert
 
 
-            $facility_id = $this->input->post('facility_id', TRUE);
+            $facility_id = $this->input->post('facility_id', true);
             $partner_id = $this->session->userdata('partner_id');
             ///$mfl_code = $this->session->userdata('facility_id');
             $post_data = array(
@@ -2910,8 +2847,8 @@ class DBCentral extends CI_Model
 
 
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added  Client $clinic_number  details in  the  system.";
             $this->log_action($description);
@@ -2919,11 +2856,11 @@ class DBCentral extends CI_Model
             $description = "Booked  Client $clinic_number for an appointment on $appdate in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function get_welcome_message($language, $message_type)
+    public function get_welcome_message($language, $message_type)
     {
         $content = array(
             'select' => 'content,content.id',
@@ -2937,7 +2874,7 @@ class DBCentral extends CI_Model
         return $data;
     }
 
-    function get_sender($partner_id)
+    public function get_sender($partner_id)
     {
         $sender = array(
             'select' => 'name',
@@ -2953,7 +2890,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function get_outgoing_sms($language_id, $group_id, $message_type, $identifier)
+    public function get_outgoing_sms($language_id, $group_id, $message_type, $identifier)
     {
         $content = array(
             'select' => 'content',
@@ -2971,7 +2908,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable, $app_kept)
+    public function update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable, $app_kept)
     {
         $this->db->trans_start();
 
@@ -2980,17 +2917,12 @@ class DBCentral extends CI_Model
         $user_id = $this->session->userdata('user_id');
         if (empty($enrollment_date) and empty($art_date)) {
         } elseif (empty($enrollment_date) and !empty($art_date)) {
-
-
             $art_date = str_replace('/', '-', $art_date);
             $art_date = date("Y-m-d", strtotime($art_date));
         } elseif (!empty($enrollment_date) and empty($art_date)) {
-
             $enrollment_date = str_replace('/', '-', $enrollment_date);
             $enrollment_date = date("Y-m-d", strtotime($enrollment_date));
         } else {
-
-
             $art_date = str_replace('/', '-', $art_date);
             $art_date = date("Y-m-d", strtotime($art_date));
             $enrollment_date = str_replace('/', '-', $enrollment_date);
@@ -3018,7 +2950,7 @@ class DBCentral extends CI_Model
         if ($diff >= 3650 and $diff <= 6935) {
             //Adolescent
             $category .= 2;
-        } else if ($diff >= 7300) {
+        } elseif ($diff >= 7300) {
             //Adult
             $category .= 1;
         }
@@ -3073,7 +3005,6 @@ class DBCentral extends CI_Model
 
         if (empty($appdate)) {
         } else {
-
             $appdate = str_replace('/', '-', $appdate);
             $new_appdate = date("Y-m-d", strtotime($appdate));
 
@@ -3082,10 +3013,8 @@ class DBCentral extends CI_Model
 
 
             if ($check_appointment_existense > 0) {
-
                 $appointment_query = $appointment_existense->result();
                 foreach ($appointment_query as $value) {
-
                     $sent_flag = "0";
                     $id = $value->id;
                     $client_id = $value->client_id;
@@ -3115,8 +3044,6 @@ class DBCentral extends CI_Model
 
 
                 if ($smsenable == "Yes" and !empty($appdate)) {
-
-
                     $appnt_data = array(
                         'updated_by' => $user_id,
                         'appointment_kept' => $app_kept,
@@ -3126,8 +3053,6 @@ class DBCentral extends CI_Model
                     $this->db->where('app_type_1', $app_type_1);
                     $this->db->update('appointment', $appnt_data);
                 } else {
-
-
                     $appnt_data = array(
                         'updated_by' => $user_id,
                         'appointment_kept' => $app_kept,
@@ -3179,8 +3104,8 @@ class DBCentral extends CI_Model
 
 
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Updated client no $clinic_number details in the  system.";
             $this->log_action($description);
@@ -3189,16 +3114,16 @@ class DBCentral extends CI_Model
             $description = "Updated appointment for client no $clinic_number to $appdate in the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function add_appointment()
+    public function add_appointment()
     {
         $this->db->trans_start();
-        $client_id = $this->input->post('client_id', TRUE);
-        $app_date = $this->input->post('appointment_date', TRUE);
-        $app_type_1 = $this->input->post('appointment_type', TRUE);
+        $client_id = $this->input->post('client_id', true);
+        $app_date = $this->input->post('appointment_date', true);
+        $app_type_1 = $this->input->post('appointment_type', true);
         $transacted_by = $this->session->userdata('user_id');
 
         $appdate = str_replace('/', '-', $app_date);
@@ -3210,7 +3135,7 @@ class DBCentral extends CI_Model
 
 
         if ($get_client_row > 0) {
-            //Update client Appointemnt 
+            //Update client Appointemnt
             $get_client_result = $get_client->result();
             foreach ($get_client_result as $appointment_value) {
                 $id = $appointment_value->id;
@@ -3312,17 +3237,15 @@ class DBCentral extends CI_Model
 
 
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
-            return TRUE;
+            return true;
         }
     }
 
-    function update_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type_1)
+    public function update_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type_1)
     {
-
         $appointment_type = $this->db->get_where('appointment', array('client_id' => $client_id, 'app_type_1' => $app_type_1, 'active_app' => '1'));
         $check_appointment_existence = $appointment_type->num_rows();
 
@@ -3435,11 +3358,10 @@ class DBCentral extends CI_Model
             }
 
             $this->db->trans_complete();
-            if ($this->db->trans_status() === FALSE) {
-                return FALSE;
+            if ($this->db->trans_status() === false) {
+                return false;
             } else {
-
-                return TRUE;
+                return true;
             }
         } else {
             //New Appointment, do an insert
@@ -3464,9 +3386,8 @@ class DBCentral extends CI_Model
         }
     }
 
-    function edit_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type)
+    public function edit_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type)
     {
-
         $appointment_type = $this->db->get_where('appointment', array('id' => $appointment_id));
         $check_appointment_existence = $appointment_type->num_rows();
 
@@ -3576,11 +3497,10 @@ class DBCentral extends CI_Model
             }
 
             $this->db->trans_complete();
-            if ($this->db->trans_status() === FALSE) {
-                return FALSE;
+            if ($this->db->trans_status() === false) {
+                return false;
             } else {
-
-                return TRUE;
+                return true;
             }
         } else {
             //New Appointment, do an insert
@@ -3605,13 +3525,13 @@ class DBCentral extends CI_Model
         }
     }
 
-    function send_manual_sms($client_id, $destination, $msg)
+    public function send_manual_sms($client_id, $destination, $msg)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
 
         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
-        $this->config->load('config', TRUE);
+        $this->config->load('config', true);
         // Retrieve a config item named site_name contained within the blog_settings array
         $source = $this->config->item('shortcode', 'config');
 
@@ -3634,40 +3554,35 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('clnt_outgoing', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Sent a manual SMS to $destination through the System.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function get_all_active_clients($group)
+    public function get_all_active_clients($group)
     {
-
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
 
 
         if ($group == "All") {
-
             if ($access_level == "Partner") {
-
                 $client_options = array(
                     'table' => 'client',
                     'where' => array('status' => 'Active', 'client.partner_id' => $partner_id)
                 );
             } elseif ($access_level == "Facility") {
-
                 $client_options = array(
                     'table' => 'client',
                     'where' => array('status' => 'Active', 'mfl_code' => $facility_id)
                 );
             } else {
-
                 $client_options = array(
                     'table' => 'client',
                     'where' => array('status' => 'Active')
@@ -3675,21 +3590,17 @@ class DBCentral extends CI_Model
             }
         } else {
             if (empty($group)) {
-
                 if ($access_level == "Partner") {
-
                     $client_options = array(
                         'table' => 'client',
                         'where' => array('status' => 'Active', 'client.partner_id' => $partner_id)
                     );
                 } elseif ($access_level == "Facility") {
-
                     $client_options = array(
                         'table' => 'client',
                         'where' => array('status' => 'Active', 'mfl_code' => $facility_id)
                     );
                 } else {
-
                     $client_options = array(
                         'table' => 'client',
                         'where' => array('status' => 'Active')
@@ -3697,19 +3608,16 @@ class DBCentral extends CI_Model
                 }
             } else {
                 if ($access_level == "Partner") {
-
                     $client_options = array(
                         'table' => 'client',
                         'where' => array('status' => 'Active', 'client.partner_id' => $partner_id)
                     );
                 } elseif ($access_level == "Facility") {
-
                     $client_options = array(
                         'table' => 'client',
                         'where' => array('status' => 'Active', 'mfl_code' => $facility_id)
                     );
                 } else {
-
                     $client_options = array(
                         'table' => 'client',
                         'where' => array('status' => 'Active')
@@ -3724,7 +3632,7 @@ class DBCentral extends CI_Model
         return $client_data;
     }
 
-    function get_all_active_users($target_access_level, $county_id, $sub_county_id, $mfl_code)
+    public function get_all_active_users($target_access_level, $county_id, $sub_county_id, $mfl_code)
     {
         // $this->output->enable_profiler(TRUE);
         $partner_id = $this->session->userdata('partner_id');
@@ -3732,11 +3640,11 @@ class DBCentral extends CI_Model
         $access_level = $this->session->userdata('access_level');
 
 
-        $target_access_level = $this->input->post('access_level', TRUE);
+        $target_access_level = $this->input->post('access_level', true);
 
-        $county_id = $this->input->post('county', TRUE);
-        $sub_county_id = $this->input->post('sub_county', TRUE);
-        $mfl_code = $this->input->post('facility', TRUE);
+        $county_id = $this->input->post('county', true);
+        $sub_county_id = $this->input->post('sub_county', true);
+        $mfl_code = $this->input->post('facility', true);
 
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
@@ -3747,11 +3655,11 @@ class DBCentral extends CI_Model
 
             //Partner Access Level
             $sql .= "Select DISTINCT * from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
-        } else if ($access_level === "Facility") {
+        } elseif ($access_level === "Facility") {
 
             //Facility Access Level
             $sql .= "Select DISTINCT * from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
-        } else if ($access_level === "Admin") {
+        } elseif ($access_level === "Admin") {
 
             //Administration in the  System
             //            $sql .= "Select count(DISTINCT tbl_users.id) as no_users from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
@@ -3761,9 +3669,7 @@ class DBCentral extends CI_Model
 
 
             if (!empty($target_access_level)) {
-
                 if ($target_access_level == '4') {
-
                     $sql .= "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_users.facility_id";
                 }
                 if ($target_access_level == '5') {
@@ -3779,7 +3685,6 @@ class DBCentral extends CI_Model
                     $sql .= "inner join tbl_partner_facility on tbl_partner_facility.donor_id = tbl_donor.id";
                 }
                 if ($target_access_level == '1') {
-
                     $sql .= "  ";
                 }
             }
@@ -3793,9 +3698,7 @@ class DBCentral extends CI_Model
 
 
             if (!empty($target_access_level)) {
-
                 if ($target_access_level == '4') {
-
                     $sql .= "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_users.facility_id";
                 }
                 if ($target_access_level == '5') {
@@ -3811,7 +3714,6 @@ class DBCentral extends CI_Model
                     $sql .= "inner join tbl_partner_facility on tbl_partner_facility.donor_id = tbl_donor.id";
                 }
                 if ($target_access_level == '1') {
-
                     $sql .= "  ";
                 }
             }
@@ -3833,15 +3735,12 @@ class DBCentral extends CI_Model
 
 
         if ($access_level == "Partner") {
-
             $sql .= "AND tbl_partner_facility.partner_id='$partner_id' ";
         } elseif ($access_level == "Facility") {
-
             $sql .= "AND tbl_partner_facility.mfl_code='$facility_id' and tbl_users.access_level='Facility' ";
         } else {
             if (!empty($target_access_level)) {
                 if ($target_access_level == '4') {
-
                     $sql .= "AND  tbl_users.access_level='Facility' ";
                     if (!empty($mfl_code)) {
                         $sql .= " AND tbl_partner_facility.mfl_code='$facility_id' ";
@@ -3885,7 +3784,7 @@ class DBCentral extends CI_Model
         return $client_data;
     }
 
-    function get_all_active_clients_appointments($group, $county_id, $sub_county_id, $mfl_code, $appointment_from, $appointment_to, $target_group)
+    public function get_all_active_clients_appointments($group, $county_id, $sub_county_id, $mfl_code, $appointment_from, $appointment_to, $target_group)
     {
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
@@ -3896,27 +3795,23 @@ class DBCentral extends CI_Model
         $sql = "Select * from tbl_client inner join tbl_appointment on tbl_appointment.client_id = tbl_client.id inner join tbl_groups on tbl_groups.id = tbl_client.group_id WHERE 1 ";
 
         if ($group == "All") {
-
             if ($access_level == "Partner") {
                 $sql .= " AND appntmnt_date >= CURDATE() and tbl_client.partner_id='$partner_id' ";
-            } else if ($access_level == "Facility") {
+            } elseif ($access_level == "Facility") {
                 $sql .= " AND appntmnt_date >= CURDATE() and tbl_client.mfl_code='$facility_id'  ";
             } else {
                 $sql .= " AND appntmnt_date >= CURDATE() ";
             }
         } else {
             if (empty($group)) {
-
-
                 if ($access_level == "Partner") {
                     $sql .= " AND appntmnt_date >= CURDATE() and tbl_client.partner_id='$partner_id' ";
-                } else if ($access_level == "Facility") {
+                } elseif ($access_level == "Facility") {
                     $sql .= "  AND appntmnt_date >= CURDATE() and tbl_client.mfl_code='$facility_id' ";
                 } else {
                     $sql .= " AND appntmnt_date >= CURDATE() ";
                 }
             } else {
-
                 if ($access_level == "Partner") {
                     $sql .= " AND  tbl_client.status='Active' and tbl_appointment.status='Active' and appntmnt_date >= CURDATE() and tbl_groups.id='$group' and tbl_client.partner_id='$partner_id'  ";
                 } elseif ($access_level == "Facility") {
@@ -3942,30 +3837,25 @@ class DBCentral extends CI_Model
 
 
         if ($target_group === "1") {
-        } else if ($target_group === "2") {
-
-
+        } elseif ($target_group === "2") {
             if (!empty($appointment_from)) {
-
                 $appointment_from = str_replace('/', '-', $appointment_from);
                 $appointment_from = date("Y-m-d", strtotime($appointment_from));
 
                 $sql .= " AND tbl_appointment.appntmnt_date >= $appointment_from ";
             }
             if (!empty($appointment_to)) {
-
                 $appointment_to = str_replace('/', '-', $appointment_to);
                 $appointment_to = date("Y-m-d", strtotime($appointment_to));
 
                 $sql .= " AND tbl_appointment.appntmnt_date <= $appointment_to ";
             }
-        } else if ($target_group === "3") {
-
+        } elseif ($target_group === "3") {
             $sql .= " AND tbl_appointment.appntmnt_date = 'Missed' ";
-        } else if ($target_group === "4") {
+        } elseif ($target_group === "4") {
             echo $target_group;
             $sql .= " AND tbl_appointment.appntmnt_date = 'Defaulted' ";
-        } else if ($target_group === "5") {
+        } elseif ($target_group === "5") {
             echo $target_group;
             $sql .= " AND tbl_appointment.appntmnt_date = 'LTFU' ";
         } else {
@@ -3986,7 +3876,7 @@ class DBCentral extends CI_Model
         return $client_data;
     }
 
-    function approve_broadcast($broadcast_id)
+    public function approve_broadcast($broadcast_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -3997,14 +3887,14 @@ class DBCentral extends CI_Model
         $this->db->where('id', $broadcast_id);
         $this->db->update('broadcast', $data_update);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function disapprove_broadcast($broadcast_id, $reason)
+    public function disapprove_broadcast($broadcast_id, $reason)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4016,14 +3906,14 @@ class DBCentral extends CI_Model
         $this->db->where('id', $broadcast_id);
         $this->db->update('broadcast', $data_update);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function approve_facility($mfl_code)
+    public function approve_facility($mfl_code)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4034,14 +3924,14 @@ class DBCentral extends CI_Model
         $this->db->where('mfl_code', $mfl_code);
         $this->db->update('partner_facility', $data_update);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function disapprove_facility($mfl_code, $reason)
+    public function disapprove_facility($mfl_code, $reason)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4053,21 +3943,21 @@ class DBCentral extends CI_Model
         $this->db->where('mfl_code', $mfl_code);
         $this->db->update('partner_facility', $data_update);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function set_user_broadcast_sms($target_access_level, $county_id, $sub_county_id, $mfl_code, $broadcast_date, $broadcast_time, $broadcast_message)
+    public function set_user_broadcast_sms($target_access_level, $county_id, $sub_county_id, $mfl_code, $broadcast_date, $broadcast_time, $broadcast_message)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
 
         $broadcast_date = str_replace('/', '-', $broadcast_date);
         $broadcast_date = date("Y-m-d", strtotime($broadcast_date));
-        $broadcast_name = $this->input->post('broadcast_name', TRUE);
+        $broadcast_name = $this->input->post('broadcast_name', true);
         $today = date("Y-m-d H:i:s");
         $data_insert = array(
             'name' => $broadcast_name,
@@ -4084,12 +3974,11 @@ class DBCentral extends CI_Model
         $this->db->insert('broadcast', $data_insert);
         $broadcast_id = $this->db->insert_id();
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
-            $county_id = $this->input->post('county', TRUE);
-            $sub_county_id = $this->input->post('sub_county', TRUE);
+            $county_id = $this->input->post('county', true);
+            $sub_county_id = $this->input->post('sub_county', true);
 
 
             $this->db->trans_start();
@@ -4099,7 +3988,6 @@ class DBCentral extends CI_Model
             $clients = $this->get_all_active_users($target_access_level, $county_id, $sub_county_id, $mfl_code);
 
             foreach ($clients as $value) {
-
                 $user_name = $value->f_name . " " . $value->m_name . " " . $value->l_name;
                 $phone_no = $value->phone_no;
                 $user_id = $value->id;
@@ -4111,7 +3999,7 @@ class DBCentral extends CI_Model
 
                 $destination = $phone_no;
                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
-                $this->config->load('config', TRUE);
+                $this->config->load('config', true);
                 // Retrieve a config item named site_name contained within the blog_settings array
                 $source = $this->config->item('shortcode', 'config');
                 $today = date("Y-m-d H:i:s");
@@ -4143,23 +4031,22 @@ class DBCentral extends CI_Model
             }
 
             $this->db->trans_complete();
-            if ($this->db->trans_status() === FALSE) {
-                return FALSE;
+            if ($this->db->trans_status() === false) {
+                return false;
             } else {
-
-                return TRUE;
+                return true;
             }
         }
     }
 
-    function set_broadcast_sms($group, $date_time, $broadcast_date, $target_group, $default_time, $defaultsms, $county_id, $sub_county_id, $mfl_code, $appointment_from, $appointment_to)
+    public function set_broadcast_sms($group, $date_time, $broadcast_date, $target_group, $default_time, $defaultsms, $county_id, $sub_county_id, $mfl_code, $appointment_from, $appointment_to)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
 
         $broadcast_date = str_replace('/', '-', $broadcast_date);
         $broadcast_date = date("Y-m-d", strtotime($broadcast_date));
-        $broadcast_name = $this->input->post('broadcast_name', TRUE);
+        $broadcast_name = $this->input->post('broadcast_name', true);
         $today = date("Y-m-d H:i:s");
         $data_insert = array(
             'name' => $broadcast_name,
@@ -4177,8 +4064,8 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('broadcast', $data_insert);
         $broadcast_id = $this->db->insert_id();
-        $county_id = $this->input->post('county', TRUE);
-        $sub_county_id = $this->input->post('sub_county', TRUE);
+        $county_id = $this->input->post('county', true);
+        $sub_county_id = $this->input->post('sub_county', true);
 
         //$source = $this->get_sender($partner_id);
         $msg = $defaultsms;
@@ -4221,7 +4108,7 @@ class DBCentral extends CI_Model
                 $description = "Sent a broadcast message to $destination .";
                 $this->log_action($description);
             }
-        } else if ($target_group === "2") {
+        } elseif ($target_group === "2") {
             $clients = $this->get_all_active_clients_appointments($group, $county_id, $sub_county_id, $mfl_code, $appointment_from, $appointment_to, $target_group);
             if ($clients->num_rows() > 0) {
             } else {
@@ -4263,27 +4150,25 @@ class DBCentral extends CI_Model
         }
 
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
-            return TRUE;
+            return true;
         }
     }
 
     //function edit_notification_flow($notification_id, $days, $status) {
 
-    function update_broadcast_sms($broadcast_id, $group, $date_time, $broadcast_date, $target_group, $default_time, $defaultsms, $county_id, $sub_county_id, $mfl_code)
+    public function update_broadcast_sms($broadcast_id, $group, $date_time, $broadcast_date, $target_group, $default_time, $defaultsms, $county_id, $sub_county_id, $mfl_code)
     {
-
         $updated_by = $this->session->userdata('user_id');
 
-        $county_id = $this->input->post('county', TRUE);
-        $sub_county_id = $this->input->post('sub_county', TRUE);
+        $county_id = $this->input->post('county', true);
+        $sub_county_id = $this->input->post('sub_county', true);
 
         $broadcast_date = str_replace('/', '-', $broadcast_date);
         $broadcast_date = date("Y-m-d", strtotime($broadcast_date));
-        $broadcast_name = $this->input->post('broadcast_name', TRUE);
+        $broadcast_name = $this->input->post('broadcast_name', true);
         $today = date("Y-m-d H:i:s");
         $this->db->trans_start();
         $data_insert = array(
@@ -4303,9 +4188,8 @@ class DBCentral extends CI_Model
         $this->db->where('id', $broadcast_id);
         $this->db->update('broadcast', $data_insert);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
+        if ($this->db->trans_status() === false) {
         } else {
-
             $get_broadcast_sms_queue = $this->db->get_where("sms_queue", array('broadcast_id' => $broadcast_id, 'status' => 'Active'))->result();
             foreach ($get_broadcast_sms_queue as $broadcast_value) {
                 $this->db->trans_start();
@@ -4321,7 +4205,7 @@ class DBCentral extends CI_Model
                 $this->db->update('sms_queue', $post_data);
                 $this->db->where('id', $sms_queue_id);
                 $this->db->trans_complete();
-                if ($this->db->trans_status() === FALSE) {
+                if ($this->db->trans_status() === false) {
                 } else {
                     $description = "Temporarily deleted  broadcast message $broadcast_name  and message ID $sms_queue_id.";
                     $this->log_action($description);
@@ -4367,7 +4251,7 @@ class DBCentral extends CI_Model
 
 
                             $this->db->trans_complete();
-                            if ($this->db->trans_status() === FALSE) {
+                            if ($this->db->trans_status() === false) {
                                 // return FALSE;
                             } else {
                                 $description = "Set a broadcast message to $destination .";
@@ -4375,7 +4259,7 @@ class DBCentral extends CI_Model
                                 // return TRUE;
                             }
                         }
-                    } else if ($target_group === "2") {
+                    } elseif ($target_group === "2") {
                         $clients = $this->get_all_active_clients_appointments($group, $county_id, $sub_county_id, $mfl_code);
 
                         foreach ($clients as $value) {
@@ -4415,10 +4299,9 @@ class DBCentral extends CI_Model
 
 
                             $this->db->trans_complete();
-                            if ($this->db->trans_status() === FALSE) {
+                            if ($this->db->trans_status() === false) {
                                 // return FALSE;
                             } else {
-
                                 $description = "Sent a broadcast message to $destination .";
                                 $this->log_action($description);
                                 //return TRUE;
@@ -4430,7 +4313,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    function edit_notification_flow($notification_id, $days, $status)
+    public function edit_notification_flow($notification_id, $days, $status)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4445,15 +4328,14 @@ class DBCentral extends CI_Model
         $description = "Updated notification flow details for $notification_id.";
         $this->log_action($description);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
-            return TRUE;
+            return true;
         }
     }
 
-    function log_action($description)
+    public function log_action($description)
     {
         $this->db->trans_start();
         $today = date("Y-m-d H:i:s");
@@ -4466,15 +4348,14 @@ class DBCentral extends CI_Model
         );
         $this->db->insert('sys_logs', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
-            return TRUE;
+            return true;
         }
     }
 
-    function get_top_modules()
+    public function get_top_modules()
     {
         $user_id = $this->session->userdata('user_id');
         $user_role_options = array(
@@ -4490,7 +4371,7 @@ class DBCentral extends CI_Model
         return $data;
     }
 
-    function get_side_modules()
+    public function get_side_modules()
     {
         $user_id = $this->session->userdata('user_id');
         //        $user_role_options = array(
@@ -4516,7 +4397,7 @@ ORDER BY tbl_module.order ASC";
         return $data;
     }
 
-    function add_message_types($name, $description, $status, $today)
+    public function add_message_types($name, $description, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4529,17 +4410,17 @@ ORDER BY tbl_module.order ASC";
         );
         $this->db->insert('message_types', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added message type $name";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_message_types($name, $description, $status, $today, $message_id)
+    public function edit_message_types($name, $description, $status, $today, $message_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4553,17 +4434,17 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $message_id);
         $this->db->update('message_types', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Edited message type $name";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_message_types($message_type_id)
+    public function delete_message_types($message_type_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4575,19 +4456,17 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $message_type_id);
         $this->db->update('message_types', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Added message type ID $message_type_id";
             $this->log_action($description);
-            return TRUE;
+            return true;
         }
     }
 
-    function add_call_action($appointment_id, $reason)
+    public function add_call_action($appointment_id, $reason)
     {
-
-
         $this->db->trans_start();
         $data_update = array(
             'no_calls' => $reason
@@ -4595,17 +4474,15 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $appointment_id);
         $this->db->update('appointment', $data_update);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function add_homevisit_action($appointment_id, $reason)
+    public function add_homevisit_action($appointment_id, $reason)
     {
-
-
         $this->db->trans_start();
         $data_update = array(
             'home_visits' => $reason
@@ -4613,14 +4490,14 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $appointment_id);
         $this->db->update('appointment', $data_update);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function add_msg_action($appointment_id, $reason, $client_id)
+    public function add_msg_action($appointment_id, $reason, $client_id)
     {
         $today = date("Y-m-d H:i:s");
         $user_id = $this->session->userdata('user_id');
@@ -4633,16 +4510,15 @@ ORDER BY tbl_module.order ASC";
         );
         $this->db->insert('tbl_appointment_msgs', $data_insert);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
+        if ($this->db->trans_status() === false) {
         } else {
-
             $get_client = $this->db->get_where('client', array('id' => $client_id))->result();
             foreach ($get_client as $value) {
                 $phone_no = $value->phone_no;
 
 
                 //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
-                $this->config->load('config', TRUE);
+                $this->config->load('config', true);
                 // Retrieve a config item named site_name contained within the blog_settings array
                 $source = $this->config->item('shortcode', 'config');
                 $this->db->trans_start();
@@ -4661,7 +4537,7 @@ ORDER BY tbl_module.order ASC";
                 );
                 $this->db->insert('outgoing', $outgoing);
                 $this->db->trans_complete();
-                if ($this->db->trans_status() === FALSE) {
+                if ($this->db->trans_status() === false) {
                 } else {
                     $get_client_app_msg = $this->db->get_where('appointment', array('id' => $appointment_id))->result();
                     foreach ($get_client_app_msg as $value) {
@@ -4674,10 +4550,10 @@ ORDER BY tbl_module.order ASC";
                         $this->db->where('id', $appointment_id);
                         $this->db->update('appointment', $data_update);
                         $this->db->trans_complete();
-                        if ($this->db->trans_status() === FALSE) {
-                            return FALSE;
+                        if ($this->db->trans_status() === false) {
+                            return false;
                         } else {
-                            return TRUE;
+                            return true;
                         }
                     }
                 }
@@ -4685,7 +4561,7 @@ ORDER BY tbl_module.order ASC";
         }
     }
 
-    function add_target_county($name, $status, $today)
+    public function add_target_county($name, $status, $today)
     {
         $this->db->trans_start();
         $data_insert = array(
@@ -4695,16 +4571,15 @@ ORDER BY tbl_module.order ASC";
         );
         $this->db->insert('target_county', $data_insert);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_target_county($target_county_id, $county_id, $status, $today)
+    public function edit_target_county($target_county_id, $county_id, $status, $today)
     {
-
         $this->db->trans_start();
         $data_insert = array(
             'county_id' => $county_id,
@@ -4714,14 +4589,14 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $target_county_id);
         $this->db->update('target_county', $data_insert);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function add_target_facilities($mfl_code, $status, $today)
+    public function add_target_facilities($mfl_code, $status, $today)
     {
         $user_id = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4733,14 +4608,14 @@ ORDER BY tbl_module.order ASC";
         );
         $this->db->insert('target_facility', $data_insert);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_target_facilities($target_facilities_id, $mfl_code, $status, $today)
+    public function edit_target_facilities($target_facilities_id, $mfl_code, $status, $today)
     {
         $user_id = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4753,17 +4628,17 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $target_facilities_id);
         $this->db->update('target_facility', $data_insert);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-            return TRUE;
+            return true;
         }
     }
 
 
 
 
-    function send_message($source, $destination, $msg, $outgoing_id)
+    public function send_message($source, $destination, $msg, $outgoing_id)
     {
         $this->load->library('africastalking');
         //Africa's Talking Library.
@@ -4785,16 +4660,16 @@ ORDER BY tbl_module.order ASC";
                 $cost = $result->cost;
                 $statusCode = $result->statusCode;
             }
-            return TRUE;
+            return true;
         } catch (GatewayException $e) {
             echo "Oops an error encountered while sending: " . $e->getMessage();
-            return FALSE;
+            return false;
         }
     }
 
 
 
-    function add_clinic($name, $status, $today)
+    public function add_clinic($name, $status, $today)
     {
         $created_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4806,18 +4681,17 @@ ORDER BY tbl_module.order ASC";
         );
         $this->db->insert('clinic', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Added  Language $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function edit_clinic($clinic_id, $name, $status, $today)
+    public function edit_clinic($clinic_id, $name, $status, $today)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4830,18 +4704,17 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $clinic_id);
         $this->db->update('clinic', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
-
             $description = "Updated  Language $name  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
     }
 
-    function delete_clinic($clinic_id)
+    public function delete_clinic($clinic_id)
     {
         $updated_by = $this->session->userdata('user_id');
         $this->db->trans_start();
@@ -4853,13 +4726,274 @@ ORDER BY tbl_module.order ASC";
         $this->db->where('id', $clinic_id);
         $this->db->update('clinic', $post_data);
         $this->db->trans_complete();
-        if ($this->db->trans_status() === FALSE) {
-            return FALSE;
+        if ($this->db->trans_status() === false) {
+            return false;
         } else {
             $description = "Temporariy deleted  Language $clinic_id  details in  the  system.";
             $this->log_action($description);
 
-            return TRUE;
+            return true;
         }
+    }
+
+    public function getAggregateReports($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('national_dashboard');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function getAggregateBarClientsData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('main_bar_clients_aggregate');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateBarAppointmentsData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('main_bar_appointments_aggregate');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateTableData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('age_distinction');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateMarriageData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('mariage_distribution');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateGenderData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('gender_report');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateConditionData($partner, $county, $sub_county, $mfl_code)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $this->db->select('*');
+        $this->db->from('condition_report');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
     }
 }
