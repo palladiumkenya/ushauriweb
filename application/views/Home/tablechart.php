@@ -299,6 +299,7 @@
         toTwentyFiveConsent = toTwentyFiveConsent + parseInt(parseData[i].TwentyFiveconsented);
 
     }
+    console.log(toNineReg)
     percentageArray.push((toNineConsent / toNineReg) * 100)
     percentageArray.push((toFourteenConsent / toFourteenReg) * 100)
     percentageArray.push((toNineteenConsent / toNineteenReg) * 100)

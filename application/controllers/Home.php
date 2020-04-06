@@ -83,56 +83,6 @@ class Home extends MY_Controller
         echo json_encode($data);
     }
 
-    public function highchartDashboard()
-    {
-        $access_level = $this->session->userdata('access_level');
-        $partner_id = $this->session->userdata('partner_id');
-        $county_id = $this->session->userdata('county_id');
-        $sub_county_id = $this->session->userdata('subcounty_id');
-        $facility_id = $this->session->userdata('facility_id');
-
-        $partner_id = $this->input->post('partner', true);
-        $county_id = $this->input->post('county', true);
-        $sub_county_id = $this->input->post('sub_county', true);
-        $mfl_code = $this->input->post('facility', true);
-
-        $bar_clients_data = $this->data->getAggregateBarClientsData($partner_id, $county_id, $sub_county_id, $mfl_code);
-        $bar_appointmens_data = $this->data->getAggregateBarAppointmentsData($partner_id, $county_id, $sub_county_id, $mfl_code);
-
-
-        $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
-
-        $target_active_clients = 0;
-        $total_clients = 0;
-        $consented_clients = 0;
-        $future_appointments = 0;
-
-        foreach ($records as $record) {
-            $target_active_clients =  $target_active_clients + $record['Target_Clients'];
-            $total_clients = $total_clients + $record['Clients'];
-            $consented_clients = $consented_clients + $record['Consented'];
-            $future_appointments = $future_appointments + $record['Future_Appointments'];;
-        }
-        $data['data'] = $records;
-        $data['bar_clients_data'] = $bar_clients_data;
-        $data['bar_appointments_data'] = $bar_appointmens_data;
-        $data['target_active_clients'] = $target_active_clients;
-        $data['total_clients'] = $total_clients;
-        $data['percentage_uptake'] = round((($total_clients / $target_active_clients) * 100), 1);
-        $data['consented_clients'] = $consented_clients;
-        $data['future_appointments'] = $future_appointments;
-        $data['facilities'] = count($records);
-        $data['access_level'] = $access_level;
-        $data['partner_id'] = $partner_id;
-        $data['facility_id'] = $facility_id;
-        $data['side_functions'] = $this->data->get_side_modules();
-        $data['top_functions'] = $this->data->get_top_modules();
-        $data['output'] = $this->get_access_level();
-        $data['filtered_partner'] = $this->get_partner_filters();
-        $data['filtered_county'] = $this->get_county_filtered_values();
-        $this->load->vars($data);
-        $this->load->template('Home/highcharts_dashboard');
-    }
     public function filter_tablecharts_dashboard()
     {
         $partner_id = $this->input->post('partner', true);
@@ -160,38 +110,6 @@ class Home extends MY_Controller
     }
     public function tableDashboard()
     {
-        $access_level = $this->session->userdata('access_level');
-        $partner_id = $this->session->userdata('partner_id');
-        $county_id = $this->session->userdata('county_id');
-        $sub_county_id = $this->session->userdata('subcounty_id');
-        $facility_id = $this->session->userdata('facility_id');
-
-        $partner_id = $this->input->post('partner', true);
-        $county_id = $this->input->post('county', true);
-        $sub_county_id = $this->input->post('sub_county', true);
-        $mfl_code = $this->input->post('facility', true);
-
-        $table_records = $this->data->getAggregateTableData($partner_id, $county_id, $sub_county_id, $mfl_code);
-        $marriage_records = $this->data->getAggregateMarriageData($partner_id, $county_id, $sub_county_id, $mfl_code);
-        $gender_records = $this->data->getAggregateGenderData($partner_id, $county_id, $sub_county_id, $mfl_code);
-        $condition_records = $this->data->getAggregateConditionData($partner_id, $county_id, $sub_county_id, $mfl_code);
-
-
-        $data['data'] = $table_records;
-        $data['marriage_records'] = $marriage_records;
-        $data['gender_records'] = $gender_records;
-        $data['condition_records'] = $condition_records;
-        $data['access_level'] = $access_level;
-        $data['partner_id'] = $partner_id;
-        $data['facility_id'] = $facility_id;
-        $data['side_functions'] = $this->data->get_side_modules();
-        $data['top_functions'] = $this->data->get_top_modules();
-        $data['output'] = $this->get_access_level();
-        $data['filtered_partner'] = $this->get_partner_filters();
-        $data['filtered_county'] = $this->get_county_filtered_values();
-        $this->load->vars($data);
-        //echo json_encode($condition_records);
-        $this->load->template('Home/tablechart');
     }
 
     public function jsondata()

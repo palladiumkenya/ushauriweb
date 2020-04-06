@@ -157,13 +157,13 @@ class Reports extends MY_Controller
             $this->db->where('partner_facility.mfl_code', $mfl_code);
         }
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         if (!empty($date_from)) {
@@ -1128,29 +1128,29 @@ class Reports extends MY_Controller
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('tbl_gender.`name` AS name ,COUNT(tbl_client.`gender`) AS value');
         $this->db->from('client');
         $this->db->join('gender', 'gender.id = client.gender');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -1200,30 +1200,30 @@ class Reports extends MY_Controller
         }
 
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('tbl_marital_status.`marital` AS NAME, COUNT(tbl_client.`marital`) AS VALUE');
         $this->db->from('client');
         $this->db->join('marital_status', 'marital_status.id = client.marital');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -1281,30 +1281,30 @@ class Reports extends MY_Controller
             $sub_county_id = $this->input->post('sub_county', true);
         }
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('client_type as k , COUNT(client_type) as v');
         $this->db->from('client');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -1363,33 +1363,33 @@ class Reports extends MY_Controller
             $sub_county_id = $this->input->post('sub_county', true);
         }
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('COUNT(age_group) AS v , age_group as k');
         $this->db->from('client');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -1451,27 +1451,27 @@ class Reports extends MY_Controller
             $date_from = str_replace('-', '-', $date_from);
             $formated_date_from = date("Y-m-d", strtotime($date_from));
         }
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('tbl_groups.`name` AS k , COUNT(group_id) AS v');
         $this->db->from('client');
         $this->db->join('tbl_groups', 'tbl_groups.id = client.group_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -1542,17 +1542,17 @@ class Reports extends MY_Controller
         $this->db->from('client');
         $this->db->join('tbl_language', 'tbl_language.id = client.language_id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -1621,16 +1621,16 @@ class Reports extends MY_Controller
         $this->db->from('client');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -1700,16 +1700,16 @@ class Reports extends MY_Controller
         $this->db->select('tbl_client.`entry_point` AS k , COUNT(tbl_client.id) AS v');
         $this->db->from('client');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -1782,16 +1782,16 @@ class Reports extends MY_Controller
         $this->db->from('client');
         $this->db->join('appointment', 'appointment.client_id = client.id');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -1863,16 +1863,16 @@ class Reports extends MY_Controller
         $this->db->select('tbl_client.`status` AS k , COUNT(tbl_client.id) AS v');
         $this->db->from('client');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -1948,16 +1948,16 @@ class Reports extends MY_Controller
         $consented_clients = "SELECT COUNT(tbl_client.id) FROM tbl_client INNER JOIN tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code WHERE 1 ";
         $consented_clients .= " AND smsenable='YES' AND  tbl_partner_facility.`status`='Active' ";
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $consented_clients .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $consented_clients .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -1990,16 +1990,16 @@ class Reports extends MY_Controller
         $all_clients = " SELECT COUNT(tbl_client.id) FROM tbl_client INNER JOIN tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $all_clients .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $all_clients .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -2095,16 +2095,16 @@ class Reports extends MY_Controller
         $consented_clients .= " AND smsenable='YES' ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $consented_clients .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $consented_clients .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -2137,16 +2137,16 @@ class Reports extends MY_Controller
         $all_clients = " SELECT COUNT(tbl_client.id) FROM tbl_client INNER JOIN tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $all_clients .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $all_clients .= " AND tbl_partner_facility.mfl_code = '$mfl_code' ";
         endif;
 
@@ -2190,7 +2190,7 @@ class Reports extends MY_Controller
     {
         $data['date_from'] = $this->input->post('date_from');
         $data['date_to'] =  $this->input->post('date_to');
-      
+
         if (!empty($data['date_from'])) {
             $date_from = str_replace('-', '-', $data['date_from']);
             $formated_date_from = date("Y-m-d", strtotime($date_from));
@@ -2198,7 +2198,7 @@ class Reports extends MY_Controller
             $formated_date_from = date("Y-m-d", strtotime('-30 days'));
             $data['date_from'] =  date("d-m-Y", strtotime('-30 days'));
         }
-    
+
         if (!empty($data['date_to'])) {
             $date_to = str_replace('-', '-', $data['date_to']);
             $formated_date_to = date("Y-m-d", strtotime($date_to));
@@ -2207,7 +2207,7 @@ class Reports extends MY_Controller
             $data['date_to'] =  date("d-m-Y");
         }
 
- 
+
 
         $access_level = $this->session->userdata('access_level');
         if ($access_level == 'Facility') {
@@ -2288,7 +2288,7 @@ class Reports extends MY_Controller
                         AND tbl_partner_facility.partner_id = '$partner_id' 
                     ");
                 $data['appnts']  = $query->result();
-                    
+
                 // } elseif ($access_level == "County") {
                 //     $appnts .= " AND appointment_counts.county_id = '$county_id' ";
                 // } elseif ($access_level == "Sub County") {
@@ -2296,7 +2296,7 @@ class Reports extends MY_Controller
                 // } elseif ($access_level == "Facility") {
                 //     $appnts .= " AND appointment_counts.mfl_code = '$facility_id' ";
                 // } else {
-                            
+
                 // }
                 //$appnts .=  'LIMIT 100';
 
@@ -2472,16 +2472,16 @@ class Reports extends MY_Controller
         $this->db->from('client');
         $this->db->join('partner_facility', 'partner_facility.mfl_code = client.mfl_code');
         $this->db->where('smsenable', 'Yes');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -2556,16 +2556,16 @@ class Reports extends MY_Controller
         } else {
         }
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -2654,16 +2654,16 @@ class Reports extends MY_Controller
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -2769,19 +2769,19 @@ FROM
         }
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
             $appointments_sql .= " GROUP BY tbl_partner_facility.`partner_id`";
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $appointments_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
-        $appointments_sql = " GROUP BY tbl_partner_facility.`partner_id`";
+            $appointments_sql = " GROUP BY tbl_partner_facility.`partner_id`";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $appointments_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
-        $appointments_sql = " GROUP BY tbl_partner_facility.`mfl_code`";
+            $appointments_sql = " GROUP BY tbl_partner_facility.`mfl_code`";
         endif;
 
         if (!empty($county_id)) {
@@ -2861,16 +2861,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -2950,16 +2950,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3064,16 +3064,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3128,7 +3128,7 @@ FROM
         $this->db->group_by('appointment.id'); // add group_by
         $num_results = $this->db->count_all_results();
 
-//        // $this->output->enable_profiler(TRUE);
+        //        // $this->output->enable_profiler(TRUE);
         return $num_results;
     }
 
@@ -3178,16 +3178,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3294,16 +3294,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3412,16 +3412,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3530,16 +3530,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3648,16 +3648,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3699,7 +3699,7 @@ FROM
         $sub_county_id = $this->session->userdata('subcounty_id');
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
-       
+
 
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
@@ -3713,13 +3713,13 @@ FROM
         $data['output'] = $this->get_access_level();
         $formated_date_from = date("Y-m-d", strtotime('-7 days'));
         $formated_date_to = date("Y-m-d");
-       
 
 
-        
+
+
 
         $access_level = $this->session->userdata('access_level');
-        
+
         $partner_id = $this->session->userdata('partner_id');
         $county_id = $this->session->userdata('county_id');
         $sub_county_id = $this->session->userdata('subcounty_id');
@@ -3756,13 +3756,13 @@ FROM
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
 
@@ -3875,16 +3875,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -3962,16 +3962,16 @@ FROM
             $this->db->where('partner_facility.partner_id', $partner_id);
         } else {
         }
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_facility.partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('partner_facility.mfl_code', $facility_id);
         endif;
 
@@ -4019,16 +4019,16 @@ FROM
         $query .= " AND tbl_partner_facility.partner_id ='$county_id'";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
         $query .= " GROUP BY tbl_partner_facility.county_id";
@@ -4051,16 +4051,16 @@ FROM
         $query .= " AND tbl_partner_facility.county_id='$county_id'";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
         $query .= " GROUP BY tbl_partner_facility.sub_county_id";
@@ -4071,7 +4071,7 @@ FROM
 
     public function filter_time()
     {
-        $facility_id =$this->uri->segment(3);
+        $facility_id = $this->uri->segment(3);
         $query = "select DISTINCT time from `Monthly_Appointment_Summary` WHERE 1 ";
         $query .= " AND mfl_code = '$facility_id' ";
 
@@ -4090,16 +4090,16 @@ FROM
         $query .= " AND tbl_master_facility.sub_county_id='$sub_county_id' ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -4516,16 +4516,16 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -4609,16 +4609,16 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -4698,16 +4698,16 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -4916,22 +4916,22 @@ FROM
         $mon = '';
 
         $categories = array();
-        foreach ($get_months as $m):
+        foreach ($get_months as $m) :
             array_push($categories, $m->month);
 
         endforeach;
         $active_clients = array();
-        foreach ($get_active_clients as $m):
+        foreach ($get_active_clients as $m) :
             array_push($active_clients, $m->count);
 
         endforeach;
         $disabled_clients = array();
-        foreach ($get_disabled_clients as $m):
+        foreach ($get_disabled_clients as $m) :
             array_push($disabled_clients, $m->count);
 
         endforeach;
         $dead_clients = array();
-        foreach ($get_dead_clients as $m):
+        foreach ($get_dead_clients as $m) :
             array_push($dead_clients, $m->count);
 
         endforeach;
@@ -4988,8 +4988,8 @@ FROM
     <head>
     <title>Basic column</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' .
-        $chart->printScripts() .
-        '</head>
+            $chart->printScripts() .
+            '</head>
     <body>
         <div id="cont"></div>
         <script type="text/javascript">' . $chart->render("chart1") . '</script></body>';
@@ -5483,15 +5483,15 @@ FROM
     public function cummulative_counties()
     {
 
-//        $partner_id = $this->session->userdata('partner_id');
-//        $facility_id = $this->session->userdata('facility_id');
-//        $access_level = $this->session->userdata('access_level');
-//
-//        $county_id = $this->input->post('county', TRUE);
-//        $sub_county_id = $this->input->post('sub_county', TRUE);
-//        $mfl_code = $this->input->post('facility', TRUE);
-//        $date_from = $this->input->post('date_from', TRUE);
-//        $date_to = $this->input->post('date_to', TRUE);
+        //        $partner_id = $this->session->userdata('partner_id');
+        //        $facility_id = $this->session->userdata('facility_id');
+        //        $access_level = $this->session->userdata('access_level');
+        //
+        //        $county_id = $this->input->post('county', TRUE);
+        //        $sub_county_id = $this->input->post('sub_county', TRUE);
+        //        $mfl_code = $this->input->post('facility', TRUE);
+        //        $date_from = $this->input->post('date_from', TRUE);
+        //        $date_to = $this->input->post('date_to', TRUE);
 
 
         $partner_id = $this->session->userdata('partner_id');
@@ -5523,25 +5523,25 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sub_query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sub_query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sub_query .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sub_query .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -5550,18 +5550,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sub_query .= " AND  tbl_partner_facility.county_id IS NOT NULL
@@ -5626,25 +5626,25 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sub_query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sub_query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sub_query .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sub_query .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -5653,18 +5653,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sub_query .= " AND  tbl_partner_facility.Sub_County_ID IS NOT NULL
@@ -5730,25 +5730,25 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sub_query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sub_query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sub_query .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sub_query .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -5757,18 +5757,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sub_query .= " AND  tbl_partner_facility.mfl_code IS NOT NULL
@@ -5832,25 +5832,25 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sub_query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sub_query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sub_query .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sub_query .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -5859,18 +5859,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sub_query .= " AND tbl_partner_facility.mfl_code IS NOT NULL
@@ -5932,31 +5932,31 @@ FROM
 
 
         $sql = "SELECT COUNT(DISTINCT tbl_client.id) as client_count , MONTH(tbl_client.created_at) as month, YEAR(tbl_client.created_at) as YEAR , CONCAT(MONTH(tbl_client.created_at),' ',YEAR(tbl_client.created_at)) AS MONTH_YEAR , tbl_partner_facility.mfl_code,tbl_master_facility.name as facility_name FROM tbl_client "
-                . "INNER JOIN tbl_master_facility ON tbl_master_facility.code = tbl_Client.`mfl_code`"
-                . " INNER JOIN tbl_county ON tbl_county.id = tbl_master_facility.`county_id`"
-                . " INNER JOIN tbl_sub_county ON tbl_sub_county.id = tbl_master_facility.`Sub_County_ID` INNER JOIN tbl_partner_facility ON tbl_partner_facility.mfl_code = tbl_client.mfl_code WHERE 1 ";
+            . "INNER JOIN tbl_master_facility ON tbl_master_facility.code = tbl_Client.`mfl_code`"
+            . " INNER JOIN tbl_county ON tbl_county.id = tbl_master_facility.`county_id`"
+            . " INNER JOIN tbl_sub_county ON tbl_sub_county.id = tbl_master_facility.`Sub_County_ID` INNER JOIN tbl_partner_facility ON tbl_partner_facility.mfl_code = tbl_client.mfl_code WHERE 1 ";
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sql .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -5965,18 +5965,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
         $sql .= " GROUP BY tbl_client.mfl_code , MONTH(tbl_client.created_at), YEAR(tbl_client.created_at) ";
 
@@ -6026,30 +6026,30 @@ FROM
 
 
         $sql = "SELECT COUNT(DISTINCT tbl_client.id) as client_count , MONTH(tbl_client.created_at) as month, YEAR(tbl_client.created_at) as YEAR , CONCAT(MONTH(tbl_client.created_at),' ',YEAR(tbl_client.created_at)) AS MONTH_YEAR , tbl_partner_facility.mfl_code,tbl_master_facility.name as facility_name FROM tbl_client "
-                . "INNER JOIN tbl_master_facility ON tbl_master_facility.code = tbl_Client.`mfl_code`"
-                . " INNER JOIN tbl_county ON tbl_county.id = tbl_master_facility.`county_id`"
-                . " INNER JOIN tbl_sub_county ON tbl_sub_county.id = tbl_master_facility.`Sub_County_ID` INNER JOIN tbl_partner_facility ON tbl_partner_facility.mfl_code = tbl_client.mfl_code WHERE 1 ";
+            . "INNER JOIN tbl_master_facility ON tbl_master_facility.code = tbl_Client.`mfl_code`"
+            . " INNER JOIN tbl_county ON tbl_county.id = tbl_master_facility.`county_id`"
+            . " INNER JOIN tbl_sub_county ON tbl_sub_county.id = tbl_master_facility.`Sub_County_ID` INNER JOIN tbl_partner_facility ON tbl_partner_facility.mfl_code = tbl_client.mfl_code WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sql .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6058,18 +6058,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
         $sql .= " AND tbl_client.smsenable='YES' GROUP BY tbl_client.mfl_code , MONTH(tbl_client.created_at), YEAR(tbl_client.created_at) ";
 
@@ -6119,29 +6119,29 @@ FROM
 
 
         $sql = "SELECT COUNT(tbl_appointment.id) AS no_of_appointments FROM tbl_appointment"
-                . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id`"
-                . " WHERE 1 ";
+            . " INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id`"
+            . " WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sql .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6150,18 +6150,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sql .= " AND tbl_appointment.`appntmnt_date` >= CURRENT_DATE";
@@ -6210,28 +6210,28 @@ FROM
         $sql = " SELECT tbl_partner_facility.county_id,sub_county_id, tbl_county.name AS county_name, tbl_sub_county.`name` AS sub_county_name
             FROM tbl_partner_facility INNER JOIN tbl_county ON tbl_county.id = tbl_partner_facility.`county_id`
 	   INNER JOIN tbl_sub_county ON tbl_sub_county.`id` = tbl_partner_facility.`sub_county_id`"
-                . " WHERE 1 ";
+            . " WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sql .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6240,18 +6240,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
 
@@ -6300,25 +6300,25 @@ FROM
 	   INNER JOIN tbl_sub_county ON tbl_sub_county.`id` = tbl_partner_facility.`sub_county_id`  WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sql .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6327,18 +6327,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sql .= " AND  MONTH(tbl_partner_facility.`created_at`)=MONTH(CURRENT_DATE) ";
@@ -6357,10 +6357,10 @@ FROM
 
 
 
-//
-//
-//        $results = $this->db->query(" SELECT tbl_partner_facility.county_id,sub_county_id, tbl_county.name AS county_name, tbl_sub_county.`name` AS sub_county_name FROM tbl_partner_facility INNER JOIN tbl_county ON tbl_county.id = tbl_partner_facility.`county_id`
-//	   INNER JOIN tbl_sub_county ON tbl_sub_county.`id` = tbl_partner_facility.`sub_county_id` WHERE MONTH(tbl_partner_facility.`created_at`)=MONTH(CURRENT_DATE)")->result();
+        //
+        //
+        //        $results = $this->db->query(" SELECT tbl_partner_facility.county_id,sub_county_id, tbl_county.name AS county_name, tbl_sub_county.`name` AS sub_county_name FROM tbl_partner_facility INNER JOIN tbl_county ON tbl_county.id = tbl_partner_facility.`county_id`
+        //	   INNER JOIN tbl_sub_county ON tbl_sub_county.`id` = tbl_partner_facility.`sub_county_id` WHERE MONTH(tbl_partner_facility.`created_at`)=MONTH(CURRENT_DATE)")->result();
     }
 
     public function new_facilties_by_keph_level()
@@ -6403,29 +6403,29 @@ FROM
 
 
         $sql = " SELECT * FROM tbl_partner_facility"
-                . " INNER JOIN tbl_master_facility ON tbl_master_facility.`code` = tbl_partner_facility.`mfl_code`"
-                . " WHERE 1 ";
+            . " INNER JOIN tbl_master_facility ON tbl_master_facility.`code` = tbl_partner_facility.`mfl_code`"
+            . " WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sql .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6434,18 +6434,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sql .= " AND MONTH(tbl_partner_facility.`created_at`) = MONTH(CURRENT_DATE) GROUP BY keph_level ";
@@ -6493,29 +6493,29 @@ FROM
 
 
         $sql = " SELECT * FROM tbl_partner_facility"
-                . " INNER JOIN tbl_master_facility ON tbl_master_facility.`code` = tbl_partner_facility.`mfl_code`"
-                . " WHERE 1 ";
+            . " INNER JOIN tbl_master_facility ON tbl_master_facility.`code` = tbl_partner_facility.`mfl_code`"
+            . " WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sql .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6524,18 +6524,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sql .= " AND MONTH(tbl_partner_facility.`created_at`) = MONTH(CURRENT_DATE) GROUP BY facility_type";
@@ -6590,25 +6590,25 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sub_query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sub_query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sub_query .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sub_query .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6617,18 +6617,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sub_query .= " AND tbl_client.id IS NOT NULL AND tbl_client.`created_at` IS NOT NULL AND tbl_client.smsenable='YES' AND row(tbl_client.group_id) IN (Select id as group_id from tbl_groups)
@@ -6689,25 +6689,25 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sub_query .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sub_query .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
-        if (!empty($county_id)):
+        if (!empty($county_id)) :
             $sub_query .= " AND tbl_partner_facility.county_id='$county_id' ";
         endif;
 
 
-        if (!empty($sub_county_id)):
+        if (!empty($sub_county_id)) :
             $sub_query .= " AND tbl_partner_faciltiy.sub_county_id='$sub_county_id' ";
         endif;
 
@@ -6716,18 +6716,18 @@ FROM
 
 
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
-        $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $sql .= "  AND tbl_partner_facility.created_at => $formated_date_from  ";
         endif;
 
 
 
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
 
 
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
-        $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $sql .= "  AND tbl_partner_facility.created_at =< $formated_date_to  ";
         endif;
 
         $sub_query .= " AND tbl_client.id IS NOT NULL AND tbl_client.`created_at` IS NOT NULL
@@ -6814,16 +6814,16 @@ FROM
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -6902,16 +6902,16 @@ FROM
         $sql = "SELECT tbl_marital_status.`marital` AS marital ,COUNT(tbl_client.ID) AS total_client  FROM tbl_client INNER JOIN tbl_partner_facility ON tbl_partner_facility.mfl_code = tbl_client.mfl_code INNER JOIN tbl_marital_status ON tbl_marital_status.id = tbl_client.marital  WHERE 1 ";
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -6992,16 +6992,16 @@ FROM
 
         $sql = "SELECT tbl_groups.`name` AS group_name ,COUNT(tbl_client.ID) AS total_client  FROM tbl_client INNER JOIN tbl_partner_facility ON tbl_partner_facility.mfl_code = tbl_client.mfl_code INNER JOIN tbl_groups ON tbl_groups.id = tbl_client.group_id  WHERE 1 ";
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -7141,25 +7141,25 @@ where `tbl_appointment`.`active_app` = '1' and tbl_appointment.`appntmnt_date` >
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $missed_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
-        $defaulted_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
-        $ltfu_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
-        $honored_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
-        $future_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
+            $defaulted_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
+            $ltfu_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
+            $honored_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
+            $future_sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $missed_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
-        $defaulted_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
-        $ltfu_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
-        $honored_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
-        $future_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
+            $defaulted_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
+            $ltfu_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
+            $honored_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
+            $future_sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
         if (!empty($county_id)) {
@@ -7207,11 +7207,11 @@ where `tbl_appointment`.`active_app` = '1' and tbl_appointment.`appntmnt_date` >
         }
 
 
-//        $missed_sql .= " GROUP BY tbl_appointment.id ";
-//        $defaulted_sql .= " GROUP BY tbl_appointment.id ";
-//        $ltfu_sql .= " GROUP BY tbl_appointment.id ";
-//        $honored_sql .= " GROUP BY tbl_appointment.id ";
-//        $future_sql .= " GROUP BY tbl_appointment.id ";
+        //        $missed_sql .= " GROUP BY tbl_appointment.id ";
+        //        $defaulted_sql .= " GROUP BY tbl_appointment.id ";
+        //        $ltfu_sql .= " GROUP BY tbl_appointment.id ";
+        //        $honored_sql .= " GROUP BY tbl_appointment.id ";
+        //        $future_sql .= " GROUP BY tbl_appointment.id ";
 
 
 
@@ -7235,62 +7235,62 @@ where `tbl_appointment`.`active_app` = '1' and tbl_appointment.`appntmnt_date` >
 
 
 
-//
-//
-//        $sql = "
-//SELECT tbl_appointment.`app_status` , (
-//    CASE
-//        WHEN app_status = 'Booked' THEN COUNT(tbl_appointment.`id`)
-//        WHEN app_status = 'Notified' THEN COUNT(tbl_appointment.`id`)
-//        WHEN app_status = 'Missed' THEN COUNT(tbl_appointment.`id`)
-//        WHEN app_status = 'Defaulted' THEN COUNT(tbl_appointment.`id`)
-//        ELSE COUNT(tbl_appointment.`id`)
-//    END) AS total ,COUNT(tbl_appointment.`id`) AS appointment_status FROM tbl_appointment INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` WHERE 1";
-//
-//        if ($access_level === "Admin"):
-//
-//        endif;
-//
-//        if ($access_level == "Partner"):
-//            $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
-//        endif;
-//
-//
-//        if ($access_level == "Facility"):
-//            $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
-//        endif;
-//
-//        if (!empty($county_id)) {
-//            $sql .= " AND tbl_partner_facility.county_id = '$county_id' ";
-//        }
-//
-//        if (!empty($sub_county_id)) {
-//            $sql .= " AND tbl_partner_facility.sub_county_id = '$sub_county_id' ";
-//        }
-//        if (!empty($mfl_code)) {
-//            $sql .= " AND tbl_partner_facility.mfl_code = '$mfl_code' ";
-//        }
-//
-//
-//
-//        if (!empty($date_from)) {
-//            $date_from = str_replace('-', '-', $date_from);
-//            $formated_date_from = date("Y-m-d", strtotime($date_from));
-//            $sql .= " AND tbl_appointment.appntmnt_date >= '$formated_date_from' ";
-//        }
-//        if (!empty($date_to)) {
-//            $date_to = str_replace('-', '-', $date_to);
-//            $formated_date_to = date("Y-m-d", strtotime($date_to));
-//            $sql .= " AND tbl_appointment.appntmnt_date <= '$formated_date_to' ";
-//        }
-//
-//
-//
-//
-//        $sql .= "  GROUP BY tbl_appointment.`app_status`";
-//
-//        $query = $this->db->query($sql)->result();
-//        echo json_encode($query);
+        //
+        //
+        //        $sql = "
+        //SELECT tbl_appointment.`app_status` , (
+        //    CASE
+        //        WHEN app_status = 'Booked' THEN COUNT(tbl_appointment.`id`)
+        //        WHEN app_status = 'Notified' THEN COUNT(tbl_appointment.`id`)
+        //        WHEN app_status = 'Missed' THEN COUNT(tbl_appointment.`id`)
+        //        WHEN app_status = 'Defaulted' THEN COUNT(tbl_appointment.`id`)
+        //        ELSE COUNT(tbl_appointment.`id`)
+        //    END) AS total ,COUNT(tbl_appointment.`id`) AS appointment_status FROM tbl_appointment INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.`client_id` INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` WHERE 1";
+        //
+        //        if ($access_level === "Admin"):
+        //
+        //        endif;
+        //
+        //        if ($access_level == "Partner"):
+        //            $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
+        //        endif;
+        //
+        //
+        //        if ($access_level == "Facility"):
+        //            $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
+        //        endif;
+        //
+        //        if (!empty($county_id)) {
+        //            $sql .= " AND tbl_partner_facility.county_id = '$county_id' ";
+        //        }
+        //
+        //        if (!empty($sub_county_id)) {
+        //            $sql .= " AND tbl_partner_facility.sub_county_id = '$sub_county_id' ";
+        //        }
+        //        if (!empty($mfl_code)) {
+        //            $sql .= " AND tbl_partner_facility.mfl_code = '$mfl_code' ";
+        //        }
+        //
+        //
+        //
+        //        if (!empty($date_from)) {
+        //            $date_from = str_replace('-', '-', $date_from);
+        //            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        //            $sql .= " AND tbl_appointment.appntmnt_date >= '$formated_date_from' ";
+        //        }
+        //        if (!empty($date_to)) {
+        //            $date_to = str_replace('-', '-', $date_to);
+        //            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        //            $sql .= " AND tbl_appointment.appntmnt_date <= '$formated_date_to' ";
+        //        }
+        //
+        //
+        //
+        //
+        //        $sql .= "  GROUP BY tbl_appointment.`app_status`";
+        //
+        //        $query = $this->db->query($sql)->result();
+        //        echo json_encode($query);
     }
 
     public function appointment_distribution_by_booked()
@@ -7347,16 +7347,16 @@ SELECT tbl_groups.`name` AS group_name , tbl_appointment.`app_status` , (
     INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` 
     WHERE 1 ";
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -7447,16 +7447,16 @@ SELECT tbl_groups.`name` AS group_name , tbl_appointment.`app_status` , (
     INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` 
     WHERE 1 ";
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -7544,16 +7544,16 @@ SELECT tbl_groups.`name` AS group_name , tbl_appointment.`app_status` , (
     INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` 
     WHERE 1 ";
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -7640,16 +7640,16 @@ SELECT tbl_groups.`name` AS group_name , tbl_appointment.`app_status` , (
     INNER JOIN tbl_partner_facility ON tbl_partner_facility.`mfl_code` = tbl_client.`mfl_code` 
     WHERE 1 ";
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -7766,16 +7766,16 @@ SELECT tbl_groups.`name` AS group_name , tbl_appointment.`app_status` , (
 
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' ";
         endif;
 
@@ -8015,8 +8015,8 @@ WHERE 1 ";
                 $this->load->template('Reports/client_report');
             } else {
                 $this->load->template('Reports/client_report');
-//                echo 'Invalid Access';
-//                exit();
+                //                echo 'Invalid Access';
+                //                exit();
             }
         }
     }
@@ -8089,8 +8089,8 @@ WHERE 1 ";
                 $this->load->template('Reports/user_report');
             } else {
                 $this->load->template('Reports/user_report');
-//                echo 'Invalid Access';
-//                exit();
+                //                echo 'Invalid Access';
+                //                exit();
             }
         }
     }
@@ -8099,7 +8099,7 @@ WHERE 1 ";
     {
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
-       
+
         $this->load->vars($data);
         $this->load->template('Reports/app_calendar');
     }
@@ -8555,72 +8555,74 @@ GROUP BY tbl_appointment.`app_status` ";
 
 
             $query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
-                    . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1' order by app_type_1 DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
+                . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1' order by app_type_1 DESC  ";
 
             $missed_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "   fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
-                    . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id  "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND app_status='Missed' AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "   fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
+                . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id  "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND app_status='Missed' AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
 
             $defaulted_query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
-                    . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1  "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND app_status='Defaulted' AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
+                . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1  "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND app_status='Defaulted' AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
 
 
             $ltfu_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
-                    . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND app_status='LTFU'  AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
+                . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_client.partner_id='$partner_id' AND app_status='LTFU'  AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
         } elseif ($access_level == "County") {
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
                 'table' => 'master_facility',
-                'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
                     'county' => 'county.id = master_facility.county_id',
-                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
                 'where' => array('partner_facility.status' => 'Active', 'partner_facility.county_id' => $county_id)
             );
 
@@ -8634,135 +8636,137 @@ GROUP BY tbl_appointment.`app_status` ";
 
 
             $query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id  "
-                    . ",tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id'   AND tbl_appointment.appntmnt_date = CURDATE()  and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id  "
+                . ",tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id'   AND tbl_appointment.appntmnt_date = CURDATE()  and active_app='1' order by appntmnt_date DESC  ";
 
 
             $missed_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
-                    . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' AND app_status='Defaulted'  AND tbl_appointment.appntmnt_date < CURDATE()  and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
+                . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' AND app_status='Defaulted'  AND tbl_appointment.appntmnt_date < CURDATE()  and active_app='1' order by appntmnt_date DESC  ";
 
 
             $ltfu_query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
-                    . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' and app_status='LTFU'  AND tbl_appointment.appntmnt_date < CURDATE()  and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
+                . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.county_id='$county_id' and app_status='LTFU'  AND tbl_appointment.appntmnt_date < CURDATE()  and active_app='1' order by appntmnt_date DESC  ";
         } elseif ($access_level == "Sub County") {
             $facilities = array(
-                        'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
-                        'table' => 'master_facility',
-                        'join' => array('partner_facility' => 'master_facility.code = partner_facility.mfl_code',
-                            'county' => 'county.id = master_facility.county_id',
-                            'sub_county' => 'sub_county.id = master_facility.sub_county_id'),
-                        'where' => array('partner_facility.status' => 'Active', 'partner_facility.sub_county_id' => $sub_county_id)
-                    );
+                'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
+                'table' => 'master_facility',
+                'join' => array(
+                    'partner_facility' => 'master_facility.code = partner_facility.mfl_code',
+                    'county' => 'county.id = master_facility.county_id',
+                    'sub_county' => 'sub_county.id = master_facility.sub_county_id'
+                ),
+                'where' => array('partner_facility.status' => 'Active', 'partner_facility.sub_county_id' => $sub_county_id)
+            );
 
             $appointments = array(
-                        'table' => 'appointment',
-                        'join' => array('client' => 'client.id = appointment.client_id'),
-                        'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id)
-                    );
+                'table' => 'appointment',
+                'join' => array('client' => 'client.id = appointment.client_id'),
+                'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id)
+            );
 
 
 
             $query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                            . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                            . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                            . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                            . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                            . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                            . " tbl_appointment.app_type_1,"
-                            . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
-                            . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                            . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                            . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                            . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                            . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                            . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                            . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
+                . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1' order by appntmnt_date DESC  ";
 
             $missed_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                            . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                            . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                            . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                            . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                            . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                            . " tbl_appointment.app_type_1,"
-                            . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
-                            . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                            . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                            . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                            . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                            . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                            . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                            . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' AND app_status='Missed'  AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
+                . " tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' AND app_status='Missed'  AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
 
             $defaulted_query = "Select tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                            . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                            . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                            . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                            . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                            . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                            . " tbl_appointment.app_type_1,"
-                            . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
-                            . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                            . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                            . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                            . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                            . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
-                            . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                            . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' AND app_status='Defaulted'  AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id , "
+                . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' AND app_status='Defaulted'  AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
 
             $ltfu_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                            . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                            . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                            . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                            . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                            . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                            . " tbl_appointment.app_type_1,"
-                            . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
-                            . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                            . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                            . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                            . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                            . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
-                            . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                            . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' and app_status='LTFU' AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1,"
+                . "  fnl_trcing_outocme,no_calls,no_msgs,home_visits,fnl_outcome_dte,tbl_appointment.id as appointment_id ,"
+                . "tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
+                . " INNER JOIN  tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_client.mfl_code"
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id' and app_status='LTFU' AND tbl_appointment.appntmnt_date < CURDATE() and active_app='1' order by appntmnt_date DESC  ";
         } elseif ($access_level == "Facility") {
             $facilities = array(
                 'select' => 'master_facility.name as facility_name, master_facility.id as facility_id, master_facility.code as mfl_code,county.name as county_name,sub_county.name as sub_county_name',
@@ -8809,66 +8813,66 @@ GROUP BY tbl_appointment.`app_status` ";
 
 
             $query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1, "
-                    . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1' order by appntmnt_date DESC ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1, "
+                . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date = CURDATE() and active_app='1' order by appntmnt_date DESC ";
 
 
 
             $missed_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1, "
-                    . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date < CURDATE() AND app_status='Missed' and active_app='1' order by appntmnt_date DESC ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . " tbl_appointment.app_type_1, "
+                . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date < CURDATE() AND app_status='Missed' and active_app='1' order by appntmnt_date DESC ";
 
 
 
             $defaulted_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . "  tbl_appointment.app_type_1, "
-                    . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date < CURDATE() AND app_status='Defaulted' and active_app='1' order by appntmnt_date DESC ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . "  tbl_appointment.app_type_1, "
+                . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date < CURDATE() AND app_status='Defaulted' and active_app='1' order by appntmnt_date DESC ";
 
 
 
             $ltfu_query = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . "  tbl_appointment.app_type_1, "
-                    . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
-                    . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date < CURDATE() AND app_status='LTFU' and active_app='1' order by appntmnt_date DESC ";
+                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
+                . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
+                . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
+                . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
+                . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
+                . "  tbl_appointment.app_type_1, "
+                . "  fnl_trcing_outocme ,tbl_appointment_types.id as appointment_type_id, tbl_appointment_types.name as appointment_type_name from tbl_client"
+                . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
+                . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
+                . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id "
+                . " INNER JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
+                . " WHERE tbl_client.status = 'Active' AND tbl_appointment.appntmnt_date < CURDATE() AND app_status='LTFU' and active_app='1' order by appntmnt_date DESC ";
         }
 
 
@@ -8993,44 +8997,44 @@ FROM
                 $i = 1;
                 $a = 7;
                 $b = 9;
-//                foreach ($get_client_records_sql as $value) {
-//                    $client_id = $value->client_id;
-//                    $client_name = $value->client_name;
-//                    $clinic_number = $value->clinic_number;
-//                    $gender = $value->gender;
-//                    $art_date = $value->art_date;
-//                    $age = $value->age;
-//                    $enrollment_date = $value->enrollment_date;
-//                    $art_cohort_month = $value->ART_COHORT_MONTH;
-//                    $dob = $value->dob;
-//                    $today = $value->today;
-//                    $missed_appointment_date = $value->missed_appointment_date;
-//                    $client_phone = $value->client_phone;
-//                    $trtmnt_supporter_name = $value->trtmnt_supprtr_name;
-//                    $trtmnt_supporter_phone_no = $value->trtmnt_sprtr_phone_no;
-//                    $mfl_code = $value->mfl_code;
-//                    $county_id = $value->county_id;
-//                    $sub_county_id = $value->sub_county_id;
-//                     $objPHPExcel->setActiveSheetIndex(0);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("A'$a'", $i);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("B'$a'", $client_name);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("B'$b'", $clinic_number);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("C'$a'", $art_date);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("C'$b'", $age);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("D'$a'", $dob);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("D'$b'", $enrollment_date);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("E'$a'", $art_cohort_month);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("E'$b'", $missed_appointment_date);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("F'$a'", $client_phone);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("F'$b'", $trtmnt_supporter_name);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("G'$a'", $trtmnt_supporter_phone_no);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("G'$b'", $clinic_number);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("H'$a'", $client_name);
-//                    $objPHPExcel->getActiveSheet()->setCellValue("H'$b'", $clinic_number);
-//                    $i++;
-//                    $b + 4;
-//                    $a + 5;
-//                }
+                //                foreach ($get_client_records_sql as $value) {
+                //                    $client_id = $value->client_id;
+                //                    $client_name = $value->client_name;
+                //                    $clinic_number = $value->clinic_number;
+                //                    $gender = $value->gender;
+                //                    $art_date = $value->art_date;
+                //                    $age = $value->age;
+                //                    $enrollment_date = $value->enrollment_date;
+                //                    $art_cohort_month = $value->ART_COHORT_MONTH;
+                //                    $dob = $value->dob;
+                //                    $today = $value->today;
+                //                    $missed_appointment_date = $value->missed_appointment_date;
+                //                    $client_phone = $value->client_phone;
+                //                    $trtmnt_supporter_name = $value->trtmnt_supprtr_name;
+                //                    $trtmnt_supporter_phone_no = $value->trtmnt_sprtr_phone_no;
+                //                    $mfl_code = $value->mfl_code;
+                //                    $county_id = $value->county_id;
+                //                    $sub_county_id = $value->sub_county_id;
+                //                     $objPHPExcel->setActiveSheetIndex(0);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("A'$a'", $i);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("B'$a'", $client_name);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("B'$b'", $clinic_number);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("C'$a'", $art_date);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("C'$b'", $age);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("D'$a'", $dob);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("D'$b'", $enrollment_date);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("E'$a'", $art_cohort_month);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("E'$b'", $missed_appointment_date);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("F'$a'", $client_phone);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("F'$b'", $trtmnt_supporter_name);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("G'$a'", $trtmnt_supporter_phone_no);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("G'$b'", $clinic_number);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("H'$a'", $client_name);
+                //                    $objPHPExcel->getActiveSheet()->setCellValue("H'$b'", $clinic_number);
+                //                    $i++;
+                //                    $b + 4;
+                //                    $a + 5;
+                //                }
             }
 
 
@@ -9054,7 +9058,7 @@ FROM
 
     public function dashboard()
     {
-//            $k = new /Ghunti/HighchartsPHP/Highchart;
+        //            $k = new /Ghunti/HighchartsPHP/Highchart;
         $access_level = $this->session->userdata('access_level');
         if ($access_level == 'Facility') {
             redirect("Reports/facility_home", "refresh");
@@ -9065,19 +9069,45 @@ FROM
             $facility_id = $this->session->userdata('facility_id');
             $access_level = $this->session->userdata('access_level');
 
+            $partner_id = $this->input->post('partner', true);
+            $county_id = $this->input->post('county', true);
+            $sub_county_id = $this->input->post('sub_county', true);
+            $mfl_code = $this->input->post('facility', true);
 
+            $bar_clients_data = $this->data->getAggregateBarClientsData($partner_id, $county_id, $sub_county_id, $mfl_code);
+            $bar_appointmens_data = $this->data->getAggregateBarAppointmentsData($partner_id, $county_id, $sub_county_id, $mfl_code);
+            $records = $this->data->getAggregateReports($partner_id, $county_id, $sub_county_id, $mfl_code);
 
+            $target_active_clients = 0;
+            $total_clients = 0;
+            $consented_clients = 0;
+            $future_appointments = 0;
 
-
+            foreach ($records as $record) {
+                $target_active_clients =  $target_active_clients + $record['Target_Clients'];
+                $total_clients = $total_clients + $record['Clients'];
+                $consented_clients = $consented_clients + $record['Consented'];
+                $future_appointments = $future_appointments + $record['Future_Appointments'];;
+            }
+            $data['data'] = $records;
+            $data['bar_clients_data'] = $bar_clients_data;
+            $data['bar_appointments_data'] = $bar_appointmens_data;
+            $data['target_active_clients'] = $target_active_clients;
+            $data['total_clients'] = $total_clients;
+            $data['percentage_uptake'] = round((($total_clients / $target_active_clients) * 100), 1);
+            $data['consented_clients'] = $consented_clients;
+            $data['future_appointments'] = $future_appointments;
+            $data['facilities'] = count($records);
+            $data['access_level'] = $access_level;
+            $data['partner_id'] = $partner_id;
+            $data['facility_id'] = $facility_id;
             $data['side_functions'] = $this->data->get_side_modules();
             $data['top_functions'] = $this->data->get_top_modules();
             $data['output'] = $this->get_access_level();
-
-
-
-
+            $data['filtered_partner'] = $this->get_partner_filters();
+            $data['filtered_county'] = $this->get_county_filtered_values();
             $this->load->vars($data);
-            $this->load->template('dashboard/geographical');
+            $this->load->template('Home/highcharts_dashboard');
 
             //// $this->output->enable_profiler(TRUE);
         }
@@ -9085,7 +9115,7 @@ FROM
 
     public function clients_dashboard()
     {
-//            $k = new /Ghunti/HighchartsPHP/Highchart;
+        //            $k = new /Ghunti/HighchartsPHP/Highchart;
         $access_level = $this->session->userdata('access_level');
         if ($access_level == 'Facility') {
             redirect("Reports/facility_home", "refresh");
@@ -9096,40 +9126,37 @@ FROM
             $facility_id = $this->session->userdata('facility_id');
             $access_level = $this->session->userdata('access_level');
 
+            $partner_id = $this->input->post('partner', true);
+            $county_id = $this->input->post('county', true);
+            $sub_county_id = $this->input->post('sub_county', true);
+            $mfl_code = $this->input->post('facility', true);
 
-            $sql = " SELECT * FROM vw_client_summary_report WHERE 1 ";
+            $table_records = $this->data->getAggregateTableData($partner_id, $county_id, $sub_county_id, $mfl_code);
+            $marriage_records = $this->data->getAggregateMarriageData($partner_id, $county_id, $sub_county_id, $mfl_code);
+            $gender_records = $this->data->getAggregateGenderData($partner_id, $county_id, $sub_county_id, $mfl_code);
+            $condition_records = $this->data->getAggregateConditionData($partner_id, $county_id, $sub_county_id, $mfl_code);
 
-            if ($access_level == "Partner") {
-                $sql .= " AND vw_client_summary_report.partner_id='$partner_id' ";
-            } elseif ($access_level == "County") {
-                $sql .= " AND vw_client_summary_report.county_id = '$county_id' ";
-            } elseif ($access_level == "Sub County") {
-                $sql .= " AND vw_client_summary_report.sub_county_id='$sub_county_id' ";
-            } elseif ($access_level == "Facility") {
-                $sql .= " AND vw_client_summary_report.mfl_code = '$facility_id' ";
-            } else {
-            }
-
-
-
+            $data['data'] = $table_records;
+            $data['marriage_records'] = $marriage_records;
+            $data['gender_records'] = $gender_records;
+            $data['condition_records'] = $condition_records;
+            $data['access_level'] = $access_level;
+            $data['partner_id'] = $partner_id;
+            $data['facility_id'] = $facility_id;
             $data['side_functions'] = $this->data->get_side_modules();
             $data['top_functions'] = $this->data->get_top_modules();
             $data['output'] = $this->get_access_level();
-
-
-
-
+            $data['filtered_partner'] = $this->get_partner_filters();
+            $data['filtered_county'] = $this->get_county_filtered_values();
             $this->load->vars($data);
-            $this->load->template('dashboard/clients');
-            $function_name = $this->uri->segment(2);
-
-            //// $this->output->enable_profiler(TRUE);
+            //echo json_encode($condition_records);
+            $this->load->template('Home/tablechart');
         }
     }
 
     public function appointments_dashboard()
     {
-//            $k = new /Ghunti/HighchartsPHP/Highchart;
+        //            $k = new /Ghunti/HighchartsPHP/Highchart;
         $access_level = $this->session->userdata('access_level');
         if ($access_level == 'Facility') {
             redirect("Reports/facility_home", "refresh");
@@ -9173,7 +9200,7 @@ FROM
 
     public function messages_dashboard()
     {
-//            $k = new /Ghunti/HighchartsPHP/Highchart;
+        //            $k = new /Ghunti/HighchartsPHP/Highchart;
         $access_level = $this->session->userdata('access_level');
         if ($access_level == 'Facility') {
             redirect("Reports/facility_home", "refresh");
@@ -9310,7 +9337,7 @@ FROM
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
 
-        
+
         $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
         $data['facility_id'] = $facility_id;
@@ -9387,21 +9414,21 @@ FROM
         $this->db->from('Monthly_Appointment_Summary');
 
         $query = "Select * from Monthly_Appointment_Summary where 1 ";
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Sub County"):
+        if ($access_level == "Sub County") :
             $query .= " AND sub_county_id = '$sub_county_id' ";
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
 
             $query .= " and partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
 
             $query .= " and mfl_code = '$facility_id' ";
         endif;
@@ -9431,7 +9458,7 @@ FROM
 
         echo json_encode($get_query);
     }
-    
+
     public function get_client_reports()
     {
         $partner_id = $this->session->userdata('partner_id');
@@ -9451,27 +9478,27 @@ FROM
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('*');
         $this->db->from('client_report ');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -9508,9 +9535,11 @@ FROM
 
             $object->setActiveSheetIndex(0);
 
-            $table_columns = array("Clinic Number", "MFL Code", "Facility", "Gender",
+            $table_columns = array(
+                "Clinic Number", "MFL Code", "Facility", "Gender",
                 "Group Name", "Marital", "Partner", "Created At", "Month Year", "Language",
-                "TXT Time", "County", "Sub County", "Status");
+                "TXT Time", "County", "Sub County", "Status"
+            );
 
 
 
@@ -9623,29 +9652,29 @@ FROM
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('*');
         $this->db->from('client_appointment_report ');
 
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_id', $partner_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -9695,9 +9724,11 @@ FROM
 
         $object->setActiveSheetIndex(0);
 
-        $table_columns = array("Clinic Number", "Gender", "Group Name", "Marital",
+        $table_columns = array(
+            "Clinic Number", "Gender", "Group Name", "Marital",
             "Appointment Name", "Appointment Month Year", "Appointment Status", "Created At", "Partner Name ", "County",
-            "Sub County", "MFL Code", "Facility ");
+            "Sub County", "MFL Code", "Facility "
+        );
 
 
 
@@ -9797,31 +9828,31 @@ FROM
         $date_from = $this->input->post('date_from', true);
         $date_to = $this->input->post('date_to', true);
 
-        if (!empty($date_from)):
+        if (!empty($date_from)) :
             $date_from = str_replace('-', '-', $date_from);
-        $formated_date_from = date("Y-m-d", strtotime($date_from));
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
         endif;
-        if (!empty($date_to)):
+        if (!empty($date_to)) :
             $date_to = str_replace('-', '-', $date_to);
-        $formated_date_to = date("Y-m-d", strtotime($date_to));
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
         endif;
 
         $this->db->select('*');
         $this->db->from('client_message_report');
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $this->db->where('partner_id', $partner_id);
         endif;
 
-        if ($access_level == "Sub County"):
-           $this->db->where('sub_county_id', $sub_county_id);
+        if ($access_level == "Sub County") :
+            $this->db->where('sub_county_id', $sub_county_id);
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $this->db->where('mfl_code', $facility_id);
         endif;
         if (!empty($county_id)) {
@@ -9904,16 +9935,16 @@ FROM
    WHEN age_group = '50+'  THEN COUNT( lab_investigation)
     ELSE count( lab_investigation) END AS `no_lab_investigation`  from vw_lab_investigation WHERE 1 ";
 
-        if ($access_level === "Admin"):
+        if ($access_level === "Admin") :
 
         endif;
 
-        if ($access_level == "Partner"):
+        if ($access_level == "Partner") :
             $lab_investigation .= " AND partner_id = '$partner_id' ";
         endif;
 
 
-        if ($access_level == "Facility"):
+        if ($access_level == "Facility") :
             $lab_investigation .= " AND mfl_code = '$facility_id' ";
         endif;
 
@@ -9960,7 +9991,7 @@ FROM
             $this->load->template('Reports/lab_investigation');
 
             // echo 'Unauthorised Access';
-//exit();
+            //exit();
         }
     }
 }

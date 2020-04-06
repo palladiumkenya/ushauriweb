@@ -1830,7 +1830,7 @@
                 },
                 success: function(results) {
                     result = JSON.parse(results)
-                    console.log(result)
+                    //console.log(result)
                     $("#container").empty();
                     $("#marriage").empty();
                     $("#gender").empty();
@@ -1839,34 +1839,22 @@
                     parseGender = result.gender_records;
                     parseMarriage = result.marriage_records;
                     parseData = result.data;
-                    //console.log(parseGender)
-                    //console.log(parseCondition)
-                    let art = 0;
-                    let on_care = 0;
-                    let pre_art = 0;
-                    let no_condition = 0
-
-                    let art_consent = 0;
-                    let on_care_consent = 0;
-                    let pre_art_consent = 0;
-                    let no_condition_consent = 0;
 
 
                     var conditionReg = [];
                     var conditionConsent = [];
                     var conditionPercent = [];
 
-                    for (let i = 0; i < parseCondition.length; i++) {
-                        art = art + parseInt(parseCondition[i].art);
-                        on_care = on_care + parseInt(parseCondition[i].on_care);
-                        pre_art = pre_art + parseInt(parseCondition[i].pre_art);
-                        no_condition = no_condition + parseInt(parseCondition[i].no_condition);
-                        art_consent = art_consent + parseInt(parseCondition[i].art_consent);
-                        on_care_consent = on_care_consent + parseInt(parseCondition[i].on_care_consent);
-                        pre_art_consent = pre_art_consent + parseInt(parseCondition[i].pre_art_consent);
-                        no_condition_consent = no_condition_consent + parseInt(parseCondition[i].not_condition_consent);
+                    const art = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.art), 0)
+                    const on_care = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.on_care), 0)
+                    const pre_art = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.pre_art), 0)
+                    const no_condition = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.no_condition), 0)
 
-                    }
+                    const art_consent = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.art_consent), 0)
+                    const on_care_consent = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.on_care_consent), 0)
+                    const pre_art_consent = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.pre_art_consent), 0)
+                    const no_condition_consent = parseCondition.reduce((total, parseC_) => total + parseInt(parseC_.not_condition_consent), 0)
+
                     conditionPercent.push((art_consent / art) * 100);
                     conditionPercent.push((on_care_consent / on_care) * 100);
                     conditionPercent.push((pre_art_consent / pre_art) * 100);
@@ -1882,31 +1870,21 @@
                     conditionConsent.push(pre_art_consent);
                     conditionConsent.push(no_condition_consent);
 
-                    let female = 0;
-                    let male = 0;
-                    let trans_gender = 0;
-                    let unspecified = 0;
-
-                    let female_consent = 0;
-                    let male_consent = 0;
-                    let trans_gender_consent = 0;
-                    let unspecified_consent = 0;
 
                     var genderReg = [];
                     var genderConsent = [];
                     var genderPercent = [];
 
-                    for (let i = 0; i < parseGender.length; i++) {
-                        female = female + parseInt(parseGender[i].female);
-                        male = male + parseInt(parseGender[i].male);
-                        trans_gender = trans_gender + parseInt(parseGender[i].trans_gender);
-                        unspecified = unspecified + parseInt(parseGender[i].not_specified_gender);
-                        female_consent = female_consent + parseInt(parseGender[i].female_consent);
-                        male_consent = male_consent + parseInt(parseGender[i].male_consent);
-                        trans_gender_consent = trans_gender_consent + parseInt(parseGender[i].trans_gender_consent);
-                        unspecified_consent = unspecified_consent + parseInt(parseGender[i].not_specified_gender_consent);
+                    const female = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.female), 0)
+                    const male = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.male), 0)
+                    const trans_gender = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.trans_gender), 0)
+                    const unspecified = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.not_specified_gender), 0)
 
-                    }
+                    const female_consent = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.female_consent), 0)
+                    const male_consent = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.male_consent), 0)
+                    const trans_gender_consent = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.trans_gender_consent), 0)
+                    const unspecified_consent = parseGender.reduce((total, parseG_) => total + parseInt(parseG_.not_specified_gender_consent), 0)
+
                     genderPercent.push((female_consent / female) * 100);
                     genderPercent.push((male_consent / male) * 100);
                     genderPercent.push((trans_gender_consent / trans_gender) * 100);
@@ -1922,43 +1900,29 @@
                     genderConsent.push(trans_gender_consent);
                     genderConsent.push(unspecified_consent);
 
-                    let single = 0;
-                    let monogamous = 0;
-                    let divorced = 0;
-                    let widowed = 0;
-                    let cohabiting = 0;
-                    let unavailable = 0;
-                    let polygamous = 0;
-
-                    let singleConsent = 0;
-                    let monogamousConsent = 0;
-                    let divorcedConsent = 0;
-                    let widowedConsent = 0;
-                    let cohabitingConsent = 0;
-                    let unavailableConsent = 0;
-                    let pologamousConsent = 0;
 
                     var marriedConsented = [];
                     var marriedRegistered = [];
                     var marriedPercent = [];
 
-                    for (let i = 0; i < parseMarriage.length; i++) {
-                        single = single + parseInt(parseMarriage[i].single);
-                        monogamous = monogamous + parseInt(parseMarriage[i].married_monogamous);
-                        divorced = divorced + parseInt(parseMarriage[i].divorced);
-                        widowed = widowed + parseInt(parseMarriage[i].widowed);
-                        cohabiting = cohabiting + parseInt(parseMarriage[i].cohabiting);
-                        unavailable = unavailable + parseInt(parseMarriage[i].unavailable);
-                        polygamous = polygamous + parseInt(parseMarriage[i].maried_polygamous);
-                        singleConsent = singleConsent + parseInt(parseMarriage[i].single_consent);
-                        monogamousConsent = monogamousConsent + parseInt(parseMarriage[i].married_monogamous_consent);
-                        divorcedConsent = divorcedConsent + parseInt(parseMarriage[i].divorced_consented);
-                        widowedConsent = widowedConsent + parseInt(parseMarriage[i].widowed_consented);
-                        cohabitingConsent = cohabitingConsent + parseInt(parseMarriage[i].cohabiting_consented);
-                        unavailableConsent = unavailableConsent + parseInt(parseMarriage[i].unavailable_consented);
-                        pologamousConsent = pologamousConsent + parseInt(parseMarriage[i].married_polygomous_consented);
+                    const single = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.single), 0)
+                    const monogamous = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.married_monogamous), 0)
+                    const divorced = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.divorced), 0)
+                    const widowed = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.widowed), 0)
+                    const cohabiting = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.cohabiting), 0)
+                    const unavailable = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.unavailable), 0)
+                    const polygamous = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.maried_polygamous), 0)
 
-                    }
+                    const singleConsent = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.single_consent), 0)
+                    const monogamousConsent = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.married_monogamous_consent), 0)
+                    const divorcedConsent = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.divorced_consented), 0)
+                    const widowedConsent = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.widowed_consented), 0)
+                    const cohabitingConsent = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.cohabiting_consented), 0)
+                    const unavailableConsent = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.unavailable_consented), 0)
+                    const pologamousConsent = parseMarriage.reduce((total, parseM_) => total + parseInt(parseM_.married_polygomous_consented), 0)
+
+
+
                     marriedPercent.push((singleConsent / single) * 100);
                     marriedPercent.push((monogamousConsent / monogamous) * 100);
                     marriedPercent.push((divorcedConsent / divorced) * 100);
@@ -1984,49 +1948,45 @@
                     marriedConsented.push(unavailableConsent);
                     marriedConsented.push(pologamousConsent);
 
-                    let toNineReg = 0;
-                    let toFourteenReg = 0;
-                    let toNineteenReg = 0;
-                    let toTwenFourReg = 0;
-                    let toTwenFiveReg = 0;
-
-                    let toNineConsent = 0;
-                    let toFourteenConsent = 0;
-                    let toNineteenConsent = 0;
-                    let toTwentyFourConsent = 0;
-                    let toTwentyFiveConsent = 0;
                     var consentedArray = [];
                     var registeredArray = [];
                     var percentageArray = [];
-                    for (let i = 0; i < parseData.length; i++) {
-                        toNineReg = toNineReg + parseInt(parseData[i].ToNineregistered);
-                        toFourteenReg = toFourteenReg + parseInt(parseData[i].ToFourteenregistered);
-                        toNineteenReg = toNineteenReg + parseInt(parseData[i].ToNineteenregistered);
-                        toTwenFourReg = toTwenFourReg + parseInt(parseData[i].ToTwentyFourregistered);
-                        toTwenFiveReg = toTwenFiveReg + parseInt(parseData[i].Overtwentyfiveregistered);
-                        toNineConsent = toNineConsent + parseInt(parseData[i].ToNineconsented);
-                        toFourteenConsent = toFourteenConsent + parseInt(parseData[i].ToFourteenconsented);
-                        toNineteenConsent = toNineteenConsent + parseInt(parseData[i].ToNineteenconsented);
-                        toTwentyFourConsent = toTwentyFourConsent + parseInt(parseData[i].ToTwentyFourconsented);
-                        toTwentyFiveConsent = toTwentyFiveConsent + parseInt(parseData[i].TwentyFiveconsented);
 
-                    }
+                    //we use the reduce function to sum total registered
+
+                    const toNine = parseData.reduce((total, parse_) => total + parseInt(parse_.ToNineregistered), 0)
+                    const toFourteenReg = parseData.reduce((total, parse_) => total + parseInt(parse_.ToFourteenregistered), 0)
+                    const toNineteenReg = parseData.reduce((total, parse_) => total + parseInt(parse_.ToNineteenregistered), 0)
+                    const toTwenFourReg = parseData.reduce((total, parse_) => total + parseInt(parse_.ToTwentyFourregistered), 0)
+                    const toTwenFiveReg = parseData.reduce((total, parse_) => total + parseInt(parse_.Overtwentyfiveregistered), 0)
+
+                    //here we do the same to sum consented values
+
+                    const toNineConsent = parseData.reduce((total, parse_) => total + parseInt(parse_.ToNineconsented), 0)
+                    const toFourteenConsent = parseData.reduce((total, parse_) => total + parseInt(parse_.ToFourteenconsented), 0)
+                    const toNineteenConsent = parseData.reduce((total, parse_) => total + parseInt(parse_.ToNineteenconsented), 0)
+                    const toTwentyFourConsent = parseData.reduce((total, parse_) => total + parseInt(parse_.ToTwentyFourconsented), 0)
+                    const toTwentyFiveConsent = parseData.reduce((total, parse_) => total + parseInt(parse_.TwentyFiveconsented), 0)
+
+                    registeredArray.push(toNine);
+                    registeredArray.push(toFourteenReg);
+                    registeredArray.push(toNineteenReg);
+                    registeredArray.push(toTwenFourReg);
+                    registeredArray.push(toTwenFiveReg);
+                    //push to consent array
+
+                    consentedArray.push(toNineConsent);
+                    consentedArray.push(toFourteenConsent);
+                    consentedArray.push(toNineteenConsent);
+                    consentedArray.push(toTwentyFourConsent);
+                    consentedArray.push(toTwentyFiveConsent);
+
                     percentageArray.push((toNineConsent / toNineReg) * 100)
                     percentageArray.push((toFourteenConsent / toFourteenReg) * 100)
                     percentageArray.push((toNineteenConsent / toNineteenReg) * 100)
                     percentageArray.push((toTwentyFourConsent / toTwenFourReg) * 100)
                     percentageArray.push((toTwentyFiveConsent / toTwenFiveReg) * 100)
 
-                    registeredArray.push(toNineReg);
-                    registeredArray.push(toFourteenReg);
-                    registeredArray.push(toNineteenReg);
-                    registeredArray.push(toTwenFourReg);
-                    registeredArray.push(toTwenFiveReg);
-                    consentedArray.push(toNineConsent);
-                    consentedArray.push(toFourteenConsent);
-                    consentedArray.push(toNineteenConsent);
-                    consentedArray.push(toTwentyFourConsent);
-                    consentedArray.push(toTwentyFiveConsent);
 
                     Highcharts.drawTable = function() {
 
