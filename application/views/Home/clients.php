@@ -3,7 +3,8 @@
     <!-- Bread crumb -->
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Dashboard</h3> </div>
+            <h3 class="text-primary">Dashboard</h3>
+        </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?php echo base_url(); ?>">Home</a></li>
@@ -37,7 +38,7 @@
                                 <?php
                                 $access_level = $this->session->userdata('access_level');
                                 if ($access_level == "Partner") {
-                                    ?>
+                                ?>
                                     <table id="table" class="table table-bordered table-condensed table-hover table-responsive">
                                         <thead>
                                             <tr>
@@ -62,7 +63,7 @@
                                             <?php
                                             $i = 1;
                                             foreach ($clients as $value) {
-                                                ?>
+                                            ?>
                                                 <tr>
                                                     <td class="a-center"><?php echo $i; ?></td>
 
@@ -72,10 +73,10 @@
                                                     $view_client = $this->session->userdata('view_client');
 
                                                     if ($view_client == "Yes") {
-                                                        ?>
+                                                    ?>
 
                                                         <td>
-                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>"/>
+                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>" />
                                                             <button class="btn btn-default btn-small edit_btn" id="edit_btn">
                                                                 <?php echo $value->clinic_number; ?>
                                                             </button>
@@ -85,14 +86,14 @@
                                                         <td><?php echo $value->national_id; ?></td>
 
 
-                                                        <?php
+                                                    <?php
                                                     } else {
-                                                        ?>
+                                                    ?>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
 
-                                                        <?php
+                                                    <?php
                                                     }
                                                     ?>
 
@@ -101,7 +102,7 @@
                                                     $view_client = $this->session->userdata('view_client');
 
                                                     if ($view_client == "Yes") {
-                                                        ?>
+                                                    ?>
 
                                                         <td><?php
                                                             $client_name = ucwords(strtolower($value->f_name)) . ' ' . ucwords(strtolower($value->m_name)) . ' ' . ucwords(strtolower($value->l_name));
@@ -109,12 +110,12 @@
                                                             echo $client_name;
                                                             ?></td>
                                                         <td><?php echo $value->phone_no; ?></td>
-                                                        <?php
+                                                    <?php
                                                     } else {
-                                                        ?>
+                                                    ?>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
-                                                        <?php
+                                                    <?php
                                                     }
                                                     ?>
 
@@ -131,16 +132,16 @@
                                                     <td><?php echo $value->updated_at; ?></td>
 
                                                 </tr>
-                                                <?php
+                                            <?php
                                                 $i++;
                                             }
                                             ?>
                                         </tbody>
                                     </table>
 
-                                    <?php
+                                <?php
                                 } elseif ($access_level == "Facility") {
-                                    ?>
+                                ?>
                                     <table id="table" class="table table-bordered table-condensed table-hover table-responsive">
                                         <thead>
                                             <tr>
@@ -165,37 +166,37 @@
                                             <?php
                                             $i = 1;
                                             foreach ($clients as $value) {
-                                                ?>
+                                            ?>
                                                 <tr>
                                                     <td class="a-center"><?php echo $i; ?></td>
                                                     <?php
                                                     $view_client = $this->session->userdata('view_client');
 
                                                     if ($view_client == "Yes") {
-                                                        ?>
+                                                    ?>
                                                         <td>
-                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>"/>
+                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>" />
                                                             <button class="btn btn-default btn-small edit_btn" id="edit_btn">
                                                                 <?php echo $value->clinic_number; ?>
                                                             </button>
 
                                                         </td>
-                                                           <td><?php echo $value->file_no; ?></td>
+                                                        <td><?php echo $value->file_no; ?></td>
                                                         <td><?php
                                                             $client_name = ucwords(strtolower($value->f_name)) . ' ' . ucwords(strtolower($value->m_name)) . ' ' . ucwords(strtolower($value->l_name));
 
                                                             echo $client_name;
                                                             ?></td>
-                                                        
+
                                                         <td><?php echo $value->phone_no; ?></td>
-                                                        <?php
+                                                    <?php
                                                     } else {
-                                                        ?>
+                                                    ?>
                                                         <td>XXXXXXX XXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
-                                                        <?php
+                                                    <?php
                                                     }
                                                     ?>
                                                     <td><?php echo $value->dob; ?></td>
@@ -204,7 +205,7 @@
                                                     <td><?php echo $value->client_status; ?></td>
                                                     <td><?php echo $value->STATUS; ?></td>
                                                     <td><?php echo $value->enrollment_date; ?></td>
-                                            
+
 
                                                     <td><?php echo $value->art_date; ?></td>
 
@@ -212,16 +213,16 @@
                                                     <td><?php echo $value->updated_at; ?></td>
 
                                                 </tr>
-                                                <?php
+                                            <?php
                                                 $i++;
                                             }
                                             ?>
                                         </tbody>
                                     </table>
 
-                                    <?php
+                                <?php
                                 } else {
-                                    ?>
+                                ?>
 
                                     <table id="table" class="table table-bordered table-condensed table-hover table-responsive">
                                         <thead>
@@ -246,16 +247,16 @@
                                             <?php
                                             $i = 1;
                                             foreach ($clients as $value) {
-                                                ?>
+                                            ?>
                                                 <tr>
                                                     <td class="a-center"><?php echo $i; ?></td>
                                                     <?php
                                                     $view_client = $this->session->userdata('view_client');
 
                                                     if ($view_client == "Yes") {
-                                                        ?>
+                                                    ?>
                                                         <td>
-                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>"/>
+                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>" />
                                                             <button class="btn btn-default btn-small edit_btn" id="edit_btn">
                                                                 <?php echo $value->clinic_number; ?>
                                                             </button>
@@ -268,14 +269,14 @@
                                                             echo $client_name;
                                                             ?></td>
                                                         <td><?php echo $value->phone_no; ?></td>
-                                                        <?php
+                                                    <?php
                                                     } else {
-                                                        ?>
+                                                    ?>
                                                         <td>XXXXXXX XXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
-                                                        <?php
+                                                    <?php
                                                     }
                                                     ?>
                                                     <td><?php echo $value->dob; ?></td>
@@ -290,7 +291,7 @@
                                                     <td><?php echo $value->updated_at; ?></td>
 
                                                 </tr>
-                                                <?php
+                                            <?php
                                                 $i++;
                                             }
                                             ?>
@@ -298,10 +299,10 @@
                                     </table>
 
 
-                                    <?php
+                                <?php
                                 }
                                 ?>
-                                 
+
 
 
 
@@ -364,43 +365,43 @@
 
 
 
-                                                            <input type="hidden" id="edit_client_id" class="client_id" name="client_id"/>
+                                                            <input type="hidden" id="edit_client_id" class="client_id" name="client_id" />
 
-                                                            <h2> Client Personal Information </h2> 
+                                                            <h2> Client Personal Information </h2>
                                                             <label class='control-label'>Unique Patient Number* (Unique value : ) Once entered , cannot be changed </label>
-                                                            <input class='form-control' type='text' required=''  name='clinic_number'  id='edit_clinic_number' >
-                                                            <label class='control-label'>First Name </label> 
-                                                            <input class='form-control fname input-rounded input-sm' required="" type='text' name='fname'  id='edit_fname' >
+                                                            <input class='form-control' type='text' required='' name='clinic_number' id='edit_clinic_number'>
+                                                            <label class='control-label'>First Name </label>
+                                                            <input class='form-control fname input-rounded input-sm' required="" type='text' name='fname' id='edit_fname'>
 
-                                                            <label class='control-label'>Middle Name </label>  
-                                                            <input type='text' required="" class='form-control mname input-rounded input-sm ' name='mname'  id='edit_mname'>
+                                                            <label class='control-label'>Middle Name </label>
+                                                            <input type='text' required="" class='form-control mname input-rounded input-sm ' name='mname' id='edit_mname'>
 
-                                                            <label class='control-label'>Last Name</label>  
-                                                            <input class='form-control lame input-rounded input-sm' type='text' name='lname'  id='edit_lname' >
+                                                            <label class='control-label'>Last Name</label>
+                                                            <input class='form-control lame input-rounded input-sm' type='text' name='lname' id='edit_lname'>
 
                                                             <label class='control-label'> Date of Birth: </label>
-                                                            <input class='form-control dob input-rounded input-sm' required="" readonly="" type='text' name='p_year'  id='edit_dob' >
+                                                            <input class='form-control dob input-rounded input-sm' required="" readonly="" type='text' name='p_year' id='edit_dob'>
 
 
 
 
 
-                                                            <label class='control-label'>  Gender : <span style="color: red">*</span> </label> 
+                                                            <label class='control-label'> Gender : <span style="color: red">*</span> </label>
                                                             <select class='form-control gender input-rounded input-sm' required="" name='gender' id='edit_gender'>
                                                                 <option value=''>Please select </option>
                                                                 <?php foreach ($genders as $value) {
-                                                                    ?>
+                                                                ?>
                                                                     <option value="<?php echo $value->id; ?>"><?php echo $value->name; ?></option>
                                                                 <?php }
                                                                 ?>
                                                             </select>
 
 
-                                                            <label class='control-label'>  Marital Status : <span style="color: red">*</span> </label> 
+                                                            <label class='control-label'> Marital Status : <span style="color: red">*</span> </label>
                                                             <select class='form-control marital input-rounded input-sm' required="" name='marital' id='edit_marital'>
                                                                 <option value=''>Please select </option>
                                                                 <?php foreach ($maritals as $value) {
-                                                                    ?>
+                                                                ?>
                                                                     <option value="<?php echo $value->id; ?>"><?php echo $value->marital; ?></option>
                                                                 <?php }
                                                                 ?>
@@ -424,13 +425,13 @@
 
 
                                                             <label class='control-label'> HIV Enrollment Date: </label> <span style="color: red">*</span>
-                                                            <input class='form-control enrollment_date date input-rounded input-sm' readonly="" required="" placeholder="Date enrolled to HIV Care" type='text' name='enrollment_date' id='edit_enrollment_date' >
+                                                            <input class='form-control enrollment_date date input-rounded input-sm' readonly="" required="" placeholder="Date enrolled to HIV Care" type='text' name='enrollment_date' id='edit_enrollment_date'>
 
 
 
 
-                                                            <label class='control-label'> ART Start Date: </label> 
-                                                            <input class='form-control  date input-rounded input-sm' readonly="" placeholder="ART Start Date" type='text' name='art_date' id='edit_art_date' >
+                                                            <label class='control-label'> ART Start Date: </label>
+                                                            <input class='form-control  date input-rounded input-sm' readonly="" placeholder="ART Start Date" type='text' name='art_date' id='edit_art_date'>
 
 
 
@@ -439,24 +440,24 @@
 
 
 
-                                                            <label class='control-label'> Select Facility Attached : </label>  
+                                                            <label class='control-label'> Select Facility Attached : </label>
                                                             <?php
                                                             $facility_id = $this->session->userdata('facility_id');
                                                             if (empty($facility_id)) {
-                                                                ?>
-                                                                <select class='form-control facilities input-rounded input-sm' required="" name='facilities' id='edit_facilities' >
+                                                            ?>
+                                                                <select class='form-control facilities input-rounded input-sm' required="" name='facilities' id='edit_facilities'>
                                                                     <option value=''>Please select </option>
                                                                     <?php foreach ($facilities as $value) {
-                                                                        ?>
+                                                                    ?>
                                                                         <option value="<?php echo $value->mfl_code; ?>"><?php echo " " . $value->facility_name . " => " . $value->mfl_code . "   " . $value->county_name . "  " . $value->sub_county_name; ?></option>
                                                                     <?php }
                                                                     ?>
                                                                 </select>
-                                                                <?php
+                                                            <?php
                                                             } else {
-                                                                ?>
+                                                            ?>
                                                                 <input readonly="" type="text" name="facilities" class="form-control facilities input-rounded input-sm" id="edit_facilities" value="<?php echo $facility_id; ?>" />
-                                                                <?php
+                                                            <?php
                                                             }
                                                             ?>
 
@@ -465,19 +466,19 @@
 
 
 
-                                                            <label class='control-label'>Cell Phone Number (Own) </label> 
-                                                            <input class='form-control mobile input-rounded input-sm' required=""  type='text' name='mobile' id='edit_mobile'   >
-                                                            <label class='control-label'>  Preferred Lang :  </label> 
+                                                            <label class='control-label'>Cell Phone Number (Own) </label>
+                                                            <input class='form-control mobile input-rounded input-sm' required="" type='text' name='mobile' id='edit_mobile'>
+                                                            <label class='control-label'> Preferred Lang : </label>
                                                             <select class='form-control lang input-rounded input-sm' name='lang' id='edit_lang'>
                                                                 <option value=''>Please select </option>
                                                                 <?php foreach ($langauges as $value) {
-                                                                    ?>
+                                                                ?>
                                                                     <option value="<?php echo $value->id; ?>"><?php echo $value->name; ?></option>
                                                                 <?php }
                                                                 ?>
                                                             </select>
 
-                                                            <label class='control-label'>  Enable Message Alerts? </label> 
+                                                            <label class='control-label'> Enable Message Alerts? </label>
                                                             <select class='form-control smsenable input-rounded input-sm' required="" name='smsenable' id='edit_smsenable'>
                                                                 <option value=''> </option>
                                                                 <option value='Yes'> Yes </option>
@@ -486,8 +487,8 @@
 
                                                             <div class="consent_date_div" id="consent_date_div" style="display: none;">
 
-                                                                <label class='control-label'> Consent Date: </label> 
-                                                                <input class='form-control consent_date dob input-rounded input-sm' readonly=""  type='text' name='consent_date'  placeholder='Please enter Consent Date' id='edit_consent_date'>
+                                                                <label class='control-label'> Consent Date: </label>
+                                                                <input class='form-control consent_date dob input-rounded input-sm' readonly="" type='text' name='consent_date' placeholder='Please enter Consent Date' id='edit_consent_date'>
                                                             </div>
 
 
@@ -496,40 +497,40 @@
 
 
 
-                                                            <label class='control-label'>  Receive Weekly Motivational/Informative Messages? <span style="color: red">*</span> </label> 
-                                                            <select class='form-control edit_motivational_enable input-rounded input-sm ' required="" name='motivational_enable' id='edit_motivational_enable'>
-                                                                <option value=''>Please select : </option>
+                                                            <label class='control-label'> Receive Weekly Motivational/Informative Messages? <span style="color: red">*</span> </label>
+                                                            <select class='form-control motivational_enable input-rounded input-sm ' required="" name='motivational_enable' id='edit_motivational_enable'>
+                                                                <option value=''> </option>
                                                                 <option value='Yes'> Yes </option>
                                                                 <option value='No'> No </option>
                                                             </select>
 
 
 
-                                                            <label class='control-label'>Preferred Messaging Time </label> 
+                                                            <label class='control-label'>Preferred Messaging Time </label>
                                                             <select name='time' class='form-control time input-rounded input-sm' id='edit_time'>"
                                                                 <option value=''>Please select </option>
                                                                 <?php foreach ($times as $value) {
-                                                                    ?>
+                                                                ?>
                                                                     <option value="<?php echo $value->id; ?>"><?php echo $value->name; ?></option>
                                                                 <?php }
                                                                 ?>
                                                             </select>
 
 
-                                                            <label class='control-label'>  Client Status :  </label> 
+                                                            <label class='control-label'> Client Status : </label>
                                                             <select class='form-control edit_status input-rounded input-sm' required="" name='status' id='edit_status'>
                                                                 <option value=''> Please select : </option>
                                                                 <option value='Active'> Active </option>
                                                                 <option value='Disabled'> Disabled </option>
-                                                                <option value="Transfered Out">Transfered Out</option>
+                                                                <option value="Transfer Out">Transfer Out</option>
                                                                 <option value="Deceased">Deceased</option>
                                                             </select>
                                                             <div id="transfer_date_div" class="transfer_date_div" style="display: none;">
-                                                                <label class='control-label'>Transfer Date</label> 
-                                                                <input class='form-control transfer_date date input-rounded input-sm ' readonly=""  type='text' name='transfer_date' placeholder="Please enter Transfer Date " id='edit_transfer_date'>
-                                                                <label class='control-label'>Please specify new Clinic</label> 
-                                                                <input class='form-control transfer_new_clinic input-rounded input-sm'  type='text' name='transfer_new_clinic' placeholder="Please enter New Clinic MFL Code " id='edit_transfer_new_clinic'>
-                                                                <span class="selected_facility_name" id="selected_facility_name"></span>
+                                                                <label class='control-label'>Transfer Date</label>
+                                                                <input class='form-control transfer_date date input-rounded input-sm ' readonly="" type='text' name='transfer_date' placeholder="Please enter Transfer Date " id='edit_transfer_date'>
+                                                                <!-- <label class='control-label'>Please specify new Clinic</label> 
+                                                                <input class='form-control transfer_new_clinic input-rounded input-sm'  type='text' name='transfer_new_clinic' placeholder="Please enter New Clinic MFL Code " id='edit_transfer_new_clinic'> -->
+                                                                <!-- <span class="selected_facility_name" id="selected_facility_name"></span> -->
                                                             </div>
 
                                                             <div class='form'>
@@ -549,11 +550,11 @@
                                                                                                                                             <option value=''>Please Select : </option>
                                                                 <?php
                                                                 foreach ($appointment_types as $value) {
-                                                                    ?>
+                                                                ?>
                                                                                                                                                             <option value="<?php echo $value->name; ?>"><?php echo $value->name; ?></option>
                                                                     <?php
                                                                 }
-                                                                ?>
+                                                                    ?>
                                                                                                                                         </select>-->
 
 
@@ -586,7 +587,9 @@
 
 
                                             </div>
-                                        </div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
 
 
 
@@ -675,7 +678,7 @@
 </div>
 <!-- End Container fluid  -->
 <!-- footer -->
-<footer class="footer"> © 2018 Ushauri -  All rights reserved. Powered  by <a href="https://mhealthkenya.org">mHealth Kenya Ltd</a></footer>
+<footer class="footer"> © 2018 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth Kenya Ltd</a></footer>
 <!-- End footer -->
 </div>
 <!-- End Page wrapper  -->
@@ -694,9 +697,9 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $(".transfer_new_clinic").keyup(function () {
+        $(".transfer_new_clinic").keyup(function() {
             var transfer_mfl_no = $(".transfer_new_clinic").val();
             if (transfer_mfl_no.length < 5) {
 
@@ -711,7 +714,7 @@
                     async: true,
                     url: "<?php echo base_url(); ?>" + controller + "/" + get_function + "/" + transfer_mfl_no,
                     dataType: "JSON",
-                    success: function (response) {
+                    success: function(response) {
                         $(".facility_loading").hide();
                         $('.loader').hide();
                         var isempty = jQuery.isEmptyObject(response);
@@ -719,7 +722,7 @@
                             $(".selected_facility_name").empty();
                         } else {
 
-                            $.each(response, function (i, value) {
+                            $.each(response, function(i, value) {
 
 
                                 var facility_name = "You selected : " + value.name;
@@ -732,7 +735,8 @@
 
 
 
-                    }, error: function (data) {
+                    },
+                    error: function(data) {
                         $('.loader').hide();
                         sweetAlert("Oops...", "" + error_alert + "", "error");
                     }
@@ -749,7 +753,7 @@
         });
 
 
-        $(".smsenable").change(function () {
+        $(".smsenable").change(function() {
             var status_value = this.value;
 
             if (status_value === "Yes") {
@@ -764,11 +768,14 @@
 
         });
 
-        $(".edit_status").change(function () {
+        $(".edit_status").change(function() {
             var status_value = this.value;
 
             if (status_value == "Transfer Out") {
                 $(".transfer_date_div").show();
+                $(".transfer_date").empty();
+                var transfer_date = "";
+                $(".transfer_date_div").append(transfer_date);
             } else {
                 $(".transfer_date").empty();
                 $(".transfer_date_div").hide();
@@ -779,13 +786,15 @@
 
 
 
-        $(".cancel_add_client").click(function () {
+
+
+        $(".cancel_add_client").click(function() {
 
             $(".edit_div").hide();
             $(".table_div").show();
         });
 
-        $(document).on('click', ".edit_btn", function () {
+        $(document).on('click', ".edit_btn", function() {
             $('.loader').show();
 
             //get data
@@ -801,9 +810,9 @@
                 async: true,
                 url: "<?php echo base_url(); ?>" + controller + "/" + get_function + "/" + data_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $('.loader').hide();
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
                         $("#edit_user_id").empty();
 
 
@@ -842,8 +851,10 @@
                         $('#edit_mobile').val(value.phone_no);
                         $('#edit_altmobile').val(value.alt_phone_no);
                         $('#edit_sharename').val(value.shared_no_name);
+                        //$('#edit_motivational_enable').val(value.motivational_enable);
                         $('#edit_lang option[value=' + value.language_id + ']').attr("selected", "selected");
                         $('#edit_smsenable option[value=' + value.smsenable + ']').attr("selected", "selected");
+                        $('#edit_motivational_enable option[value=' + value.motivational_enable + ']').attr("selected", "selected");
 
 
                         $('#appointment_date').val(value.appntmnt_date);
@@ -852,7 +863,7 @@
                         $('#edit_marital option[value=' + value.marital + ']').attr("selected", "selected");
 
 
-                        $('#edit_motivational_enable option[value=' + value.motivational_enable + ']').attr("selected", "selected");
+                        //$('#edit_motivational_enable option[value=' + value.motivational_enable + ']').attr("selected", "selected");
                         $('#edit_wellnessenable option[value=' + value.wellness_enable + ']').attr("selected", "selected");
 
 
@@ -873,6 +884,29 @@
 
                         $('#edit_art_date').val(new_art_date);
 
+                        // var status_value = value.status;
+
+                        // if (status_value === "Transfer Out") {
+                        //     $(".transfer_date_div").show();
+                        //     $(".transfer_date").empty();
+                        //     //var consent_date = "<label class='control-label'> Consent Date : </label>    <input class='form-control consent_date date'  type='text' name='consent_date'  placeholder='Please enter Consent Date' id='edit_consent_date'>";
+                        //     //$(".consent_date_div").append(consent_date);
+                        //     var transfer_date = value.transfer_date;
+
+
+                        //     if (!transfer_date) {} else {
+                        //         var res_trans = transfer_date.substring(0, 10);
+                        //         var new_trans = res_trans.split("-").reverse().join("/");
+
+                        //         $('#edit_transfer_date').val(new_trans);
+
+                        //     }
+
+                        // } else {
+                        //     $(".transfer_date").empty();
+                        //     $(".transfer_date_div").hide();
+                        // }
+
 
 
                         var status_value = value.smsenable;
@@ -884,8 +918,7 @@
                             //$(".consent_date_div").append(consent_date);
 
                             var consent_date = value.consent_date;
-                            if (!consent_date) {
-                            } else {
+                            if (!consent_date) {} else {
 
 
                                 var consent_res = consent_date.substring(0, 10);
@@ -917,7 +950,8 @@
 
 
 
-                }, error: function (data) {
+                },
+                error: function(data) {
                     $('.loader').hide();
                     sweetAlert("Oops...", "" + error_alert + "", "error");
 
@@ -942,10 +976,10 @@
                 async: true,
                 url: "<?php echo base_url(); ?>" + controller + "/" + get_function2 + "/" + data_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $(".appointment_kept_div").empty();
                     $('.loader').hide();
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
 
 
                         var appointment_date = value.appntmnt_date;
@@ -1003,7 +1037,8 @@
 
 
 
-                }, error: function (data) {
+                },
+                error: function(data) {
                     $('.loader').hide();
                     sweetAlert("Oops...", "" + error_alert + "", "error");
 
@@ -1024,7 +1059,7 @@
 
 
 
-        $(".close_add_div").click(function () {
+        $(".close_add_div").click(function() {
             $(".add_div").hide();
             $(".table_div").show();
             $(".f_name").empty();
@@ -1046,7 +1081,7 @@
 
 
 
-        $(".submit_edit_div").click(function () {
+        $(".submit_edit_div").click(function() {
             var controller = "home";
             var submit_function = "update_client";
             var form_class = "edit_form";
@@ -1073,7 +1108,3 @@
 
 
 <!--END MAIN WRAPPER -->
-
-
-
-

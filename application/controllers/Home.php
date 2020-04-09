@@ -1388,10 +1388,10 @@ class Home extends MY_Controller
         $gender = $this->input->post('gender', true);
         $marital = $this->input->post('marital', true);
         $status = $this->input->post('status', true);
+        $motivational_enable = $this->input->post('motivational_enable', true);
         $partner_id = $this->input->post('partner_name', true);
         $client_id = $this->input->post('client_id');
         $wellnessenable = $this->input->post('wellnessenable', true);
-        $motivational_enable = $this->input->post('motivational_enable', true);
         $enrollment_date = $this->input->post('enrollment_date', true);
         $art_date = $this->input->post('art_date', true);
         $transfer_date = $this->input->post('transfer_date', true);
@@ -1402,7 +1402,8 @@ class Home extends MY_Controller
 
 
         $today = date("Y-m-d H:i:s");
-        $transaction = $this->data->update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_types, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $apptdate, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable, $transfer_date, $transfer_new_clinic, $consent_date, $app_kept);
+        $transaction = $this->data->update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_types, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $apptdate, $status, $motivational_enable, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $transfer_date, $transfer_new_clinic, $consent_date, $app_kept);
+
         if ($transaction) {
             $response = array(
                 'response' => $transaction

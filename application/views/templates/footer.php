@@ -2437,6 +2437,7 @@
             <td>" + facility_name + "</td>\n\
             <td>" + smsenable + "</td>\n\
             <td>" + consent_date + "</td>\n\
+            <td>" + motivational_enable + "</td>\n\
             <td>" + wellness_enable + "</td>\n\
             </tr>";
                             dTbles(".results_tbody").append(tr_results);
