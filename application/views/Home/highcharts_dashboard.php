@@ -175,7 +175,15 @@
             '<?php echo json_encode($bar_appointments_data); ?>';
         maps(data)
         columnChart(bar_clients_data, bar_appointments_data);
+        //console.log(data)
         async function maps(data) {
+            data = JSON.parse(data)
+            // console.log(data)
+            const sumClients = data.reduce((total, data_) => total + parseInt(data_.Clients), 0)
+            // console.log(sumClients)
+            data.total_clients = sumClients;
+            console.log(data.total_clients)
+
             let geojson = await fetchJSON('/kenyan-counties.geojson');
             // Initiate the chart
             Highcharts.mapChart('map', {
@@ -213,7 +221,7 @@
                     ]
                 },
                 series: [{
-                    data: JSON.parse(data),
+                    data: data,
                     keys: ['Clients'],
                     joinBy: 'county_id',
                     name: 'Results by County',
@@ -227,7 +235,7 @@
                         format: '{point.properties.COUNTY}'
                     },
                     tooltip: {
-                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
+                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {this.point.sumClients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
                     }
                 }]
             });

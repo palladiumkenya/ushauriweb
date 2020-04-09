@@ -188,25 +188,26 @@ class Chore extends MY_Controller {
 
         // $this->output->enable_profiler(TRUE);
     }
+    //Decided to query from the view itself
+    
+    // function client_raw_report(){
+    //     $latest_ids = $this->db->query("SELECT MAX(client_id) as client_id FROM tbl_client_raw_report")->result();
+    //     foreach ($latest_ids as $latest) {
+    //         $new_clients = $this->db->query("select * from client_raw_report WHERE client_id > '$latest->client_id'")->result();
+    //         foreach($new_clients as $new_client){
+    //             $this->db->insert('tbl_client_raw_report', $new_client);
+    //         }
+    //     }
+    //     $updated_ids = $this->db->query("Select * from client_raw_report WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at");
+    //     if($updated_ids->num_rows() > 0){
+    //         foreach($updated_ids->result() as $value){
+    //             echo 'Old ids => ' . $value->client_id . '<br>';
+    //              $this->db->where('client_id', $value->client_id);
+    //              $this->db->update('tbl_client_raw_report', $value);
 
-    function client_raw_report(){
-        $latest_ids = $this->db->query("SELECT MAX(client_id) as client_id FROM tbl_client_raw_report")->result();
-        foreach ($latest_ids as $latest) {
-            $new_clients = $this->db->query("select * from client_raw_report WHERE client_id > '$latest->client_id'")->result();
-            foreach($new_clients as $new_client){
-                $this->db->insert('tbl_client_raw_report', $new_client);
-            }
-        }
-        $updated_ids = $this->db->query("Select * from client_raw_report WHERE DATE(updated_at) > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND created_at != updated_at");
-        if($updated_ids->num_rows() > 0){
-            foreach($updated_ids->result() as $value){
-                echo 'Old ids => ' . $value->client_id . '<br>';
-                 $this->db->where('client_id', $value->client_id);
-                 $this->db->update('tbl_client_raw_report', $value);
-
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
 
     function pull_past_appointments(){
         $latest_ids = $this->db->query("SELECT MAX(appointment_id) as appointment_id FROM tbl_past_appointments")->result();
