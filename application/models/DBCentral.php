@@ -2953,6 +2953,9 @@ class DBCentral extends CI_Model
         } elseif ($diff >= 7300) {
             //Adult
             $category .= 1;
+        } else {
+            //Paeds
+            $category .= 3;
         }
 
 
