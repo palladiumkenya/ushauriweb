@@ -1568,7 +1568,7 @@
                 final_description = description_one + ' </br> ';
             }
             let url =
-                "<?php echo base_url(); ?>Home/filter_highcharts_dashboard/";
+                "<?php echo base_url(); ?>Reports/filter_highcharts_dashboard/";
             $.ajax({
                 type: 'POST',
                 url: url,
