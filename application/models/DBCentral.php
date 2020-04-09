@@ -2908,7 +2908,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    public function update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable, $app_kept)
+    public function update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $status, $motivational_enable, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $transfer_date, $app_kept)
     {
         $this->db->trans_start();
 
@@ -2929,6 +2929,14 @@ class DBCentral extends CI_Model
             $enrollment_date = date("Y-m-d", strtotime($enrollment_date));
         } {
         }
+        // if (($transfer_date)) {
+        //     $transfer_date = str_replace('/', '-', $transfer_date);
+        //     $transfer_date = date("Y-m-d", $transfer_date);
+        // }
+
+        // if (empty($motivational_enable)) {
+        //     $motivational_enable == 'No';
+        // }
 
 
 
@@ -2997,6 +3005,7 @@ class DBCentral extends CI_Model
             'wellness_enable' => $wellnessenable,
             'motivational_enable' => $motivational_enable,
             'updated_by' => $user_id,
+            'transfer_date' => $transfer_date,
             'welcome_sent' => 'No'
         );
         $this->db->where('id', $client_id);
