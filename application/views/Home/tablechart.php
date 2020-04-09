@@ -110,9 +110,10 @@
 <!-- footer -->
 <footer class="footer"> © 2018 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth
         Kenya Ltd</a></footer>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
 <script type="text/javascript" src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
 <!-- End footer -->
 <script type="text/javascript">
     let condition_records = '<?php echo json_encode($condition_records); ?>';
@@ -299,7 +300,7 @@
         toTwentyFiveConsent = toTwentyFiveConsent + parseInt(parseData[i].TwentyFiveconsented);
 
     }
-    console.log(toNineReg)
+    //console.log(toNineReg)
     percentageArray.push((toNineConsent / toNineReg) * 100)
     percentageArray.push((toFourteenConsent / toFourteenReg) * 100)
     percentageArray.push((toNineteenConsent / toNineteenReg) * 100)
