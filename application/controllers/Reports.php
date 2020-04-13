@@ -9056,6 +9056,57 @@ FROM
         }
     }
 
+    public function app_dashboard()
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $access_level = $this->session->userdata('access_level');
+
+        $partner_id = $this->input->post('partner', true);
+        $county_id = $this->input->post('county', true);
+        $sub_county_id = $this->input->post('sub_county', true);
+        $mfl_code = $this->input->post('facility', true);
+
+        $appointment_data = $this->data->getAggregateAppointmentDashboard($partner_id, $county_id, $sub_county_id, $mfl_code);
+        $marriage_appointments = $this->data->getAggregateAppointmentMarriage($partner_id, $county_id, $sub_county_id, $mfl_code);
+
+
+        $created_appointments = 0;
+        $kept_appointments = 0;
+        $defaulted_appointments = 0;
+        $missed_appointments = 0;
+        $ltfu_appointments = 0;
+
+        foreach ($appointment_data as $appointment) {
+            $created_appointments = $created_appointments + $appointment['Total_Appointments'];
+            $kept_appointments = $kept_appointments + $appointment['Kept_Appointments'];
+            $defaulted_appointments = $defaulted_appointments + $appointment['Defaulted_Appointments'];
+            $missed_appointments = $missed_appointments + $appointment['Missed_Appointments'];
+            $ltfu_appointments = $ltfu_appointments + $appointment['LTFU_Appointments'];
+        }
+        $data['data'] = $appointment_data;
+        $data['marriage_appointments'] = $marriage_appointments;
+        $data['created_appointments'] = $created_appointments;
+        $data['kept_appointments'] = $kept_appointments;
+        $data['defaulted_appointments'] = $defaulted_appointments;
+        $data['missed_appointments'] = $missed_appointments;
+        $data['ltfu_appointments'] = $ltfu_appointments;
+        $data['access_level'] = $access_level;
+        $data['partner_id'] = $partner_id;
+        $data['facility_id'] = $facility_id;
+        $data['side_functions'] = $this->data->get_side_modules();
+        $data['top_functions'] = $this->data->get_top_modules();
+        $data['output'] = $this->get_access_level();
+        $data['filtered_partner'] = $this->get_partner_filters();
+        $data['filtered_county'] = $this->get_county_filtered_values();
+        $this->load->vars($data);
+        $this->load->template('Home/app_dashboard');
+        //echo json_encode($marriage_appointments);
+    }
+
     public function dashboard()
     {
         //            $k = new /Ghunti/HighchartsPHP/Highchart;
