@@ -9065,15 +9065,99 @@ FROM
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
 
+
         $partner_id = $this->input->post('partner', true);
         $county_id = $this->input->post('county', true);
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);
+        $date_from = $this->input->post('date_from', true);
+        $date_to = $this->input->post('date_to', true);
 
-        $appointment_data = $this->data->getAggregateAppointmentDashboard($partner_id, $county_id, $sub_county_id, $mfl_code);
-        $marriage_appointments = $this->data->getAggregateAppointmentMarriage($partner_id, $county_id, $sub_county_id, $mfl_code);
+        if (!empty($date_from)) :
+            $date_from = str_replace('-', '-', $date_from);
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        endif;
+        if (!empty($date_to)) :
+            $date_to = str_replace('-', '-', $date_to);
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        endif;
+
+        if (!empty($date_from)) {
+            $this->db->where('created_at >= ', $formated_date_from);
+        }
+
+        if (!empty($date_to)) {
+            $this->db->where('created_at <= ', $formated_date_to);
+        }
+
+        $appointment_data = $this->data->getAggregateAppointmentDashboard($partner_id, $county_id, $sub_county_id, $mfl_code, $date_from, $date_to);
+        $marriage_appointments = $this->data->getAggregateAppointmentMarriage($partner_id, $county_id, $sub_county_id, $mfl_code, $date_from, $date_to);
+        $trend_appointments = $this->data->getAggregateTrendAppointment($partner_id, $county_id, $sub_county_id, $mfl_code, $date_from, $date_to);
 
 
+        $created_appointments = 0;
+        $kept_appointments = 0;
+        $defaulted_appointments = 0;
+        $missed_appointments = 0;
+        $ltfu_appointments = 0;
+
+        foreach ($appointment_data as $appointment) {
+            $created_appointments = $created_appointments + $appointment['Total_Appointments'];
+            $kept_appointments = $kept_appointments + $appointment['Kept_Appointments'];
+            $defaulted_appointments = $defaulted_appointments + $appointment['Defaulted_Appointments'];
+            $missed_appointments = $missed_appointments + $appointment['Missed_Appointments'];
+            $ltfu_appointments = $ltfu_appointments + $appointment['LTFU_Appointments'];
+        }
+        $data['data'] = $appointment_data;
+        $data['marriage_appointments'] = $marriage_appointments;
+        $data['trend_appointments'] = $trend_appointments;
+        $data['created_appointments'] = $created_appointments;
+        $data['kept_appointments'] = $kept_appointments;
+        $data['defaulted_appointments'] = $defaulted_appointments;
+        $data['missed_appointments'] = $missed_appointments;
+        $data['ltfu_appointments'] = $ltfu_appointments;
+        $data['access_level'] = $access_level;
+        $data['partner_id'] = $partner_id;
+        $data['facility_id'] = $facility_id;
+        $data['side_functions'] = $this->data->get_side_modules();
+        $data['top_functions'] = $this->data->get_top_modules();
+        $data['output'] = $this->get_access_level();
+        $data['filtered_partner'] = $this->get_partner_filters();
+        $data['filtered_county'] = $this->get_county_filtered_values();
+        $this->load->vars($data);
+        $this->load->template('Home/app_dashboard');
+        //echo json_encode($trend_appointments);
+    }
+    public function filter_tablecharts_appointment_dashboard()
+    {
+        $partner_id = $this->input->post('partner', true);
+        $county_id = $this->input->post('county', true);
+        $sub_county_id = $this->input->post('sub_county', true);
+        $mfl_code = $this->input->post('facility', true);
+        $date_from = $this->input->post('date_from', true);
+        $date_to = $this->input->post('date_to', true);
+
+        if (!empty($date_from)) :
+            $date_from = str_replace('-', '-', $date_from);
+            $formated_date_from = date("Y-m-d", strtotime($date_from));
+        endif;
+        if (!empty($date_to)) :
+            $date_to = str_replace('-', '-', $date_to);
+            $formated_date_to = date("Y-m-d", strtotime($date_to));
+        endif;
+
+        if (!empty($date_from)) {
+            $this->db->where('created_at >= ', $formated_date_from);
+        }
+
+        if (!empty($date_to)) {
+            $this->db->where('created_at <= ', $formated_date_to);
+        }
+
+
+        $appointment_data = $this->data->getAggregateAppointmentDashboard($partner_id, $county_id, $sub_county_id, $mfl_code, $formated_date_from, $formated_date_to);
+        $marriage_appointments = $this->data->getAggregateAppointmentMarriage($partner_id, $county_id, $sub_county_id, $mfl_code, $formated_date_from, $formated_date_to);
+        //echo json_encode('From: ' . $formated_date_from . ' ' . 'To: ' . ' ' . $formated_date_to);
         $created_appointments = 0;
         $kept_appointments = 0;
         $defaulted_appointments = 0;
@@ -9094,17 +9178,14 @@ FROM
         $data['defaulted_appointments'] = $defaulted_appointments;
         $data['missed_appointments'] = $missed_appointments;
         $data['ltfu_appointments'] = $ltfu_appointments;
-        $data['access_level'] = $access_level;
         $data['partner_id'] = $partner_id;
-        $data['facility_id'] = $facility_id;
         $data['side_functions'] = $this->data->get_side_modules();
         $data['top_functions'] = $this->data->get_top_modules();
         $data['output'] = $this->get_access_level();
         $data['filtered_partner'] = $this->get_partner_filters();
         $data['filtered_county'] = $this->get_county_filtered_values();
         $this->load->vars($data);
-        $this->load->template('Home/app_dashboard');
-        //echo json_encode($marriage_appointments);
+        echo json_encode($data);
     }
 
     public function dashboard()

@@ -370,6 +370,7 @@
                                                             <h2> Client Personal Information </h2>
                                                             <label class='control-label'>Unique Patient Number* (Unique value : ) Once entered , cannot be changed </label>
                                                             <input class='form-control' type='text' required='' name='clinic_number' id='edit_clinic_number'>
+                                                            <!-- <input class='form-control' type='hidden' required='' name='clinic_number' id='edit_clinic_number_hide'> -->
                                                             <label class='control-label'>First Name </label>
                                                             <input class='form-control fname input-rounded input-sm' required="" type='text' name='fname' id='edit_fname'>
 
@@ -836,6 +837,7 @@
                         $('#edit_mname').val(value.m_name);
                         $('#edit_lname').val(value.l_name);
                         $('#edit_dob').val(value.dob);
+                        //console.log(value.clinic_number)
 
 
                         //$('#edit_condition').val(value.client_status);
@@ -1086,13 +1088,13 @@
             var submit_function = "update_client";
             var form_class = "edit_form";
             var success_alert = "Client data updated successfully ... :) ";
-            var error_alert = "Success (:";
+            var error_alert = "Error (:";
 
             submit_data(controller, submit_function, form_class, success_alert, error_alert);
 
 
-        });
 
+        });
 
 
 

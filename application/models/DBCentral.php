@@ -4656,8 +4656,8 @@ ORDER BY tbl_module.order ASC";
         //Africa's Talking Library.
         // require_once('AfricasTalkingGateway.php');
         //Africa's Talking API key and username.
-        $username = 'mhealthkenya';
-        $apikey = '9318d173cb9841f09c73bdd117b3c7ce3e6d1fd559d3ca5f547ff2608b6f3212';
+        $username = 'mhealthuser';
+        $apikey = '1f6943f6c8f0d5d6b0dd54cd940935bdec8f7454c4e7863672048dae496ae355';
 
         //Shortcode.
 
@@ -5009,7 +5009,7 @@ ORDER BY tbl_module.order ASC";
         return $query->result_array();
     }
 
-    public function getAggregateAppointmentDashboard($partner, $county, $sub_county, $mfl_code)
+    public function getAggregateAppointmentDashboard($partner, $county, $sub_county, $mfl_code, $formated_date_from, $formated_date_to)
     {
         $access_level = $this->session->userdata('access_level');
         $partner_id = $this->session->userdata('partner_id');
@@ -5043,19 +5043,27 @@ ORDER BY tbl_module.order ASC";
         if ($access_level == 'Sub County') {
             $this->db->where('sub_county_id', $sub_county_id);
         }
+        if (!empty($formated_date_from)) {
+            $this->db->where('created_at >= ', $formated_date_from);
+        }
+
+        if (!empty($formated_date_to)) {
+            $this->db->where('created_at <= ', $formated_date_to);
+        }
         $query = $this->db->get();
         return $query->result_array();
     }
 
-    public function getAggregateAppointmentMarriage($partner, $county, $sub_county, $mfl_code)
+    public function getAggregateAppointmentMarriage($partner, $county, $sub_county, $mfl_code, $formated_date_from, $formated_date_to)
     {
         $access_level = $this->session->userdata('access_level');
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
         $county_id = $this->session->userdata('county_id');
         $sub_county_id = $this->session->userdata('subcounty_id');
+
         $this->db->select('*');
-        $this->db->from('tbl_appointment_marriage_dashboard');
+        $this->db->from('appointment_marriage_dashboard');
         if (!empty($partner)) {
             $this->db->where('partner_id', $partner);
         }
@@ -5081,6 +5089,76 @@ ORDER BY tbl_module.order ASC";
         if ($access_level == 'Sub County') {
             $this->db->where('sub_county_id', $sub_county_id);
         }
+        if (!empty($formated_date_from)) {
+            $this->db->where('created_at >= ', $formated_date_from);
+        }
+
+        if (!empty($formated_date_to)) {
+            $this->db->where('created_at <= ', $formated_date_to);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+    public function getAggregateTrendAppointment($partner, $county, $sub_county, $mfl_code, $formated_date_from, $formated_date_to)
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $county_id = $this->session->userdata('county_id');
+        $sub_county_id = $this->session->userdata('subcounty_id');
+
+        $this->db->select('*');
+        $this->db->from('trend_appointments');
+        if (!empty($partner)) {
+            $this->db->where('partner_id', $partner);
+        }
+        if (!empty($county)) {
+            $this->db->where('county_id', $county);
+        }
+        if (!empty($sub_county)) {
+            $this->db->where('sub_county_id', $sub_county);
+        }
+        if (!empty($mfl_code)) {
+            $this->db->where('mfl_code', $mfl_code);
+        }
+
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+        if ($access_level == 'County') {
+            $this->db->where('county_id', $county_id);
+        }
+        if ($access_level == 'Sub County') {
+            $this->db->where('sub_county_id', $sub_county_id);
+        }
+        if (!empty($formated_date_from)) {
+            $this->db->where('created_at >= ', $formated_date_from);
+        }
+
+        if (!empty($formated_date_to)) {
+            $this->db->where('created_at <= ', $formated_date_to);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function getAppointmentsToEdit()
+    {
+        $access_level = $this->session->userdata('access_level');
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $this->db->select('*');
+        $this->db->from('appointments_to_edit');
+        if ($access_level == 'Partner') {
+            $this->db->where('partner_id', $partner_id);
+        }
+        if ($access_level == 'Facility') {
+            $this->db->where('mfl_code', $facility_id);
+        }
+
         $query = $this->db->get();
         return $query->result_array();
     }

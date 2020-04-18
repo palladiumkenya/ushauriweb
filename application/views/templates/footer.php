@@ -168,15 +168,17 @@
                         controller + "/" + submit_function + "",
                     data: dataString,
                     success: function(data) {
-                        console.log(controller);
-                        console.log(submit_function);
-                        console.log(form_class);
-                        console.log(success_alert);
-                        console.log(error_alert);
+                        // console.log(controller);
+                        // console.log(submit_function);
+                        // console.log(form_class);
+                        // console.log(success_alert);
+                        // console.log(error_alert);
                         $(".btn").prop('disabled', false);
                         $(".loader").hide();
+
                         data = JSON.parse(data);
                         var response = data[0].response;
+                        console.log(response)
                         if (response === true) {
                             swal({
                                 title: "Success!",
@@ -190,6 +192,9 @@
                         } else if (response === 'Taken') {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info", "Clinic No already taken ", 'info');
+                        } else if (response === 'exists') {
+                            $(".btn").prop('disabled', false);
+                            sweetAlert("Error", "Clinic No already exists in the system ", 'error');
                         } else if (response === 'Phone Taken') {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info", "Phone No already used in the System ",
@@ -1759,6 +1764,376 @@
                         });
                     }
                 }
+            });
+        }
+
+        dTbles("#filter_highcharts_appointment_dashboard").click(function() {
+            var access_level = $('#access_level').val();
+            var partner_id = $('#partner_id').val();
+            var facility_id = $('#facility_id').val();
+            var partner = dTbles(".filter_partner").val();
+            var county = dTbles(".filter_county").val();
+            var sub_county = dTbles(".filter_sub_county").val();
+            var facility = dTbles(".filter_facility").val();
+            var date_from = dTbles(".date_from").val();
+            var date_to = dTbles(".date_to").val();
+            // console.log(date_from)
+            if (access_level == 'Partner') {
+                partner = partner_id;
+            }
+            if (access_level == 'Facility') {
+                facility = facility_id;
+            }
+            var selected_partner = "";
+            var selected_county = "";
+            var selected_sub_county = "";
+            var selected_facility = "";
+            var selected_date_from = "";
+            var selected_date_to = "";
+            if (date_from.length > 0) {
+                selected_date_from = "From : " + dTbles(".date_from").val() + " - ";
+            }
+            if (date_to.length > 0) {
+                selected_date_to = "To : " + dTbles(".date_to").val();
+            }
+            if (partner != "") {
+                selected_partner = "For Partner: " + dTbles(".filter_partner option:selected").text() +
+                    "";
+            } else {
+                if (access_level == 'Partner') {
+                    selected_partner = "For Partner: " + access_level + "";
+                }
+            }
+            if (county != "") {
+                selected_county = "For " + dTbles(".filter_county option:selected").text() + " County ";
+            }
+            if (sub_county != "") {
+                selected_sub_county = ", " + dTbles(".filter_sub_county option:selected").text() +
+                    "Sub County ";
+            }
+            if (facility != "") {
+                selected_facility = "," + dTbles(".filter_facility option:selected").text() + " ";
+            }
+            var description_one = "" + selected_county + " " + selected_sub_county + "  " +
+                selected_facility + " ";
+            var description_two = " " + selected_date_from + " " + selected_date_to + " ";
+            var tokenizer = dTbles(".tokenizer").val();
+            filter_tablecharts_appointment_dashboard(partner, county, sub_county, facility, date_from, date_to,
+                description_one, description_two, tokenizer);
+        });
+
+        function filter_tablecharts_appointment_dashboard(partner, county, sub_county, facility, date_from, date_to,
+            description_one, description_two, tokenizer) {
+            var final_description;
+            if (description_one == undefined) {
+                final_description = " " + description_two;
+            } else if (description_one != undefined) {
+                final_description = " " + description_one;
+            } else if (description_one == undefined) {
+                final_description = " ";
+            } else {
+                final_description = description_one + ' </br> ' + description_two;
+            }
+
+            let url =
+                "<?php echo base_url(); ?>Reports/filter_tablecharts_appointment_dashboard/";
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    partner: partner,
+                    county: county,
+                    sub_county: sub_county,
+                    facility: facility,
+                    date_from: date_from,
+                    date_to: date_to,
+                    tokenizer: tokenizer
+                },
+                success: function(results) {
+                    result = JSON.parse(results)
+                    console.log(result)
+                    $("#allApps").empty();
+                    $("#allApps").append("  <b> " + result.created_appointments +
+                        "<br></b> Created Appointments");
+                    $("#keptApps").empty();
+                    $("#keptApps").append("  <b> " + result.kept_appointments +
+                        "<br></b> Honoured Appointments");
+                    $("#defaultedApps").empty();
+                    $("#defaultedApps").append("  <b> " + result.defaulted_appointments +
+                        "<br></b>  Active Defaulted Appointments");
+                    $("#missedApps").empty();
+                    $("#missedApps").append("  <b> " + result.missed_appointments +
+                        "<br></b> Active Missed Appointments");
+                    $("#ltfuApps").empty();
+                    $("#ltfuApps").append("  <b> " + result.ltfu_appointments +
+                        "<br></b> Active LTFU Appointments");
+                    $("#container").empty();
+                    $("#marriage").empty();
+
+                    parseMarriage = result.marriage_appointments;
+                    parseRecords = result.data;
+
+                    var keptArray = []
+                    var defaultedArray = []
+                    var missedArray = []
+                    var ltfuArray = []
+
+
+                    const toNineKept = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nine_kept), 0)
+                    const toFourteenKept = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_fourteen_kept), 0)
+                    const toNineteenKept = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nineteen_kept), 0)
+                    const toTwentyfourKept = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_twenty_four_kept), 0)
+                    const toTwentyfiveKept = parseRecords.reduce((total, parseR) => total + parseInt(parseR.plus_twenty_five_kept), 0)
+
+                    const toNineDefaulted = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nine_defaulted), 0)
+                    const toFourteenDefaulted = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_fourteen_defaulted), 0)
+                    const toNineteenDefaulted = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nineteen_defaulted), 0)
+                    const toTwentyfourDefaulted = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_twenty_four_defaulted), 0)
+                    const toTwentyfiveDefaulted = parseRecords.reduce((total, parseR) => total + parseInt(parseR.plus_twenty_five_defaulted), 0)
+
+                    const toNineMissed = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nine_missed), 0)
+                    const toFourteenMissed = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_fourteen_missed), 0)
+                    const toNineteenMissed = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nineteen_missed), 0)
+                    const toTwentyfourMissed = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_twenty_four_missed), 0)
+                    const toTwentyfiveMissed = parseRecords.reduce((total, parseR) => total + parseInt(parseR.plus_twenty_five_missed), 0)
+
+                    const toNineLtfu = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nine_ltfu), 0)
+                    const toFourteenLtfu = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_fourteen_ltfu), 0)
+                    const toNineteenLtfu = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_nineteen_ltfu), 0)
+                    const toTwentyfourLtfu = parseRecords.reduce((total, parseR) => total + parseInt(parseR.to_twenty_four_ltfu), 0)
+                    const toTwentyfiveLtfu = parseRecords.reduce((total, parseR) => total + parseInt(parseR.plus_twenty_five_ltfu), 0)
+
+                    keptArray.push(toNineKept)
+                    keptArray.push(toFourteenKept)
+                    keptArray.push(toNineteenKept)
+                    keptArray.push(toTwentyfourKept)
+                    keptArray.push(toTwentyfiveKept)
+
+                    defaultedArray.push(toNineDefaulted)
+                    defaultedArray.push(toFourteenDefaulted)
+                    defaultedArray.push(toNineteenDefaulted)
+                    defaultedArray.push(toTwentyfourDefaulted)
+                    defaultedArray.push(toTwentyfiveDefaulted)
+
+                    missedArray.push(toNineMissed)
+                    missedArray.push(toFourteenMissed)
+                    missedArray.push(toNineteenMissed)
+                    missedArray.push(toTwentyfourMissed)
+                    missedArray.push(toTwentyfiveMissed)
+
+                    ltfuArray.push(toNineLtfu)
+                    ltfuArray.push(toFourteenLtfu)
+                    ltfuArray.push(toNineteenLtfu)
+                    ltfuArray.push(toTwentyfourLtfu)
+                    ltfuArray.push(toTwentyfiveLtfu)
+
+                    var marriageKeptArray = []
+                    var marriageDefaultedArray = []
+                    var marriageMissedArray = []
+                    var marriageLtfuArray = []
+
+                    const singleKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.single_kept), 0)
+                    const monogamousKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.married_monogamous_kept), 0)
+                    const divorcedKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.divorced_kept), 0)
+                    const widowedKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.widowed_kept), 0)
+                    const cohabitingKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.cohabiting_kept), 0)
+                    const unavailableKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unavailable_kept), 0)
+                    const polygamousKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.maried_polygamous_kept), 0)
+                    const unapplicableKept = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unapplicable_kept), 0)
+
+                    const singleDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.single_defaulted), 0)
+                    const monogamousDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.married_monogamous_defaulted), 0)
+                    const divorcedDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.divorced_defaulted), 0)
+                    const widowedDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.widowed_defaulted), 0)
+                    const cohabitingDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.cohabiting_defaulted), 0)
+                    const unavailableDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unavailable_defaulted), 0)
+                    const polygamousDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.maried_polygamous_defaulted), 0)
+                    const unapplicableDefaulted = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unapplicable_defaulted), 0)
+
+                    const singleMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.single_missed), 0)
+                    const monogamousMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.married_monogamous_missed), 0)
+                    const divorcedMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.divorced_missed), 0)
+                    const widowedMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.widowed_missed), 0)
+                    const cohabitingMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.cohabiting_missed), 0)
+                    const unavailableMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unavailable_missed), 0)
+                    const polygamousMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.maried_polygamous_missed), 0)
+                    const unapplicableMissed = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unapplicable_missed), 0)
+
+                    const singleLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.single_ltfu), 0)
+                    const monogamousLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.married_monogamous_ltfu), 0)
+                    const divorcedLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.divorced_ltfu), 0)
+                    const widowedLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.widowed_ltfu), 0)
+                    const cohabitingLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.cohabiting_ltfu), 0)
+                    const unavailableLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unavailable_ltfu), 0)
+                    const polygamousLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.maried_polygamous_ltfu), 0)
+                    const unapplicableLtfu = parseMarriage.reduce((total, parseM) => total + parseInt(parseM.unapplicable_ltfu), 0)
+
+                    marriageKeptArray.push(singleKept)
+                    marriageKeptArray.push(monogamousKept)
+                    marriageKeptArray.push(divorcedKept)
+                    marriageKeptArray.push(widowedKept)
+                    marriageKeptArray.push(cohabitingKept)
+                    marriageKeptArray.push(unavailableKept)
+                    marriageKeptArray.push(polygamousKept)
+                    marriageKeptArray.push(unapplicableKept)
+
+                    marriageDefaultedArray.push(singleDefaulted)
+                    marriageDefaultedArray.push(monogamousDefaulted)
+                    marriageDefaultedArray.push(divorcedDefaulted)
+                    marriageDefaultedArray.push(widowedDefaulted)
+                    marriageDefaultedArray.push(cohabitingDefaulted)
+                    marriageDefaultedArray.push(unavailableDefaulted)
+                    marriageDefaultedArray.push(polygamousDefaulted)
+                    marriageDefaultedArray.push(unapplicableDefaulted)
+
+                    marriageMissedArray.push(singleMissed)
+                    marriageMissedArray.push(monogamousMissed)
+                    marriageMissedArray.push(divorcedMissed)
+                    marriageMissedArray.push(widowedMissed)
+                    marriageMissedArray.push(cohabitingMissed)
+                    marriageMissedArray.push(unavailableMissed)
+                    marriageMissedArray.push(polygamousMissed)
+                    marriageMissedArray.push(unapplicableMissed)
+
+                    marriageLtfuArray.push(singleLtfu)
+                    marriageLtfuArray.push(monogamousLtfu)
+                    marriageLtfuArray.push(divorcedLtfu)
+                    marriageLtfuArray.push(widowedLtfu)
+                    marriageLtfuArray.push(cohabitingLtfu)
+                    marriageLtfuArray.push(unavailableLtfu)
+                    marriageLtfuArray.push(polygamousLtfu)
+                    marriageLtfuArray.push(unapplicableLtfu)
+
+                    Highcharts.chart('container', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Appointments by Age'
+                        },
+                        xAxis: {
+                            categories: ['0-9', '10-14', '15-19', '20-24', '25+']
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Appointments Count'
+                            },
+                            stackLabels: {
+                                enabled: true,
+                                style: {
+                                    fontWeight: 'bold',
+                                    color: ( // theme
+                                        Highcharts.defaultOptions.title.style &&
+                                        Highcharts.defaultOptions.title.style.color
+                                    ) || 'gray'
+                                }
+                            }
+                        },
+                        // legend: {
+                        //     align: 'right',
+                        //     x: -30,
+                        //     verticalAlign: 'top',
+                        //     y: 25,
+                        //     floating: true,
+                        //     backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                        //     borderColor: '#CCC',
+                        //     borderWidth: 1,
+                        //     shadow: false
+                        // },
+                        tooltip: {
+                            formatter: function() {
+                                return '<b>' + this.x + '</b><br/>' +
+                                    this.series.name + ': ' + this.y + '<br/>' +
+                                    'Sum of all appointment categories ' + ': ' + this.point.stackTotal;
+                            }
+                        },
+                        // tooltip: {
+                        //     headerFormat: '<b>{point.x}</b><br/>',
+                        //     pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                        // },
+                        plotOptions: {
+                            column: {
+                                stacking: 'normal',
+                                // dataLabels: {
+                                //     enabled: false
+                                // }
+                            }
+                        },
+                        series: [{
+                                name: 'Honoured Appointments',
+                                data: keptArray
+                            }, {
+                                name: 'Active Defaulters',
+                                data: defaultedArray
+                            }, {
+                                name: 'Active Missed',
+                                data: missedArray
+                            },
+                            {
+                                name: 'Active LTFUs',
+                                data: ltfuArray
+                            }
+                        ]
+                    });
+
+                    Highcharts.chart('marriage', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Appointments by Marital Status'
+                        },
+                        xAxis: {
+                            categories: ['Single', 'Married Monogamous', 'Divorced', 'Widowed', 'Cohabiting', 'Unavailable', 'Married Polygamous', 'Not Applicable']
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Appointments Count'
+                            },
+                            stackLabels: {
+                                enabled: true,
+                                style: {
+                                    fontWeight: 'bold',
+                                    color: ( // theme
+                                        Highcharts.defaultOptions.title.style &&
+                                        Highcharts.defaultOptions.title.style.color
+                                    ) || 'gray'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            formatter: function() {
+                                return '<b>' + this.x + '</b><br/>' +
+                                    this.series.name + ': ' + this.y + '<br/>' +
+                                    'Sum of all appointment categories: ' + this.point.stackTotal;
+                            }
+                        },
+                        plotOptions: {
+                            column: {
+                                stacking: 'normal',
+                            }
+                        },
+                        series: [{
+                                name: 'Honoured Appointments',
+                                data: marriageKeptArray
+                            }, {
+                                name: 'Active Defaulters',
+                                data: marriageDefaultedArray
+                            }, {
+                                name: 'Active Missed',
+                                data: marriageMissedArray
+                            },
+                            {
+                                name: 'Active LTFUs',
+                                data: marriageLtfuArray
+                            }
+                        ]
+                    });
+
+                }
+
             });
         }
 
