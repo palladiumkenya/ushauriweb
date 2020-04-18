@@ -83,12 +83,15 @@ class Home extends MY_Controller
     //     echo json_encode($data);
     // }
 
+
+
     public function filter_tablecharts_dashboard()
     {
         $partner_id = $this->input->post('partner', true);
         $county_id = $this->input->post('county', true);
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);
+
 
         $table_records = $this->data->getAggregateTableData($partner_id, $county_id, $sub_county_id, $mfl_code);
         $marriage_records = $this->data->getAggregateMarriageData($partner_id, $county_id, $sub_county_id, $mfl_code);
@@ -1401,8 +1404,12 @@ class Home extends MY_Controller
 
 
 
+
         $today = date("Y-m-d H:i:s");
         $transaction = $this->data->update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_types, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $apptdate, $status, $motivational_enable, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $transfer_date, $transfer_new_clinic, $consent_date, $app_kept);
+        // if ($clinic_number > 0) {
+        //     return "clinic number exists";
+        // }
 
         if ($transaction) {
             $response = array(
@@ -8480,7 +8487,10 @@ ORDER BY `appntmnt_date` ASC ")->result();
         }
     }
 
-    public function defaulter_tracing()
+    public function AppoinmentsToEdit()
     {
+        $data = $this->data->getAppointmentsToEdit();
+
+        echo json_encode($data);
     }
 }

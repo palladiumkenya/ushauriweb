@@ -70,16 +70,14 @@
                         <option value="">Please select Facility : </option>
                     </select>
 
-                    <!-- <?php } ?>
+                <?php } ?>
 
-                <input type="text" name="date_from" id="date_from"
-                    class="form-controL date_from input-rounded input-sm " placeholder="Date From : " />
+                <input type="text" name="date_from" id="date_from" class="form-controL date_from input-rounded input-sm " placeholder="Date From : " />
 
-                <input type="text" name="date_to" id="date_to" class="form-control date_to input-rounded input-sm "
-                    placeholder="Date To : " /> -->
+                <input type="text" name="date_to" id="date_to" class="form-control date_to input-rounded input-sm " placeholder="Date To : " />
 
-                    <button class="btn btn-default filter_highcharts_dashboard btn-round  btn-small btn-primary  " type="button" name="filter_highcharts_dashboard" id="filter_highcharts_dashboard"> <i class="fa fa-filter"></i>
-                        Filter</button>
+                <button class="btn btn-default filter_highcharts_appointment_dashboard btn-round  btn-small btn-primary  " type="button" name="filter_highcharts_appointment_dashboard" id="filter_highcharts_appointment_dashboard"> <i class="fa fa-filter"></i>
+                    Filter</button>
 
             </form>
 
@@ -116,7 +114,7 @@
                         </div>
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey" id="consentedClients">
+                                <div class="card-body grey" id="missedApps">
                                     <b><?php echo $missed_appointments; ?><br></b>
                                     Active Missed Appointments
                                 </div>
@@ -124,7 +122,7 @@
                         </div>
                         <div class="col-2">
                             <div class="card">
-                                <div class="card-body grey" id="furuteAppointments">
+                                <div class="card-body grey" id="ltfuApps">
                                     <b><?php echo $ltfu_appointments; ?><br></b>
                                     Active LTFU Appointments
                                 </div>
@@ -139,10 +137,9 @@
                                 <div id="container" class="col" style="height: 450px;margin-top:40px;"></div> <br />
                                 <div id="marriage" class="col" style="height: 450px;margin-top:40px;"></div>
                             </div>
-                            <!-- <div class="card-body row">
-                                <div id="art" class="col" style="height: 450px;margin-top:40px;"></div>
-                                <div id="gender" class="col" style="height: 450px;margin-top:40px;"></div>
-                            </div> -->
+                            <div class="card-body row">
+                                <div id="trend" class="col" style="height: 450px;margin-top:40px;"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -174,7 +171,10 @@
 
     let marriage_appointments = '<?php echo json_encode($marriage_appointments); ?>';
     parseMarriage = JSON.parse(marriage_appointments)
-    console.log(parseMarriage)
+
+    let trend_appointments = '<?php echo json_encode($trend_appointments); ?>';
+    parseTrend = JSON.parse(trend_appointments)
+    console.log(parseTrend)
 
     var keptArray = []
     var defaultedArray = []
@@ -439,5 +439,76 @@
                 data: marriageLtfuArray
             }
         ]
+    });
+
+    Highcharts.chart('trend', {
+
+        title: {
+            text: 'Appointment Trends'
+        },
+
+        subtitle: {
+            text: 'Source: thesolarfoundation.com'
+        },
+
+        yAxis: {
+            title: {
+                text: 'Number of Appointments'
+            }
+        },
+
+        xAxis: {
+            accessibility: {
+                rangeDescription: 'whoo'
+            }
+        },
+
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+                pointStart: 2010
+            }
+        },
+
+        series: [{
+            name: 'Installation',
+            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+        }, {
+            name: 'Manufacturing',
+            data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+        }, {
+            name: 'Sales & Distribution',
+            data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+        }, {
+            name: 'Project Development',
+            data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+        }, {
+            name: 'Other',
+            data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+        }],
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+
     });
 </script>

@@ -3,7 +3,8 @@
     <!-- Bread crumb -->
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Dashboard</h3> </div>
+            <h3 class="text-primary">Dashboard</h3>
+        </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?php echo base_url(); ?>">Home</a></li>
@@ -25,7 +26,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Users List</h4>
-                        <h6 class="card-subtitle">A list of users in the  system </h6>
+                        <h6 class="card-subtitle">A list of users in the system </h6>
                         <div class="table-responsive m-t-40">
 
 
@@ -35,7 +36,7 @@
 
 
 
-                            <div class="panel-body"> 
+                            <div class="panel-body">
 
 
 
@@ -45,7 +46,7 @@
 
                                 <div class="table_div">
 
-                                    <input type="hidden" name="report_name" class="report_name input-rounded input-sm form-control " id="report_name" value="Users Export Report"/>
+                                    <input type="hidden" name="report_name" class="report_name input-rounded input-sm form-control " id="report_name" value="Users Export Report" />
 
                                     <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                         <thead>
@@ -69,7 +70,7 @@
                                             <?php
                                             $i = 1;
                                             foreach ($users as $value) {
-                                                ?>
+                                            ?>
                                                 <tr>
                                                     <td class="a-center"><?php echo $i; ?></td>
                                                     <td><?php echo $value->f_name . " " . $value->m_name . " " . $value->l_name; ?></td>
@@ -81,35 +82,35 @@
                                                     <td><?php
                                                         $status = $value->status;
                                                         if ($status == "Active") {
-                                                            ?>
+                                                        ?>
                                                             <span style="color: green"><?php echo $status; ?></span>
-                                                            <?php
+                                                        <?php
                                                         } else {
-                                                            ?>
+                                                        ?>
                                                             <span style="color: red"><?php echo $status; ?></span>
-                                                            <?php
+                                                        <?php
                                                         }
                                                         ?></td>
                                                     <td><?php echo $value->created_at; ?></td>
                                                     <td><?php echo $value->updated_at; ?></td>
                                                     <td>
-                                                        <input type="hidden" name="id" value="<?php echo $value->id; ?>" class="id"/>
+                                                        <input type="hidden" name="id" value="<?php echo $value->id; ?>" class="id" />
                                                         <button class="btn btn-sm btn-primary edit_btn" id="edit_btn"><i class="fa fa-edit"></i> </button></td>
                                                     <td>
-                                                        <input type="hidden" name="id" value="<?php echo $value->id; ?>" class="id"/>
+                                                        <input type="hidden" name="id" value="<?php echo $value->id; ?>" class="id" />
                                                         <button class="btn btn-sm btn-primary delete_btn" id="delete_btn"><i class="fa fa-trash"></i> </button></td>
                                                     <td>
-                                                        <input type="hidden" name="id" value="<?php echo $value->id; ?>" class="id"/>
+                                                        <input type="hidden" name="id" value="<?php echo $value->id; ?>" class="id" />
                                                         <button class="btn btn-sm btn-primary reset_btn" id="reset_btn"><i class="fa fa-lock"></i> </button></td>
                                                 </tr>
-                                                <?php
+                                            <?php
                                                 $i++;
                                             }
                                             ?>
                                         </tbody>
                                     </table>
 
-                                    <input type="hidden" name="user_access_level" id="user_access_level" class="user_access_level form-control" value="<?php echo $this->session->userdata('access_level'); ?>"/>
+                                    <input type="hidden" name="user_access_level" id="user_access_level" class="user_access_level form-control" value="<?php echo $this->session->userdata('access_level'); ?>" />
 
                                 </div>
 
@@ -144,60 +145,60 @@
 
 
                                                                 <div class="form-group">
-                                                                    <label>First Name :<span class="text-danger">*</span> </label> 
-                                                                    <input type="text"  required="" name="f_name" class=" input-rounded input-sm form-control f_name"/>
+                                                                    <label>First Name :<span class="text-danger">*</span> </label>
+                                                                    <input type="text" required="" name="f_name" class=" input-rounded input-sm form-control f_name" />
 
-                                                                </div> 
-
-
-                                                                <div class="form-group">
-                                                                    <label>Middle Name :<span class="text-danger">*</span> </label> 
-                                                                    <input type="text"   name="m_name" class=" input-rounded input-sm form-control m_name"/>
-
-                                                                </div> 
-
-                                                                <div class="form-group">
-                                                                    <label>Last Name : <span class="text-danger">*</span></label> 
-                                                                    <input type="text" required=""  name="l_name" class=" input-rounded input-sm form-control l_name"/>
-
-                                                                </div> 
+                                                                </div>
 
 
                                                                 <div class="form-group">
-                                                                    <label>D.o.B : <span class="text-danger">*</span></label> 
-                                                                    <input type="text" readonly=""  name="dob" class=" input-rounded input-sm form-control dob"/>
+                                                                    <label>Middle Name :<span class="text-danger">*</span> </label>
+                                                                    <input type="text" name="m_name" class=" input-rounded input-sm form-control m_name" />
 
+                                                                </div>
 
-                                                                </div> 
+                                                                <div class="form-group">
+                                                                    <label>Last Name : <span class="text-danger">*</span></label>
+                                                                    <input type="text" required="" name="l_name" class=" input-rounded input-sm form-control l_name" />
+
+                                                                </div>
 
 
                                                                 <div class="form-group">
-                                                                    <label>E mail :<span class="text-danger">*</span> </label> 
-                                                                    <input type="email"  required="" name="e_mail" class=" input-rounded input-sm form-control e_mail"/>
+                                                                    <label>D.o.B : <span class="text-danger">*</span></label>
+                                                                    <input type="text" readonly="" name="dob" class=" input-rounded input-sm form-control dob" />
 
-                                                                </div> 
+
+                                                                </div>
+
 
                                                                 <div class="form-group">
-                                                                    <label>Phone No :<span class="text-danger">*</span> </label> 
-                                                                    <input type="text"  required="" name="phone_no" pattern="^(([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+$" placeholder="Phone No should be 10 Digits " id="phone_no" class="input-rounded input-sm form-control phone_no"/>
+                                                                    <label>E mail :<span class="text-danger">*</span> </label>
+                                                                    <input type="email" required="" name="e_mail" class=" input-rounded input-sm form-control e_mail" />
 
-                                                                </div> 
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label>Phone No :<span class="text-danger">*</span> </label>
+                                                                    <input type="text" required="" name="phone_no" pattern="^(([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+$" placeholder="Phone No should be 10 Digits " id="phone_no" class="input-rounded input-sm form-control phone_no" />
+
+                                                                </div>
 
 
                                                                 <div class="form-group">
                                                                     <label>Access Level : <span class="text-danger">*</span> </label>
 
-                                                                    <select name="access_level" class="input-rounded input-sm form-control add_access_level" required="" id="add_access_level" >
+                                                                    <select name="access_level" class="input-rounded input-sm form-control add_access_level" required="" id="add_access_level">
                                                                         <option value="">Please select : </option>
                                                                         <?php
                                                                         foreach ($access_levels as $value) {
-                                                                            ?>
+                                                                        ?>
                                                                             <option value="<?php echo $value->name; ?>"><?php echo $value->name; ?></option>
-                                                                            <?php
+                                                                        <?php
                                                                         }
                                                                         ?>
                                                                     </select>
-                                                                </div> 
+                                                                </div>
 
 
 
@@ -217,9 +218,9 @@
 
 
                                                                     <div class="form-group">
-                                                                        <label>Role Name : <span class="text-danger">*</span></label> 
+                                                                        <label>Role Name : <span class="text-danger">*</span></label>
 
-                                                                        <select name="role_names" required="" class="input-rounded input-sm form-control add_role_names" id="role_names" >
+                                                                        <select name="role_names" required="" class="input-rounded input-sm form-control add_role_names" id="role_names">
                                                                             <option value="">Please select</option>
 
 
@@ -233,14 +234,14 @@
                                                                         <div class="form-group">
                                                                             <label>Donor : <span class="text-danger">*</span></label>
 
-                                                                            <select class="input-rounded input-sm form-control donor_id"  id="donor_id" name="donor_id">
+                                                                            <select class="input-rounded input-sm form-control donor_id" id="donor_id" name="donor_id">
                                                                                 <option value="">Please select : </option>
                                                                                 <?php foreach ($donors as $value) {
-                                                                                    ?>
+                                                                                ?>
                                                                                     <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                                 <?php }
                                                                                 ?>
-                                                                            </select> 
+                                                                            </select>
 
                                                                         </div>
                                                                     </div>
@@ -248,14 +249,14 @@
                                                                         <div class="form-group">
                                                                             <label>County :<span class="text-danger">*</span> </label>
 
-                                                                            <select class="input-rounded input-sm form-control county_id add_county_id"  id="county_id" name="county_id">
+                                                                            <select class="input-rounded input-sm form-control county_id add_county_id" id="county_id" name="county_id">
                                                                                 <option value="">Please select : </option>
                                                                                 <?php foreach ($counties as $value) {
-                                                                                    ?>
+                                                                                ?>
                                                                                     <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                                 <?php }
                                                                                 ?>
-                                                                            </select> 
+                                                                            </select>
 
                                                                         </div>
                                                                     </div>
@@ -264,10 +265,10 @@
                                                                         <div class="form-group">
                                                                             <label>Sub County :<span class="text-danger">*</span> </label>
 
-                                                                            <select class="input-rounded input-sm form-control add_subcounty_id"  id="add_subcounty_id" name="subcounty_id">
+                                                                            <select class="input-rounded input-sm form-control add_subcounty_id" id="add_subcounty_id" name="subcounty_id">
                                                                                 <option value="">Please select : </option>
 
-                                                                            </select> 
+                                                                            </select>
 
                                                                         </div>
                                                                     </div>
@@ -275,29 +276,29 @@
                                                                     <div class="add_partner_div" id="add_partner_div">
                                                                         <div class="form-group">
                                                                             <label>Partner :<span class="text-danger">*</span> </label>
-                                                                            <select class="input-rounded input-sm form-control partner_id"  id="partner_id" name="partner_id">
+                                                                            <select class="input-rounded input-sm form-control partner_id" id="partner_id" name="partner_id">
                                                                                 <option value="">Please select : </option>
                                                                                 <?php foreach ($partners as $value) {
-                                                                                    ?>
+                                                                                ?>
                                                                                     <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                                 <?php }
                                                                                 ?>
-                                                                            </select> 
-                                                                        </div> 
+                                                                            </select>
+                                                                        </div>
                                                                     </div>
 
                                                                     <div class="add_facilty_div" id="add_facility_div">
                                                                         <div class="form-group">
                                                                             <label>Facility :<span class="text-danger">*</span> </label>
-                                                                            <select class="input-rounded input-sm form-control facility_id"  id="facility_id" name="facility_id">
+                                                                            <select class="input-rounded input-sm form-control facility_id" id="facility_id" name="facility_id">
                                                                                 <option value="">Please select : </option>
                                                                                 <?php foreach ($facilities as $value) {
-                                                                                    ?>
+                                                                                ?>
                                                                                     <option value="<?php echo $value->code ?>"> <?php echo $value->name ?></option>
                                                                                 <?php }
                                                                                 ?>
-                                                                            </select> 
-                                                                        </div>  
+                                                                            </select>
+                                                                        </div>
 
                                                                     </div>
 
@@ -305,15 +306,15 @@
                                                                     <div class="add_clinic_div" id="add_clinic_div">
                                                                         <div class="form-group">
                                                                             <label>Clinic : <span class="text-danger">*</span></label>
-                                                                            <select class="input-rounded input-sm form-control clinic_id"  id="clinic_id" name="clinic_id">
+                                                                            <select class="input-rounded input-sm form-control clinic_id" id="clinic_id" name="clinic_id">
                                                                                 <option value="">Please select : </option>
                                                                                 <?php foreach ($clinics as $value) {
-                                                                                    ?>
+                                                                                ?>
                                                                                     <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                                 <?php }
                                                                                 ?>
-                                                                            </select> 
-                                                                        </div>  
+                                                                            </select>
+                                                                        </div>
 
                                                                     </div>
 
@@ -329,35 +330,35 @@
                                                                         <label class="radio-inline"><input type="radio" name="rcv_app_list" id="rcv_app_list" checked="checked" class="rcv_app_list" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>  Receive Daily Reports ?</label>
+                                                                        <label> Receive Daily Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="daily_report" id="daily_report" class="daily_report" value="Yes">Yes </label>
                                                                         <label class="radio-inline"><input type="radio" name="daily_report" id="daily_report" checked="checked" class="daily_report" value="No">No </label>
                                                                     </div>
 
                                                                     <div class="radio">
-                                                                        <label>  Receive Weekly Reports ?</label>
+                                                                        <label> Receive Weekly Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="weekly_report" id="weekly_report" class="weekly_report" value="Yes">Yes </label>
                                                                         <label class="radio-inline"><input type="radio" name="weekly_report" id="weekly_report" checked="checked" class="weekly_report" value="No">No </label>
                                                                     </div>
 
 
                                                                     <div class="radio">
-                                                                        <label>  Receive Monthly Reports ?</label>
+                                                                        <label> Receive Monthly Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="monthly_report" id="monthly_report" class="monthly_report" value="Yes">Yes </label>
                                                                         <label class="radio-inline"><input type="radio" name="monthly_report" id="monthly_report" checked="checked" class="monthly_report" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>  Receive 3 Months Reports  ?</label>
+                                                                        <label> Receive 3 Months Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="month3_report" id="month3_report" class="month3_report" value="Yes">Yes </label>
                                                                         <label class="radio-inline"><input type="radio" name="month3_report" id="month3_report" checked="checked" class="month3_report" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>  Receive  6 Months Reports ?</label>
+                                                                        <label> Receive 6 Months Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="month6_report" id="month6_report" class="month6_report" value="Yes">Yes </label>
                                                                         <label class="radio-inline"><input type="radio" name="month6_report" id="month6_report" checked="checked" class="month6_report" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>   Receive Yearly Reports  ?</label>
+                                                                        <label> Receive Yearly Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="yearly_report" id="yearly_report" class="yearly_report" value="Yes">Yes </label>
                                                                         <label class="radio-inline"><input type="radio" name="yearly_report" id="yearly_report" checked="checked" class="yearly_report" value="No">No </label>
                                                                     </div>
@@ -370,7 +371,7 @@
 
 
                                                                     <div class="form-group">
-                                                                        <label>Status : </label> 
+                                                                        <label>Status : </label>
                                                                         <select name="status" class="form-control status input-rounded input-sm" id="status" required>
                                                                             <option value="">Please select</option>
                                                                             <option value="Active">Active</option>
@@ -427,7 +428,9 @@
 
 
                                                 </div>
-                                            </div></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
 
@@ -472,41 +475,41 @@
 
 
                                                                 <div class="form-group">
-                                                                    <label>First Name : <span class="text-danger">*</span></label> 
-                                                                    <input type="text"  required="" name="f_name" class="input-rounded input-sm form-control f_name" id="edit_f_name"/>
+                                                                    <label>First Name : <span class="text-danger">*</span></label>
+                                                                    <input type="text" required="" name="f_name" class="input-rounded input-sm form-control f_name" id="edit_f_name" />
 
-                                                                </div> 
-
-
-                                                                <div class="form-group">
-                                                                    <label>Middle Name : </label> 
-                                                                    <input type="text"   name="m_name" class="input-rounded input-sm form-control m_name" id="edit_m_name"/>
-
-                                                                </div> 
-
-                                                                <div class="form-group">
-                                                                    <label>Last Name :<span class="text-danger">*</span> </label> 
-                                                                    <input type="text"  required="" name="l_name" class="input-rounded input-sm form-control l_name" id="edit_l_name"/>
-
-                                                                </div> 
+                                                                </div>
 
 
                                                                 <div class="form-group">
-                                                                    <label>D.o.B : <span class="text-danger">*</span></label> 
-                                                                    <input type="text" readonly=""  required="" name="dob" id="edit_dob" class="input-rounded input-sm form-control dob" id="edit_dob"/>
+                                                                    <label>Middle Name : </label>
+                                                                    <input type="text" name="m_name" class="input-rounded input-sm form-control m_name" id="edit_m_name" />
 
-                                                                </div> 
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label>Last Name :<span class="text-danger">*</span> </label>
+                                                                    <input type="text" required="" name="l_name" class="input-rounded input-sm form-control l_name" id="edit_l_name" />
+
+                                                                </div>
 
 
                                                                 <div class="form-group">
-                                                                    <label>E mail : <span class="text-danger">*</span></label> 
-                                                                    <input type="email"  required="" name="e_mail" class="input-rounded input-sm form-control e_mail" id="edit_e_mail"/>
+                                                                    <label>D.o.B : <span class="text-danger">*</span></label>
+                                                                    <input type="text" readonly="" required="" name="dob" id="edit_dob" class="input-rounded input-sm form-control dob" id="edit_dob" />
 
-                                                                </div> 
+                                                                </div>
+
 
                                                                 <div class="form-group">
-                                                                    <label>Phone No : <span class="text-danger">*</span> </label> 
-                                                                    <input type="text"  required="" name="phone_no" id="edit_phone_no" class="input-rounded input-sm form-control phone_no"  pattern="^(([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+$" placeholder="Phone No should be 10 Digits "  id="edit_phone_no"/>
+                                                                    <label>E mail : <span class="text-danger">*</span></label>
+                                                                    <input type="email" required="" name="e_mail" class="input-rounded input-sm form-control e_mail" id="edit_e_mail" />
+
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label>Phone No : <span class="text-danger">*</span> </label>
+                                                                    <input type="text" required="" name="phone_no" id="edit_phone_no" class="input-rounded input-sm form-control phone_no" pattern="^(([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+$" placeholder="Phone No should be 10 Digits " id="edit_phone_no" />
 
                                                                 </div>
 
@@ -517,14 +520,14 @@
                                                             <div class="col-sm-6 ">
 
                                                                 <div class="form-group">
-                                                                    <label>Access Level : <span class="text-danger">*</span> </label> 
-                                                                    <select name="access_level" class="input-rounded input-sm form-control edit_access_level" id="edit_access_level" >
+                                                                    <label>Access Level : <span class="text-danger">*</span> </label>
+                                                                    <select name="access_level" class="input-rounded input-sm form-control edit_access_level" id="edit_access_level">
                                                                         <option value="">Please select</option>
                                                                         <?php
                                                                         foreach ($access_levels as $value) {
-                                                                            ?>
+                                                                        ?>
                                                                             <option value="<?php echo $value->name; ?>"><?php echo $value->name; ?></option>
-                                                                            <?php
+                                                                        <?php
                                                                         }
                                                                         ?>
                                                                     </select>
@@ -535,8 +538,8 @@
                                                                 <div class="edit_dynamic_options" id="edit_dynamic_options" style="display: none;">
 
                                                                     <div class="form-group">
-                                                                        <label>Role Name : <span class="text-danger">*</span> </label> 
-                                                                        <select name="role_names" required="" class="input-rounded input-sm form-control edit_role_names" id="edit_role_names" >
+                                                                        <label>Role Name : <span class="text-danger">*</span> </label>
+                                                                        <select name="role_names" required="" class="input-rounded input-sm form-control edit_role_names" id="edit_role_names">
                                                                             <option value="">Please select</option>
 
 
@@ -547,14 +550,14 @@
                                                                     <div class="form-group donor_div" id="edit_donor_div">
                                                                         <label>Donor : <span class="text-danger">*</span></label>
 
-                                                                        <select class="input-rounded input-sm form-control donor_id"  id="edit_donor_id" name="donor_id">
+                                                                        <select class="input-rounded input-sm form-control donor_id" id="edit_donor_id" name="donor_id">
                                                                             <option value="">Please select : </option>
                                                                             <?php foreach ($donors as $value) {
-                                                                                ?>
+                                                                            ?>
                                                                                 <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                             <?php }
                                                                             ?>
-                                                                        </select> 
+                                                                        </select>
 
                                                                     </div>
 
@@ -563,14 +566,14 @@
                                                                         <div class="form-group">
                                                                             <label>County :<span class="text-danger">*</span> </label>
 
-                                                                            <select class="input-rounded input-sm form-control county_id edit_county_id"  id="county_id" name="county_id">
+                                                                            <select class="input-rounded input-sm form-control county_id edit_county_id" id="county_id" name="county_id">
                                                                                 <option value="">Please select : </option>
                                                                                 <?php foreach ($counties as $value) {
-                                                                                    ?>
+                                                                                ?>
                                                                                     <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                                 <?php }
                                                                                 ?>
-                                                                            </select> 
+                                                                            </select>
 
                                                                         </div>
                                                                     </div>
@@ -579,10 +582,10 @@
                                                                         <div class="form-group">
                                                                             <label>Sub County : <span class="text-danger">*</span> </label>
 
-                                                                            <select class="input-rounded input-sm form-control edit_subcounty_id"  id="edit_subcounty_id" name="subcounty_id">
+                                                                            <select class="input-rounded input-sm form-control edit_subcounty_id" id="edit_subcounty_id" name="subcounty_id">
                                                                                 <option value="">Please select : </option>
 
-                                                                            </select> 
+                                                                            </select>
 
                                                                         </div>
                                                                     </div>
@@ -594,28 +597,28 @@
 
                                                                     <div class="form-group partner_div" id="edit_partner_div">
                                                                         <label>Partner : <span class="text-danger">*</span></label>
-                                                                        <select class="input-rounded input-sm form-control partner_id"  id="edit_partner_id" name="partner_id">
+                                                                        <select class="input-rounded input-sm form-control partner_id" id="edit_partner_id" name="partner_id">
                                                                             <option value="">Please select : </option>
                                                                             <?php foreach ($partners as $value) {
-                                                                                ?>
+                                                                            ?>
                                                                                 <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                             <?php }
                                                                             ?>
-                                                                        </select> 
-                                                                    </div>  
+                                                                        </select>
+                                                                    </div>
 
 
                                                                     <div class="form-group facility_div" id="edit_facility_div">
                                                                         <label>Facility : <span class="text-danger">*</span></label>
-                                                                        <select class="input-rounded input-sm form-control facility_id"  id="edit_facility_id" name="facility_id">
+                                                                        <select class="input-rounded input-sm form-control facility_id" id="edit_facility_id" name="facility_id">
                                                                             <option value="">Please select : </option>
                                                                             <?php foreach ($facilities as $value) {
-                                                                                ?>
+                                                                            ?>
                                                                                 <option value="<?php echo $value->code ?>"> <?php echo $value->name ?></option>
                                                                             <?php }
                                                                             ?>
-                                                                        </select> 
-                                                                    </div>  
+                                                                        </select>
+                                                                    </div>
 
 
 
@@ -624,15 +627,15 @@
                                                                     <div class="edit_clinic_div" id="edit_clinic_div">
                                                                         <div class="form-group">
                                                                             <label>Clinic : <span class="text-danger">*</span></label>
-                                                                            <select class="input-rounded input-sm form-control clinic_id"  id="edit_clinic_id" name="clinic_id">
+                                                                            <select class="input-rounded input-sm form-control clinic_id" id="edit_clinic_id" name="clinic_id">
                                                                                 <option value="">Please select : </option>
                                                                                 <?php foreach ($clinics as $value) {
-                                                                                    ?>
+                                                                                ?>
                                                                                     <option value="<?php echo $value->id ?>"> <?php echo $value->name ?></option>
                                                                                 <?php }
                                                                                 ?>
-                                                                            </select> 
-                                                                        </div>  
+                                                                            </select>
+                                                                        </div>
 
                                                                     </div>
 
@@ -644,45 +647,45 @@
                                                                     <div class="radio">
                                                                         <label>View Patients Bio Data ? </label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_bio_data" id="edit_bio_data" class="bio_data" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_bio_data" id="edit_bio_data"  class="bio_data" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_bio_data" id="edit_bio_data" class="bio_data" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
                                                                         <label> Receive todays appointments ? </label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_rcv_app_list" id="edit_rcv_app_list" class="rcv_app_list" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_rcv_app_list" id="edit_rcv_app_list"  class="rcv_app_list" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_rcv_app_list" id="edit_rcv_app_list" class="rcv_app_list" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>  Receive Daily Reports ?</label>
+                                                                        <label> Receive Daily Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_daily_report" id="edit_daily_report" class="daily_report" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_daily_report" id="edit_daily_report"  class="daily_report" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_daily_report" id="edit_daily_report" class="daily_report" value="No">No </label>
                                                                     </div>
 
                                                                     <div class="radio">
-                                                                        <label>  Receive Weekly Reports ?</label>
+                                                                        <label> Receive Weekly Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_weekly_report" id="edit_weekly_report" class="weekly_report" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_weekly_report" id="edit_weekly_report"  class="weekly_report" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_weekly_report" id="edit_weekly_report" class="weekly_report" value="No">No </label>
                                                                     </div>
 
 
                                                                     <div class="radio">
-                                                                        <label>  Receive Monthly Reports ?</label>
+                                                                        <label> Receive Monthly Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_monthly_report" id="edit_monthly_report" class="monthly_report" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_monthly_report" id="edit_monthly_report"  class="monthly_report" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_monthly_report" id="edit_monthly_report" class="monthly_report" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>  Receive 3 Months Reports  ?</label>
+                                                                        <label> Receive 3 Months Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_month3_report" id="edit_month3_report" class="month3_report" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_month3_report" id="edit_month3_report"  class="month3_report" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_month3_report" id="edit_month3_report" class="month3_report" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>  Receive  6 Months Reports ?</label>
+                                                                        <label> Receive 6 Months Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_month6_report" id="edit_month6_report" class="month6_report" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_month6_report" id="edit_month6_report"  class="month6_report" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_month6_report" id="edit_month6_report" class="month6_report" value="No">No </label>
                                                                     </div>
                                                                     <div class="radio">
-                                                                        <label>   Receive Yearly Reports  ?</label>
+                                                                        <label> Receive Yearly Reports ?</label>
                                                                         <label class="radio-inline"><input type="radio" name="edit_yearly_report" id="edit_yearly_report" class="yearly_report" value="Yes">Yes </label>
-                                                                        <label class="radio-inline"><input type="radio" name="edit_yearly_report" id="edit_yearly_report"  class="yearly_report" value="No">No </label>
+                                                                        <label class="radio-inline"><input type="radio" name="edit_yearly_report" id="edit_yearly_report" class="yearly_report" value="No">No </label>
                                                                     </div>
 
 
@@ -692,8 +695,8 @@
 
 
                                                                     <div class="form-group">
-                                                                        <label>Status : </label> 
-                                                                        <select name="status" class="input-rounded input-sm form-control status" id="edit_status" >
+                                                                        <label>Status : </label>
+                                                                        <select name="status" class="input-rounded input-sm form-control status" id="edit_status">
                                                                             <option value="">Please select</option>
                                                                             <option value="Active">Active</option>
                                                                             <option value="Disabled">Disabled</option>
@@ -732,7 +735,8 @@
 
 
                                                 </div>
-                                            </div></div>
+                                            </div>
+                                        </div>
 
                                     </div>
 
@@ -777,7 +781,9 @@
 
 
                                             </div>
-                                        </div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
 
 
 
@@ -890,7 +896,7 @@
 </div>
 <!-- End Container fluid  -->
 <!-- footer -->
-<footer class="footer"> © 2018 Ushauri -  All rights reserved. Powered  by <a href="https://mhealthkenya.org">mHealth Kenya Ltd</a></footer>
+<footer class="footer"> © 2018 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth Kenya Ltd</a></footer>
 <!-- End footer -->
 </div>
 <!-- End Page wrapper  -->
@@ -925,16 +931,16 @@
 
 
 
-<input type="text" name="user_county_id" value="<?php echo $this->session->userdata('county_id'); ?>" class="form-control user_county_id" id="user_county_id"/>
-<input type="text" name="user_sub_county_id" value="<?php echo $this->session->userdata('subcounty_id'); ?>" class="form-control user_sub_county_id" id="user_sub_county_id"/>
+<input type="text" name="user_county_id" value="<?php echo $this->session->userdata('county_id'); ?>" class="form-control user_county_id" id="user_county_id" />
+<input type="text" name="user_sub_county_id" value="<?php echo $this->session->userdata('subcounty_id'); ?>" class="form-control user_sub_county_id" id="user_sub_county_id" />
 
 
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $(".close_edit_div").click(function () {
+        $(".close_edit_div").click(function() {
             $(".edit_div").hide();
             $(".table_div").show();
             $(".add_btn").show();
@@ -942,12 +948,12 @@
         $(".add_clinic_div").hide();
         $(".edit_clinic_div").hide();
         var user_access_level = $(".user_access_level").val();
-//       alert(user_access_level);
+        //       alert(user_access_level);
 
         if (user_access_level == "Admin") {
 
-//            $(".add_access_level option[value='Facility']").remove();
-//            $(".edit_access_level option[value='Facility']").remove();
+            //            $(".add_access_level option[value='Facility']").remove();
+            //            $(".edit_access_level option[value='Facility']").remove();
 
         } else if (user_access_level == "Partner") {
             $(".add_access_level option[value='Admin']").remove();
@@ -1028,7 +1034,7 @@
             $(".edit_clinic_div").hide();
         }
 
-        $(".add_role_names").change(function () {
+        $(".add_role_names").change(function() {
             var role_name = $(".add_role_names").val();
             if (role_name === "7" || role_name === "8" || role_name === "12") {
                 $(".add_clinic_div").show();
@@ -1036,7 +1042,7 @@
                 $(".add_clinic_div").hide();
             }
         });
-        $(".edit_role_names").change(function () {
+        $(".edit_role_names").change(function() {
             var role_name = $(".edit_role_names").val();
             if (role_name === "7" || role_name === "8" || role_name === "12") {
                 $(".edit_clinic_div").show();
@@ -1044,7 +1050,7 @@
                 $(".edit_clinic_div").hide();
             }
         });
-        $("#add_access_level").change(function () {
+        $("#add_access_level").change(function() {
             $(".add_loading_option").show();
             $(".add_dynamic_options").hide();
             var access_level = this.value;
@@ -1053,20 +1059,22 @@
                 url: "<?php echo base_url() ?>admin/get_access_roles/" + access_level + "",
                 type: 'GET',
                 dataType: 'JSON',
-                success: function (data) {
+                success: function(data) {
                     $(".add_loading_option").hide();
                     $(".add_dynamic_options").show();
                     $(".add_role_names").empty();
                     $(".add_role_names").append(plse_select);
-                    $.each(data, function (i, key) {
+                    $.each(data, function(i, key) {
                         var option = "<option value=" + key.id + ">" + key.name + "</option>";
                         $(".add_role_names").append(option);
                     });
-                }, error: function (errorThrown) {
+                },
+                error: function(errorThrown) {
 
                 }
             });
         });
+
         function get_county_facilities() {
 
 
@@ -1079,19 +1087,20 @@
                 url: "<?php echo base_url() ?>admin/get_county_facilities/" + county_id + "",
                 type: 'GET',
                 dataType: 'JSON',
-                success: function (data) {
+                success: function(data) {
 
                     $(".add_loading_option").hide();
                     //$(".add_dynamic_options").show();
                     $(".facility_id").empty();
-//                    $("#edit_facility_id").empty();
+                    //                    $("#edit_facility_id").empty();
 
                     $(".facility_id").append(plse_select);
-                    $.each(data, function (i, key) {
+                    $.each(data, function(i, key) {
                         var option = "<option value=" + key.id + ">" + key.name + "</option>";
                         $(".facility_id").append(option);
                     });
-                }, error: function (errorThrown) {
+                },
+                error: function(errorThrown) {
 
                 }
             });
@@ -1111,19 +1120,20 @@
                 url: "<?php echo base_url() ?>admin/get_sub_county_facilities/" + sub_county_id + "",
                 type: 'GET',
                 dataType: 'JSON',
-                success: function (data) {
+                success: function(data) {
 
                     $(".add_loading_option").hide();
                     //$(".add_dynamic_options").show();
                     $(".facility_id").empty();
-//                    $("#edit_facility_id").empty();
+                    //                    $("#edit_facility_id").empty();
 
                     $(".facility_id").append(plse_select);
-                    $.each(data, function (i, key) {
+                    $.each(data, function(i, key) {
                         var option = "<option value=" + key.id + ">" + key.name + "</option>";
                         $(".facility_id").append(option);
                     });
-                }, error: function (errorThrown) {
+                },
+                error: function(errorThrown) {
 
                 }
             });
@@ -1132,7 +1142,7 @@
 
 
 
-        $(".add_county_id").change(function () {
+        $(".add_county_id").change(function() {
             $(".add_loading_option").show();
             $(".add_dynamic_options").hide();
             var county_id = this.value;
@@ -1142,22 +1152,25 @@
                 url: "<?php echo base_url() ?>admin/get_sub_counties/" + county_id + "",
                 type: 'POST',
                 dataType: 'JSON',
-                data: {tokenizer: tokenizer},
-                success: function (data) {
+                data: {
+                    tokenizer: tokenizer
+                },
+                success: function(data) {
                     $(".add_loading_option").hide();
                     $(".add_dynamic_options").show();
                     $(".add_subcounty_id").empty();
                     $(".add_subcounty_id").append(plse_select);
-                    $.each(data, function (i, key) {
+                    $.each(data, function(i, key) {
                         var option = "<option value=" + key.id + ">" + key.name + "</option>";
                         $(".add_subcounty_id").append(option);
                     });
-                }, error: function (errorThrown) {
+                },
+                error: function(errorThrown) {
 
                 }
             });
         });
-        $(".edit_county_id").change(function () {
+        $(".edit_county_id").change(function() {
             $(".edit_loading_option").show();
             $(".edit_dynamic_options").hide();
             var county_id = this.value;
@@ -1166,22 +1179,26 @@
             $.ajax({
                 url: "<?php echo base_url() ?>admin/get_sub_counties/" + county_id + "",
                 type: 'POST',
-                dataType: 'JSON', data: {tokenizer: tokenizer},
-                success: function (data) {
+                dataType: 'JSON',
+                data: {
+                    tokenizer: tokenizer
+                },
+                success: function(data) {
                     $(".edit_loading_option").hide();
                     $(".edit_dynamic_options").show();
                     $(".edit_subcounty_id").empty();
                     $(".edit_subcounty_id").append(plse_select);
-                    $.each(data, function (i, key) {
+                    $.each(data, function(i, key) {
                         var option = "<option value=" + key.id + ">" + key.name + "</option>";
                         $(".edit_subcounty_id").append(option);
                     });
-                }, error: function (errorThrown) {
+                },
+                error: function(errorThrown) {
 
                 }
             });
         });
-        $("#edit_access_level").change(function () {
+        $("#edit_access_level").change(function() {
             $(".edit_loading_option").show();
             $(".edit_dynamic_options").hide();
             var access_level = this.value;
@@ -1190,16 +1207,17 @@
                 url: "<?php echo base_url() ?>admin/get_access_roles/" + access_level + "",
                 type: 'GET',
                 dataType: 'JSON',
-                success: function (data) {
+                success: function(data) {
                     $(".edit_loading_option").hide();
                     $(".edit_dynamic_options").show();
                     $(".edit_role_names").empty();
                     $(".edit_role_names").append(plse_select);
-                    $.each(data, function (i, key) {
+                    $.each(data, function(i, key) {
                         var option = "<option value=" + key.id + ">" + key.name + "</option>";
                         $(".edit_role_names").append(option);
                     });
-                }, error: function (errorThrown) {
+                },
+                error: function(errorThrown) {
 
                 }
             });
@@ -1212,7 +1230,7 @@
 
 
         });
-        $("#edit_access_level").change(function () {
+        $("#edit_access_level").change(function() {
 
             var access_level = this.value;
             if (access_level == "Admin") {
@@ -1279,7 +1297,7 @@
             }
             $("#edit_dynamic_options").show();
         });
-        $("#add_access_level").change(function () {
+        $("#add_access_level").change(function() {
             var access_level = this.value;
             if (access_level == "Admin") {
                 $('select#partner_id option').removeAttr("selected");
@@ -1342,7 +1360,7 @@
             }
 
         });
-        $(document).on('click', ".add_btn", function () {
+        $(document).on('click', ".add_btn", function() {
             $(".name").empty();
             $(".f_name").empty();
             $(".m_name").empty();
@@ -1353,6 +1371,7 @@
             $(".add_div").show();
             $(".table_div").hide();
         });
+
         function get_access_level(access_level, role_id) {
             $(".edit_loading_option").show();
             $(".edit_dynamic_options").hide();
@@ -1361,26 +1380,27 @@
                 url: "<?php echo base_url() ?>admin/get_access_roles/" + access_level + "",
                 type: 'GET',
                 dataType: 'JSON',
-                success: function (data) {
+                success: function(data) {
                     $(".edit_loading_option").hide();
                     $(".edit_dynamic_options").show();
                     $(".edit_role_names").empty();
                     $(".edit_role_names").append(plse_select);
 
-                    $.each(data, function (i, key) {
+                    $.each(data, function(i, key) {
                         var option = "<option value=" + key.id + ">" + key.name + "</option>";
                         $(".edit_role_names").append(option);
                     });
 
                     $('.edit_role_names option[value=' + role_id + ']').attr("selected", "selected");
 
-                }, error: function (errorThrown) {
+                },
+                error: function(errorThrown) {
 
                 }
             });
         }
 
-        $(document).on('click', ".edit_btn", function () {
+        $(document).on('click', ".edit_btn", function() {
             $(".loader").show();
             //get data
             var data_id = $(this).closest('tr').find('input[name="id"]').val();
@@ -1391,9 +1411,9 @@
                 async: true,
                 url: "<?php echo base_url(); ?>admin/get_user_data/" + data_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $(".loader").hide();
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
                         var access_level = value.access_level;
                         var role_id = value.role_id;
 
@@ -1492,14 +1512,15 @@
                     });
                     $(".edit_div").show();
                     $(".table_div").hide();
-                }, error: function (data) {
+                },
+                error: function(data) {
                     $(".loader").hide();
                     sweetAlert("Oops...", "" + error_alert + "", "error");
                 }
 
             });
         });
-        $(document).on('click', ".delete_btn", function () {
+        $(document).on('click', ".delete_btn", function() {
 
             $(".loader").show();
             //get data
@@ -1511,9 +1532,9 @@
                 async: true,
                 url: "<?php echo base_url(); ?>admin/get_user_data/" + data_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $(".loader").hide();
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
                         $("#delete_user_id").empty();
                         $('#delete_user_id').val(value.id);
                         $('#delete_f_name').val(value.f_name);
@@ -1524,14 +1545,15 @@
                     });
                     $(".delete_div").show();
                     $(".table_div").hide();
-                }, error: function (data) {
+                },
+                error: function(data) {
                     $(".loader").hide();
                     sweetAlert("Oops...", "" + error_alert + "", "error");
                 }
 
             });
         });
-        $(document).on('click', ".reset_btn", function () {
+        $(document).on('click', ".reset_btn", function() {
 
             $(".loader").show();
             //get data
@@ -1543,9 +1565,9 @@
                 async: true,
                 url: "<?php echo base_url(); ?>admin/get_user_data/" + data_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $(".loader").hide();
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
                         $("#reset_user_id").empty();
                         $('#reset_user_id').val(value.id);
                         $('#reset_f_name').val(value.f_name);
@@ -1556,14 +1578,15 @@
                     });
                     $(".reset_div").show();
                     $(".table_div").hide();
-                }, error: function (data) {
+                },
+                error: function(data) {
                     $(".loader").hide();
                     sweetAlert("Oops...", "" + error_alert + "", "error");
                 }
 
             });
         });
-        $(".close_add_div").click(function () {
+        $(".close_add_div").click(function() {
             $(".add_div").hide();
             $(".table_div").show();
             $(".f_name").empty();
@@ -1573,42 +1596,42 @@
             $(".m_name").empty();
             $(".dob").empty();
         });
-        $(".close_delete_div").click(function () {
+        $(".close_delete_div").click(function() {
             $(".delete_div").hide();
             $(".table_div").show();
             $(".add_btn").show();
         });
-        $(".close_edit_div").click(function () {
+        $(".close_edit_div").click(function() {
             $(".edit_div").hide();
             $(".table_div").show();
             $(".add_btn").show();
         });
-        $(".close_reset_div").click(function () {
+        $(".close_reset_div").click(function() {
             $(".reset_div").hide();
             $(".table_div").show();
             $(".add_btn").show();
         });
-//        $(".submit_add_div").click(function () {
-//            var controller = "admin";
-//            var submit_function = "add_user";
-//            var form_class = "add_form";
-//            var success_alert = "User added successfully ... :) ";
-//            var error_alert = "An Error Ocurred";
-//            submit_data(controller, submit_function, form_class, success_alert, error_alert);
-//        });
+        //        $(".submit_add_div").click(function () {
+        //            var controller = "admin";
+        //            var submit_function = "add_user";
+        //            var form_class = "add_form";
+        //            var success_alert = "User added successfully ... :) ";
+        //            var error_alert = "An Error Ocurred";
+        //            submit_data(controller, submit_function, form_class, success_alert, error_alert);
+        //        });
 
 
 
 
-//Replaced this to easen validation process.
-        $('.add_form').submit(function (event) {
+        //Replaced this to easen validation process.
+        $('.add_form').submit(function(event) {
             $(".btn").prop('disabled', true);
             dataString = $(".add_form").serialize();
             $.ajax({
                 type: "POST",
                 url: "<?php echo base_url(); ?>admin/check_no",
                 data: dataString,
-                success: function (data) {
+                success: function(data) {
                     $(".btn").prop('disabled', true);
                     console.log(data);
                     if (data == "Success") {
@@ -1617,14 +1640,14 @@
                             title: "Awesome!",
                             text: "User added successfully",
                             imageUrl: '<?php echo base_url(); ?>assets/images/thumbs-up.jpg'
-                        }, function () {
+                        }, function() {
                             window.location.reload(1);
                         });
                     } else if (data == "PhoneExists") {
                         swal({
                             title: "Oops!",
                             text: "Mobile No. provided exists in the system",
-                            imageUrl: '<?php echo base_url(); ?>assets/images/oops.jpg'
+
                         });
                     } else if (data == "MailExists") {
                         swal({
@@ -1646,9 +1669,9 @@
             event.preventDefault();
             return false;
         });
-        $(document).on('click', ".submit_edit_div", function () {
+        $(document).on('click', ".submit_edit_div", function() {
 
-//        $(".submit_edit_div").click(function () {
+            //        $(".submit_edit_div").click(function () {
             var controller = "admin";
             var submit_function = "edit_user";
             var form_class = "edit_form";
@@ -1656,9 +1679,9 @@
             var error_alert = "An Error Ocurred";
             submit_data(controller, submit_function, form_class, success_alert, error_alert);
         });
-        $(document).on('click', ".submit_delete_div", function () {
+        $(document).on('click', ".submit_delete_div", function() {
 
-//        $(".submit_delete_div").click(function () {
+            //        $(".submit_delete_div").click(function () {
             var controller = "admin";
             var submit_function = "delete_user";
             var form_class = "delete_form";
@@ -1666,8 +1689,8 @@
             var error_alert = "An Error Ocurred";
             submit_data(controller, submit_function, form_class, success_alert, error_alert);
         });
-        $(document).on('click', ".submit_reset_div", function () {
-//        $(".submit_reset_div").click(function () {
+        $(document).on('click', ".submit_reset_div", function() {
+            //        $(".submit_reset_div").click(function () {
             var controller = "admin";
             var submit_function = "reset_user";
             var form_class = "reset_form";
