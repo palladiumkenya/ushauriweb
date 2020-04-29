@@ -162,7 +162,7 @@
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
 <!-- End Page wrapper  -->
 <script type="text/javascript">
@@ -174,7 +174,22 @@
 
     let trend_appointments = '<?php echo json_encode($trend_appointments); ?>';
     parseTrend = JSON.parse(trend_appointments)
-    console.log(parseTrend)
+    //console.log(parseTrend)
+    //const testMap = parseTrend.map(trend => `${trend.month_year} ${trend.Total_Appointments}`).filter(trend.month_year == 'October, 2018');
+    //.filter(trend => trend.month_year == 'October, 2018')
+    const retailCompanies = parseTrend.filter(trend => trend.month_year === 'October, 2018')
+    console.log(retailCompanies)
+
+
+
+    // var trendSet = new Set()
+    // parseTrend.forEach((trend) => {
+    //     monthYear = moment(trend.created_at).format('YYYY-MM')
+    //     trendSet.add(monthYear)
+
+    // });
+    // trendSet = [...trendSet].sort();
+
 
     var keptArray = []
     var defaultedArray = []
@@ -446,11 +461,6 @@
         title: {
             text: 'Appointment Trends'
         },
-
-        subtitle: {
-            text: 'Source: thesolarfoundation.com'
-        },
-
         yAxis: {
             title: {
                 text: 'Number of Appointments'
@@ -474,25 +484,25 @@
                 label: {
                     connectorAllowed: false
                 },
-                pointStart: 2010
+                pointStart: 2017
             }
         },
 
         series: [{
-            name: 'Installation',
-            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+            name: 'Defaulted Appointments',
+            data: retailCompanies
         }, {
-            name: 'Manufacturing',
-            data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+            name: 'Kept Appointments',
+            data: retailCompanies
         }, {
-            name: 'Sales & Distribution',
-            data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+            name: 'LTFU Appointments',
+            data: retailCompanies
         }, {
-            name: 'Project Development',
-            data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+            name: 'Missed Appointments',
+            data: retailCompanies
         }, {
-            name: 'Other',
-            data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+            name: 'Total Appointments',
+            data: retailCompanies
         }],
 
         responsive: {

@@ -369,9 +369,7 @@
 
                                                             <h2> Client Personal Information </h2>
                                                             <label class='control-label'>Unique Patient Number* (Unique value : ) Once entered , cannot be changed </label>
-                                                            <input class='form-control' type='text' required='' name='clinic_number' id='edit_clinic_number'>
-                                                            <!-- <input class='form-control' type='hidden' required='' name='clinic_number' id='edit_clinic_number_hide'> -->
-                                                            <label class='control-label'>First Name </label>
+                                                            <input class='form-control' type='text' required='' name='clinic_number' id='edit_clinic_number'> <label class='control-label'>First Name </label>
                                                             <input class='form-control fname input-rounded input-sm' required="" type='text' name='fname' id='edit_fname'>
 
                                                             <label class='control-label'>Middle Name </label>
@@ -833,14 +831,11 @@
 
                         $('#edit_client_id').val(value.client_id);
                         $('#edit_clinic_number').val(value.clinic_number);
+                        // $('#edit_clinic_number_hide').val(value.clinic_number);
                         $('#edit_fname').val(value.f_name);
                         $('#edit_mname').val(value.m_name);
                         $('#edit_lname').val(value.l_name);
                         $('#edit_dob').val(value.dob);
-                        //console.log(value.clinic_number)
-
-
-                        //$('#edit_condition').val(value.client_status);
 
 
                         $('#edit_condition option[value="' + value.client_status + '"]').attr("selected", "selected");
@@ -1057,10 +1052,6 @@
         });
 
 
-
-
-
-
         $(".close_add_div").click(function() {
             $(".add_div").hide();
             $(".table_div").show();
@@ -1075,13 +1066,6 @@
             $(".dob").empty();
 
         });
-
-
-
-
-
-
-
 
         $(".submit_edit_div").click(function() {
             var controller = "home";
