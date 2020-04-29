@@ -192,9 +192,6 @@
                         } else if (response === 'Taken') {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info", "Clinic No already taken ", 'info');
-                        } else if (response === 'exists') {
-                            $(".btn").prop('disabled', false);
-                            sweetAlert("Error", "Clinic No already exists in the system ", 'error');
                         } else if (response === 'Phone Taken') {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info", "Phone No already used in the System ",

@@ -992,7 +992,7 @@ class DBCentral extends CI_Model
     public function edit_user($f_name, $m_name, $l_name, $dob, $e_mail, $status, $partner_id, $donor_id, $facility_id, $today, $phone_no, $user_id, $access_level, $daily_report, $weekly_report, $monthly_report, $month3_report, $month6_report, $yearly_report, $role_name, $view_bio_data, $rcv_app_list, $county_id, $subcounty_id, $clinic_id)
     {
         if (empty($clinic_id)) {
-            $clinic_id = '3';
+            $clinic_id = '1';
         } else {
         }
         $check_email = $this->db->query("Select count(id) as email_check from tbl_users where e_mail='$e_mail'");
@@ -2929,14 +2929,6 @@ class DBCentral extends CI_Model
             $enrollment_date = date("Y-m-d", strtotime($enrollment_date));
         } {
         }
-        // if (($transfer_date)) {
-        //     $transfer_date = str_replace('/', '-', $transfer_date);
-        //     $transfer_date = date("Y-m-d", $transfer_date);
-        // }
-
-        // if (empty($motivational_enable)) {
-        //     $motivational_enable == 'No';
-        // }
 
 
 
@@ -2965,19 +2957,6 @@ class DBCentral extends CI_Model
             //Paeds
             $category .= 3;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
         $partner_id = $this->session->userdata('partner_id');
         $post_data = array(
             'clinic_number' => $clinic_number,
@@ -2991,7 +2970,7 @@ class DBCentral extends CI_Model
             'phone_no' => $mobile,
             'alt_phone_no' => $altmobile,
             'shared_no_name' => $sharename,
-            'created_at' => $today,
+            'updated_at' => $today,
             'group_id' => $category,
             'language_id' => $lang,
             'facility_id' => $facilities,
