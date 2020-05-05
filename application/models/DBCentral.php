@@ -2399,7 +2399,7 @@ class DBCentral extends CI_Model
         }
     }
 
-    public function add_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $sent_flag, $status, $gender, $marital, $enrollment_date, $art_date, $motivational_enable)
+    public function add_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $today, $status, $gender, $marital, $enrollment_date, $art_date, $motivational_enable)
     {
         // $check_clinic_number = $this->db->get_where('client', array('clinic_number' => $clinic_number))->num_rows();
         $created_by = $this->session->userdata('user_id');
@@ -2570,33 +2570,6 @@ class DBCentral extends CI_Model
             $this->db->insert('client', $post_data);
             $client_id = $this->db->insert_id();
 
-            //            echo "Client ID => ".$client_id;
-
-            if (empty($appdate)) {
-            } else {
-                $appointment_existense = $this->db->get_where('appointment', array('client_id' => $client_id, 'app_type_1' => $p_apptype1, 'active_app' => '1'));
-                $check_appointment_existense = $appointment_existense->num_rows();
-                if ($check_appointment_existense > 0) {
-                    //Do nothing ...
-                } else {
-                    $appdate = str_replace('/', '-', $appdate);
-                    $appdate = date("Y-m-d", strtotime($appdate));
-
-                    $app_status = "Booked";
-                    $sent_flag = "0";
-                    $appnt_data = array(
-                        'appntmnt_date' => $appdate,
-                        'app_type_1' => $p_apptype1,
-                        'created_at' => $today,
-                        'app_status' => $app_status,
-                        'client_id' => $client_id,
-                        'created_by' => $user_id,
-                        'active_app' => '1',
-                        'entry_point' => 'Web'
-                    );
-                    $this->db->insert('appointment', $appnt_data);
-                }
-            }
 
 
 
@@ -2618,19 +2591,15 @@ class DBCentral extends CI_Model
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === false) {
                 } else {
+                    $description = "Added  Client $clinic_number  details in  the  system.";
+                    $this->log_action($description);
+                    return true;
                 }
-                $description = "Added  Client $clinic_number  details in  the  system.";
-                $this->log_action($description);
-
-                $description = "Booked  Client $clinic_number for an appointment on $appdate in  the  system.";
-                $this->log_action($description);
-
-                return true;
             }
         }
     }
 
-    public function transfer_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $sent_flag, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable)
+    public function transfer_client($registration_type, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $today, $status, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $motivational_enable)
     {
         $this->db->trans_start();
 
@@ -2820,29 +2789,6 @@ class DBCentral extends CI_Model
 
 
 
-        if ($smsenable == "Yes") {
-        }
-        if (empty($appdate)) {
-        } else {
-            $appdate = str_replace('/', '-', $appdate);
-            $appdate = date("Y-m-d", strtotime($appdate));
-
-            $app_status = "Booked";
-            $sent_flag = "0";
-            $appnt_data = array(
-                'appntmnt_date' => $appdate,
-                'app_type_1' => $p_apptype1,
-                'created_at' => $today,
-                'app_status' => $app_status,
-                'client_id' => $client_id,
-                'created_by' => $user_id
-            );
-            $this->db->where('client_id', $client_id);
-            $this->db->update('appointment', $appnt_data);
-        }
-
-
-
 
 
 
@@ -2852,10 +2798,6 @@ class DBCentral extends CI_Model
         } else {
             $description = "Added  Client $clinic_number  details in  the  system.";
             $this->log_action($description);
-
-            $description = "Booked  Client $clinic_number for an appointment on $appdate in  the  system.";
-            $this->log_action($description);
-
             return true;
         }
     }
@@ -2907,13 +2849,27 @@ class DBCentral extends CI_Model
             return $content;
         }
     }
-
-    public function update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_type, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $appdate, $status, $motivational_enable, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $transfer_date, $app_kept)
+    public function insert_updated_date($appointment_id, $appointment_date, $app_type_id, $comment, $today)
     {
         $this->db->trans_start();
+        $user_id = $this->session->userdata('user_id');
+        $posting_data = array(
+            'appntmnt_date' => $appointment_date,
+            'app_type_1' => $app_type_id,
+            'reason' => $comment,
+            'updated_at' => $today,
+            'updated_by' => $user_id
 
 
+        );
+        $this->db->where('id', $appointment_id);
+        $this->db->update('appointment', $posting_data);
+        $this->db->trans_complete();
+    }
 
+    public function update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $gender, $marital, $status, $motivational_enable, $wellnessenable, $enrollment_date, $art_date, $transfer_date, $today)
+    {
+        $this->db->trans_start();
         $user_id = $this->session->userdata('user_id');
         if (empty($enrollment_date) and empty($art_date)) {
         } elseif (empty($enrollment_date) and !empty($art_date)) {
@@ -2965,133 +2921,40 @@ class DBCentral extends CI_Model
             'l_name' => $lname,
             'dob' => $p_year,
             'client_status' => $condition,
+            'facility_id' => $facilities,
             'txt_frequency' => $frequency,
             'txt_time' => $time,
             'phone_no' => $mobile,
             'alt_phone_no' => $altmobile,
             'shared_no_name' => $sharename,
-            'updated_at' => $today,
-            'group_id' => $category,
             'language_id' => $lang,
-            'facility_id' => $facilities,
             'smsenable' => $smsenable,
-            'status' => $status,
-            'partner_id' => $partner_id,
             'gender' => $gender,
             'marital' => $marital,
+            'status' => $status,
+            'motivational_enable' => $motivational_enable,
             'enrollment_date' => $enrollment_date,
             'art_date' => $art_date,
-            'wellness_enable' => $wellnessenable,
-            'motivational_enable' => $motivational_enable,
-            'updated_by' => $user_id,
             'transfer_date' => $transfer_date,
+            'updated_at' => $today,
+            'group_id' => $category,
+
+
+
+
+            'partner_id' => $partner_id,
+
+
+
+
+
+
+            'updated_by' => $user_id,
+
             'welcome_sent' => 'No'
         );
         $this->db->where('id', $client_id);
         $this->db->update('client', $post_data);
-
-
-
-
-
-        if (empty($appdate)) {
-        } else {
-            $appdate = str_replace('/', '-', $appdate);
-            $new_appdate = date("Y-m-d", strtotime($appdate));
-
-            $appointment_existense = $this->db->get_where('appointment', array('client_id' => $client_id, 'app_type_1' => $p_apptype1, 'active_app' => '1'));
-            $check_appointment_existense = $appointment_existense->num_rows();
-
-
-            if ($check_appointment_existense > 0) {
-                $appointment_query = $appointment_existense->result();
-                foreach ($appointment_query as $value) {
-                    $sent_flag = "0";
-                    $id = $value->id;
-                    $client_id = $value->client_id;
-                    $appntmnt_date = $value->appntmnt_date;
-                    $app_type_1 = $value->app_type_1;
-
-
-                    $created_at = $value->created_at;
-                    $updated_at = $value->updated_at;
-                    $app_status = $value->app_status;
-                    $app_msg = $value->app_msg;
-
-                    $appnt_data = array(
-                        'client_id' => $client_id,
-                        'appntmnt_date' => $appntmnt_date,
-                        'app_type_1' => $app_type_1,
-                        'created_at' => $created_at,
-                        'client_id' => $client_id,
-                        'updated_at' => $updated_at,
-                        'app_msg' => $app_msg,
-                        'created_by' => $user_id
-                    );
-                    $this->db->insert('appointment_arch', $appnt_data);
-                }
-
-
-
-
-                if ($smsenable == "Yes" and !empty($appdate)) {
-                    $appnt_data = array(
-                        'updated_by' => $user_id,
-                        'appointment_kept' => $app_kept,
-                        'active_app' => '0'
-                    );
-                    $this->db->where('client_id', $client_id);
-                    $this->db->where('app_type_1', $app_type_1);
-                    $this->db->update('appointment', $appnt_data);
-                } else {
-                    $appnt_data = array(
-                        'updated_by' => $user_id,
-                        'appointment_kept' => $app_kept,
-                        'active_app' => '0'
-                    );
-                    $this->db->where('client_id', $client_id);
-                    $this->db->where('app_type_1', $app_type_1);
-                    $this->db->update('appointment', $appnt_data);
-                }
-
-
-
-
-
-
-
-                $app_status = "Booked";
-                $appnt_data = array(
-                    'appntmnt_date' => $new_appdate,
-                    'app_type_1' => $p_apptype1,
-                    'created_at' => $today,
-                    'app_status' => $app_status,
-                    'client_id' => $client_id,
-                    'sent_status' => 'Not Sent',
-                    'created_by' => $user_id,
-                    'active_app' => '1',
-                    'entry_point' => 'Web'
-                );
-
-                $this->db->insert('appointment', $appnt_data);
-            } else {
-                // echo 'Not found , do an inseert of new appointment......';
-                $app_status = "Booked";
-                $appnt_data = array(
-                    'appntmnt_date' => $new_appdate,
-                    'app_type_1' => $p_apptype1,
-                    'created_at' => $today,
-                    'app_status' => $app_status,
-                    'client_id' => $client_id,
-                    'sent_status' => 'Not Sent',
-                    'created_by' => $user_id,
-                    'active_app' => '1',
-                    'entry_point' => 'Web'
-                );
-
-                $this->db->insert('appointment', $appnt_data);
-            }
-        }
 
 
         $this->db->trans_complete();
@@ -3101,420 +2964,416 @@ class DBCentral extends CI_Model
             $description = "Updated client no $clinic_number details in the  system.";
             $this->log_action($description);
 
-
-            $description = "Updated appointment for client no $clinic_number to $appdate in the  system.";
-            $this->log_action($description);
-
             return true;
         }
     }
 
-    public function add_appointment()
-    {
-        $this->db->trans_start();
-        $client_id = $this->input->post('client_id', true);
-        $app_date = $this->input->post('appointment_date', true);
-        $app_type_1 = $this->input->post('appointment_type', true);
-        $transacted_by = $this->session->userdata('user_id');
-
-        $appdate = str_replace('/', '-', $app_date);
-        $appdate = date("Y-m-d", strtotime($appdate));
-
-
-        $get_client = $this->db->query("Select * from tbl_appointment where client_id='$client_id' and app_type_1='$app_type_1'");
-        $get_client_row = $get_client->num_rows();
-
-
-        if ($get_client_row > 0) {
-            //Update client Appointemnt
-            $get_client_result = $get_client->result();
-            foreach ($get_client_result as $appointment_value) {
-                $id = $appointment_value->id;
-                $client_id = $appointment_value->client_id;
-                $appntmnt_date = $appointment_value->appntmnt_date;
-                $app_type_1 = $appointment_value->app_type_1;
-                $created_at = $appointment_value->created_at;
-                $updated_at = $appointment_value->updated_at;
-                $app_status = $appointment_value->app_status;
-                $app_msg = $appointment_value->app_msg;
-
-                $appnt_data = array(
-                    'client_id' => $client_id,
-                    'appntmnt_date' => $appntmnt_date,
-                    'app_type_1' => $app_type_1,
-                    'created_at' => $created_at,
-                    'app_status' => $app_status,
-                    'client_id' => $client_id,
-                    'updated_at' => $updated_at,
-                    'app_msg' => $app_msg,
-                    'app_status' => $app_status,
-                    'created_by' => $transacted_by
-                );
-                $this->db->insert('appointment_arch', $appnt_data);
-                $description = "Archived previous appointment details for Client ID $client_id .";
-                // $this->log_action($description);
-                //                $group_id = $client_value->group_id;
-                //                $language_id = $client_value->language_id;
-                //
-                //                $client_name = " " . $client_value->f_name . " ";
-                //
-                //                $message_type = "Appointment";
-                //                $identifier = 1;
-                //                $get_msg = $this->get_outgoing_sms($language_id, $group_id, $message_type, $identifier);
-                //
-                //                $app_status = "Booked";
-                //
-                //
-                //                $new_msg = str_replace("XXX", $client_name, $get_msg);
-                //                $appointment_date = date("d-m-Y", strtotime($app_date));
-                //                $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-                //
-                $appointment_update = array(
-                    'active_app' => '0'
-                );
-                $this->db->where('id', $id);
-                $this->db->update('appointment', $appointment_update);
-
-
-                $description = "Updated appointment details for client id $client_id .";
-
-                //$this->log_action($description);
-                //Insert New Appointment .....
-
-
-                $appdate = str_replace('/', '-', $app_date);
-                $appdate = date("Y-m-d", strtotime($appdate));
-                $today = date('Y-m-d H:i:s');
-                $app_status = "Booked";
-                $sent_flag = "0";
-                $appnt_data = array(
-                    'appntmnt_date' => $appdate,
-                    'app_type_1' => $app_type_1,
-                    'created_at' => $today,
-                    'app_status' => $app_status,
-                    'client_id' => $client_id,
-                    'created_by' => $transacted_by,
-                    'active_app' => '1',
-                    'entry_point' => 'Web'
-                );
-                $this->db->insert('appointment', $appnt_data);
-            }
-        } else {
-            //Create client Appointment ...
-            //Insert New Appointment .....
-
-
-            $appdate = str_replace('/', '-', $app_date);
-            $appdate = date("Y-m-d", strtotime($appdate));
-            $today = date('Y-m-d H:i:s');
-            $app_status = "Booked";
-            $sent_flag = "0";
-            $appnt_data = array(
-                'appntmnt_date' => $appdate,
-                'app_type_1' => $app_type_1,
-                'created_at' => $today,
-                'app_status' => $app_status,
-                'client_id' => $client_id,
-                'created_by' => $transacted_by,
-                'active_app' => '1',
-                'entry_point' => 'Web'
-            );
-            $this->db->insert('appointment', $appnt_data);
-        }
+    // public function add_appointment()
+    // {
+    //     $this->db->trans_start();
+    //     $client_id = $this->input->post('client_id', true);
+    //     $app_date = $this->input->post('appointment_date', true);
+    //     $app_type_1 = $this->input->post('appointment_type', true);
+    //     $transacted_by = $this->session->userdata('user_id');
+
+    //     $appdate = str_replace('/', '-', $app_date);
+    //     $appdate = date("Y-m-d", strtotime($appdate));
+
+
+    //     $get_client = $this->db->query("Select * from tbl_appointment where client_id='$client_id' and app_type_1='$app_type_1'");
+    //     $get_client_row = $get_client->num_rows();
+
+
+    //     if ($get_client_row > 0) {
+    //         //Update client Appointemnt
+    //         $get_client_result = $get_client->result();
+    //         foreach ($get_client_result as $appointment_value) {
+    //             $id = $appointment_value->id;
+    //             $client_id = $appointment_value->client_id;
+    //             $appntmnt_date = $appointment_value->appntmnt_date;
+    //             $app_type_1 = $appointment_value->app_type_1;
+    //             $created_at = $appointment_value->created_at;
+    //             $updated_at = $appointment_value->updated_at;
+    //             $app_status = $appointment_value->app_status;
+    //             $app_msg = $appointment_value->app_msg;
+
+    //             $appnt_data = array(
+    //                 'client_id' => $client_id,
+    //                 'appntmnt_date' => $appntmnt_date,
+    //                 'app_type_1' => $app_type_1,
+    //                 'created_at' => $created_at,
+    //                 'app_status' => $app_status,
+    //                 'client_id' => $client_id,
+    //                 'updated_at' => $updated_at,
+    //                 'app_msg' => $app_msg,
+    //                 'app_status' => $app_status,
+    //                 'created_by' => $transacted_by
+    //             );
+    //             $this->db->insert('appointment_arch', $appnt_data);
+    //             $description = "Archived previous appointment details for Client ID $client_id .";
+    //             // $this->log_action($description);
+    //             //                $group_id = $client_value->group_id;
+    //             //                $language_id = $client_value->language_id;
+    //             //
+    //             //                $client_name = " " . $client_value->f_name . " ";
+    //             //
+    //             //                $message_type = "Appointment";
+    //             //                $identifier = 1;
+    //             //                $get_msg = $this->get_outgoing_sms($language_id, $group_id, $message_type, $identifier);
+    //             //
+    //             //                $app_status = "Booked";
+    //             //
+    //             //
+    //             //                $new_msg = str_replace("XXX", $client_name, $get_msg);
+    //             //                $appointment_date = date("d-m-Y", strtotime($app_date));
+    //             //                $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+    //             //
+    //             $appointment_update = array(
+    //                 'active_app' => '0'
+    //             );
+    //             $this->db->where('id', $id);
+    //             $this->db->update('appointment', $appointment_update);
+
+
+    //             $description = "Updated appointment details for client id $client_id .";
+
+    //             //$this->log_action($description);
+    //             //Insert New Appointment .....
+
+
+    //             $appdate = str_replace('/', '-', $app_date);
+    //             $appdate = date("Y-m-d", strtotime($appdate));
+    //             $today = date('Y-m-d H:i:s');
+    //             $app_status = "Booked";
+    //             $sent_flag = "0";
+    //             $appnt_data = array(
+    //                 'appntmnt_date' => $appdate,
+    //                 'app_type_1' => $app_type_1,
+    //                 'created_at' => $today,
+    //                 'app_status' => $app_status,
+    //                 'client_id' => $client_id,
+    //                 'created_by' => $transacted_by,
+    //                 'active_app' => '1',
+    //                 'entry_point' => 'Web'
+    //             );
+    //             $this->db->insert('appointment', $appnt_data);
+    //         }
+    //     } else {
+    //         //Create client Appointment ...
+    //         //Insert New Appointment .....
+
+
+    //         $appdate = str_replace('/', '-', $app_date);
+    //         $appdate = date("Y-m-d", strtotime($appdate));
+    //         $today = date('Y-m-d H:i:s');
+    //         $app_status = "Booked";
+    //         $sent_flag = "0";
+    //         $appnt_data = array(
+    //             'appntmnt_date' => $appdate,
+    //             'app_type_1' => $app_type_1,
+    //             'created_at' => $today,
+    //             'app_status' => $app_status,
+    //             'client_id' => $client_id,
+    //             'created_by' => $transacted_by,
+    //             'active_app' => '1',
+    //             'entry_point' => 'Web'
+    //         );
+    //         $this->db->insert('appointment', $appnt_data);
+    //     }
 
 
 
 
 
 
-        $this->db->trans_complete();
-        if ($this->db->trans_status() === false) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    //     $this->db->trans_complete();
+    //     if ($this->db->trans_status() === false) {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // }
 
-    public function update_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type_1)
-    {
-        $appointment_type = $this->db->get_where('appointment', array('client_id' => $client_id, 'app_type_1' => $app_type_1, 'active_app' => '1'));
-        $check_appointment_existence = $appointment_type->num_rows();
+    // public function update_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type_1)
+    // {
+    //     $appointment_type = $this->db->get_where('appointment', array('client_id' => $client_id, 'app_type_1' => $app_type_1, 'active_app' => '1'));
+    //     $check_appointment_existence = $appointment_type->num_rows();
 
-        if ($check_appointment_existence > 0) {
-            //Appointment exists , do an update on previous appointment and insert a new appointment....
+    //     if ($check_appointment_existence > 0) {
+    //         //Appointment exists , do an update on previous appointment and insert a new appointment....
 
 
 
-            $user_id = $this->session->userdata('user_id');
-            $app_date = str_replace('/', '-', $app_date);
-            $app_date = date("Y-m-d", strtotime($app_date));
-            $this->db->trans_start();
-            $client_options = array(
-                'table' => 'client',
-                'where' => array('id' => $client_id, 'status' => 'Active')
-            );
-
-            $client_data = $this->commonGet($client_options);
-
-            foreach ($client_data as $client_value) {
-                $client_id = $client_value->id;
-
-
-
-                $get_client = $this->db->query("Select * from tbl_appointment where id='$appointment_id'");
-                $get_client_row = $get_client->num_rows();
-
-
-                if ($get_client_row >= 1) {
-                    $get_client_result = $get_client->result();
-                    foreach ($get_client_result as $appointment_value) {
-                        $id = $appointment_value->id;
-                        $client_id = $appointment_value->client_id;
-                        $appntmnt_date = $appointment_value->appntmnt_date;
-                        $app_type_1 = $appointment_value->app_type_1;
-                        $created_at = $appointment_value->created_at;
-                        $updated_at = $appointment_value->updated_at;
-                        $app_status = $appointment_value->app_status;
-                        $app_msg = $appointment_value->app_msg;
-
-                        $appnt_data = array(
-                            'client_id' => $client_id,
-                            'appntmnt_date' => $appntmnt_date,
-                            'app_type_1' => $app_type_1,
-                            'created_at' => $created_at,
-                            'app_status' => $app_status,
-                            'client_id' => $client_id,
-                            'updated_at' => $updated_at,
-                            'app_msg' => $app_msg,
-                            'app_status' => $app_status,
-                            'appointment_kept' => $app_kept,
-                            'created_by' => $user_id
-                        );
-                        $this->db->insert('appointment_arch', $appnt_data);
-                        $description = "Archived previous appointment details for Client ID $client_id .";
-                        $this->log_action($description);
-
-
-                        $group_id = $client_value->group_id;
-                        $language_id = $client_value->language_id;
-
-                        $client_name = " " . $client_value->f_name . " ";
-
-                        $message_type = "Appointment";
-                        $identifier = 1;
-                        $get_msg = $this->get_outgoing_sms($language_id, $group_id, $message_type, $identifier);
-
-                        $app_status = "Booked";
-
-
-                        $new_msg = str_replace("XXX", $client_name, $get_msg);
-                        $appointment_date = date("d-m-Y", strtotime($app_date));
-                        $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-
-                        $appointment_update = array(
-                            'appointment_kept' => $app_kept,
-                            'active_app' => '0'
-                        );
-                        $this->db->where('id', $id);
-                        $this->db->update('appointment', $appointment_update);
-
-
-                        $description = "Updated appointment details for client id $client_id .";
-
-                        $this->log_action($description);
-
-
-                        //Insert New Appointment .....
-
-
-                        $appdate = str_replace('/', '-', $appdate);
-                        $appdate = date("Y-m-d", strtotime($appdate));
-                        $today = date('Y-m-d H:i:s');
-                        $app_status = "Booked";
-                        $sent_flag = "0";
-                        $appnt_data = array(
-                            'appntmnt_date' => $appdate,
-                            'app_type_1' => $app_type_1,
-                            'created_at' => $today,
-                            'app_status' => $app_status,
-                            'client_id' => $client_id,
-                            'created_by' => $user_id,
-                            'active_app' => '1',
-                            'entry_point' => 'Web'
-                        );
-                        $this->db->insert('appointment', $appnt_data);
-                    }
-                } else {
-                }
-            }
-
-            $this->db->trans_complete();
-            if ($this->db->trans_status() === false) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            //New Appointment, do an insert
-
-
-            $appdate = str_replace('/', '-', $appdate);
-            $appdate = date("Y-m-d", strtotime($appdate));
-            $today = date('Y-m-d H:i:s');
-            $app_status = "Booked";
-            $sent_flag = "0";
-            $appnt_data = array(
-                'appntmnt_date' => $appdate,
-                'app_type_1' => $app_type_1,
-                'created_at' => $today,
-                'app_status' => $app_status,
-                'client_id' => $client_id,
-                'created_by' => $user_id,
-                'active_app' => '1',
-                'entry_point' => 'Web'
-            );
-            $this->db->insert('appointment', $appnt_data);
-        }
-    }
-
-    public function edit_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type)
-    {
-        $appointment_type = $this->db->get_where('appointment', array('id' => $appointment_id));
-        $check_appointment_existence = $appointment_type->num_rows();
-
-        if ($check_appointment_existence > 0) {
-            //Appointment exists , do an update on previous appointment and insert a new appointment....
-
-
-
-            $user_id = $this->session->userdata('user_id');
-            $app_date = str_replace('/', '-', $app_date);
-            $app_date = date("Y-m-d", strtotime($app_date));
-            $this->db->trans_start();
-            $client_options = array(
-                'table' => 'client',
-                'where' => array('id' => $client_id, 'status' => 'Active')
-            );
-
-            $client_data = $this->commonGet($client_options);
-
-            foreach ($client_data as $client_value) {
-                $client_id = $client_value->id;
-
-
-
-                $get_client = $this->db->query("Select * from tbl_appointment where id='$appointment_id'");
-                $get_client_row = $get_client->num_rows();
-
-
-                if ($get_client_row >= 1) {
-                    $get_client_result = $get_client->result();
-                    foreach ($get_client_result as $appointment_value) {
-                        $id = $appointment_value->id;
-                        $client_id = $appointment_value->client_id;
-                        $appntmnt_date = $appointment_value->appntmnt_date;
-                        $app_type_1 = $appointment_value->app_type_1;
-
-                        $created_at = $appointment_value->created_at;
-                        $updated_at = $appointment_value->updated_at;
-                        $app_status = $appointment_value->app_status;
-                        $app_msg = $appointment_value->app_msg;
-
-                        $appnt_data = array(
-                            'client_id' => $client_id,
-                            'appntmnt_date' => $appntmnt_date,
-                            'app_type_1' => $app_type_1,
-                            'created_at' => $created_at,
-                            'app_status' => $app_status,
-                            'client_id' => $client_id,
-                            'updated_at' => $updated_at,
-                            'app_msg' => $app_msg,
-                            'app_status' => $app_status,
-                            'appointment_kept' => $app_kept,
-                            'created_by' => $user_id
-                        );
-                        $this->db->insert('appointment_arch', $appnt_data);
-                        $description = "Archived previous appointment details for Client ID $client_id .";
-                        $this->log_action($description);
-
-
-                        $group_id = $client_value->group_id;
-                        $language_id = $client_value->language_id;
-
-                        $client_name = " " . $client_value->f_name . " ";
-
-                        $message_type = "Appointment";
-                        $identifier = 1;
-                        $get_msg = $this->get_outgoing_sms($language_id, $group_id, $message_type, $identifier);
-
-                        $app_status = "Booked";
-
-
-                        $new_msg = str_replace("XXX", $client_name, $get_msg);
-                        $appointment_date = date("d-m-Y", strtotime($app_date));
-                        $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-
-
-
-                        $description = "Updated appointment details for client id $client_id .";
-
-                        $this->log_action($description);
-
-
-                        //Insert New Appointment .....
-
-
-                        $appdate = str_replace('/', '-', $app_date);
-                        $appdate = date("Y-m-d", strtotime($appdate));
-                        $today = date('Y-m-d H:i:s');
-                        $app_status = "Booked";
-                        $sent_flag = "0";
-                        $appnt_data = array(
-                            'appntmnt_date' => $appdate,
-                            'app_type_1' => $app_type,
-                            'created_at' => $today,
-                            'app_status' => $app_status,
-                            'client_id' => $client_id,
-                            'created_by' => $user_id,
-                            'active_app' => '1',
-                            'entry_point' => 'Web',
-                            'app_msg' => $cleaned_msg
-                        );
-                        $this->db->where('id', $id);
-                        $this->db->update('appointment', $appnt_data);
-                    }
-                } else {
-                }
-            }
-
-            $this->db->trans_complete();
-            if ($this->db->trans_status() === false) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            //New Appointment, do an insert
-
-
-            $appdate = str_replace('/', '-', $appdate);
-            $appdate = date("Y-m-d", strtotime($appdate));
-            $today = date('Y-m-d H:i:s');
-            $app_status = "Booked";
-            $sent_flag = "0";
-            $appnt_data = array(
-                'appntmnt_date' => $appdate,
-                'app_type_1' => $app_type_1,
-                'created_at' => $today,
-                'app_status' => $app_status,
-                'client_id' => $client_id,
-                'created_by' => $user_id,
-                'active_app' => '1',
-                'entry_point' => 'Web'
-            );
-            $this->db->insert('appointment', $appnt_data);
-        }
-    }
+    //         $user_id = $this->session->userdata('user_id');
+    //         $app_date = str_replace('/', '-', $app_date);
+    //         $app_date = date("Y-m-d", strtotime($app_date));
+    //         $this->db->trans_start();
+    //         $client_options = array(
+    //             'table' => 'client',
+    //             'where' => array('id' => $client_id, 'status' => 'Active')
+    //         );
+
+    //         $client_data = $this->commonGet($client_options);
+
+    //         foreach ($client_data as $client_value) {
+    //             $client_id = $client_value->id;
+
+
+
+    //             $get_client = $this->db->query("Select * from tbl_appointment where id='$appointment_id'");
+    //             $get_client_row = $get_client->num_rows();
+
+
+    //             if ($get_client_row >= 1) {
+    //                 $get_client_result = $get_client->result();
+    //                 foreach ($get_client_result as $appointment_value) {
+    //                     $id = $appointment_value->id;
+    //                     $client_id = $appointment_value->client_id;
+    //                     $appntmnt_date = $appointment_value->appntmnt_date;
+    //                     $app_type_1 = $appointment_value->app_type_1;
+    //                     $created_at = $appointment_value->created_at;
+    //                     $updated_at = $appointment_value->updated_at;
+    //                     $app_status = $appointment_value->app_status;
+    //                     $app_msg = $appointment_value->app_msg;
+
+    //                     $appnt_data = array(
+    //                         'client_id' => $client_id,
+    //                         'appntmnt_date' => $appntmnt_date,
+    //                         'app_type_1' => $app_type_1,
+    //                         'created_at' => $created_at,
+    //                         'app_status' => $app_status,
+    //                         'client_id' => $client_id,
+    //                         'updated_at' => $updated_at,
+    //                         'app_msg' => $app_msg,
+    //                         'app_status' => $app_status,
+    //                         'appointment_kept' => $app_kept,
+    //                         'created_by' => $user_id
+    //                     );
+    //                     $this->db->insert('appointment_arch', $appnt_data);
+    //                     $description = "Archived previous appointment details for Client ID $client_id .";
+    //                     $this->log_action($description);
+
+
+    //                     $group_id = $client_value->group_id;
+    //                     $language_id = $client_value->language_id;
+
+    //                     $client_name = " " . $client_value->f_name . " ";
+
+    //                     $message_type = "Appointment";
+    //                     $identifier = 1;
+    //                     $get_msg = $this->get_outgoing_sms($language_id, $group_id, $message_type, $identifier);
+
+    //                     $app_status = "Booked";
+
+
+    //                     $new_msg = str_replace("XXX", $client_name, $get_msg);
+    //                     $appointment_date = date("d-m-Y", strtotime($app_date));
+    //                     $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+
+    //                     $appointment_update = array(
+    //                         'appointment_kept' => $app_kept,
+    //                         'active_app' => '0'
+    //                     );
+    //                     $this->db->where('id', $id);
+    //                     $this->db->update('appointment', $appointment_update);
+
+
+    //                     $description = "Updated appointment details for client id $client_id .";
+
+    //                     $this->log_action($description);
+
+
+    //                     //Insert New Appointment .....
+
+
+    //                     $appdate = str_replace('/', '-', $appdate);
+    //                     $appdate = date("Y-m-d", strtotime($appdate));
+    //                     $today = date('Y-m-d H:i:s');
+    //                     $app_status = "Booked";
+    //                     $sent_flag = "0";
+    //                     $appnt_data = array(
+    //                         'appntmnt_date' => $appdate,
+    //                         'app_type_1' => $app_type_1,
+    //                         'created_at' => $today,
+    //                         'app_status' => $app_status,
+    //                         'client_id' => $client_id,
+    //                         'created_by' => $user_id,
+    //                         'active_app' => '1',
+    //                         'entry_point' => 'Web'
+    //                     );
+    //                     $this->db->insert('appointment', $appnt_data);
+    //                 }
+    //             } else {
+    //             }
+    //         }
+
+    //         $this->db->trans_complete();
+    //         if ($this->db->trans_status() === false) {
+    //             return false;
+    //         } else {
+    //             return true;
+    //         }
+    //     } else {
+    //         //New Appointment, do an insert
+
+
+    //         $appdate = str_replace('/', '-', $appdate);
+    //         $appdate = date("Y-m-d", strtotime($appdate));
+    //         $today = date('Y-m-d H:i:s');
+    //         $app_status = "Booked";
+    //         $sent_flag = "0";
+    //         $appnt_data = array(
+    //             'appntmnt_date' => $appdate,
+    //             'app_type_1' => $app_type_1,
+    //             'created_at' => $today,
+    //             'app_status' => $app_status,
+    //             'client_id' => $client_id,
+    //             'created_by' => $user_id,
+    //             'active_app' => '1',
+    //             'entry_point' => 'Web'
+    //         );
+    //         $this->db->insert('appointment', $appnt_data);
+    //     }
+    // }
+
+    // public function edit_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type)
+    // {
+    //     $appointment_type = $this->db->get_where('appointment', array('id' => $appointment_id));
+    //     $check_appointment_existence = $appointment_type->num_rows();
+
+    //     if ($check_appointment_existence > 0) {
+    //         //Appointment exists , do an update on previous appointment and insert a new appointment....
+
+
+
+    //         $user_id = $this->session->userdata('user_id');
+    //         $app_date = str_replace('/', '-', $app_date);
+    //         $app_date = date("Y-m-d", strtotime($app_date));
+    //         $this->db->trans_start();
+    //         $client_options = array(
+    //             'table' => 'client',
+    //             'where' => array('id' => $client_id, 'status' => 'Active')
+    //         );
+
+    //         $client_data = $this->commonGet($client_options);
+
+    //         foreach ($client_data as $client_value) {
+    //             $client_id = $client_value->id;
+
+
+
+    //             $get_client = $this->db->query("Select * from tbl_appointment where id='$appointment_id'");
+    //             $get_client_row = $get_client->num_rows();
+
+
+    //             if ($get_client_row >= 1) {
+    //                 $get_client_result = $get_client->result();
+    //                 foreach ($get_client_result as $appointment_value) {
+    //                     $id = $appointment_value->id;
+    //                     $client_id = $appointment_value->client_id;
+    //                     $appntmnt_date = $appointment_value->appntmnt_date;
+    //                     $app_type_1 = $appointment_value->app_type_1;
+
+    //                     $created_at = $appointment_value->created_at;
+    //                     $updated_at = $appointment_value->updated_at;
+    //                     $app_status = $appointment_value->app_status;
+    //                     $app_msg = $appointment_value->app_msg;
+
+    //                     $appnt_data = array(
+    //                         'client_id' => $client_id,
+    //                         'appntmnt_date' => $appntmnt_date,
+    //                         'app_type_1' => $app_type_1,
+    //                         'created_at' => $created_at,
+    //                         'app_status' => $app_status,
+    //                         'client_id' => $client_id,
+    //                         'updated_at' => $updated_at,
+    //                         'app_msg' => $app_msg,
+    //                         'app_status' => $app_status,
+    //                         'appointment_kept' => $app_kept,
+    //                         'created_by' => $user_id
+    //                     );
+    //                     $this->db->insert('appointment_arch', $appnt_data);
+    //                     $description = "Archived previous appointment details for Client ID $client_id .";
+    //                     $this->log_action($description);
+
+
+    //                     $group_id = $client_value->group_id;
+    //                     $language_id = $client_value->language_id;
+
+    //                     $client_name = " " . $client_value->f_name . " ";
+
+    //                     $message_type = "Appointment";
+    //                     $identifier = 1;
+    //                     $get_msg = $this->get_outgoing_sms($language_id, $group_id, $message_type, $identifier);
+
+    //                     $app_status = "Booked";
+
+
+    //                     $new_msg = str_replace("XXX", $client_name, $get_msg);
+    //                     $appointment_date = date("d-m-Y", strtotime($app_date));
+    //                     $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+
+
+
+    //                     $description = "Updated appointment details for client id $client_id .";
+
+    //                     $this->log_action($description);
+
+
+    //                     //Insert New Appointment .....
+
+
+    //                     $appdate = str_replace('/', '-', $app_date);
+    //                     $appdate = date("Y-m-d", strtotime($appdate));
+    //                     $today = date('Y-m-d H:i:s');
+    //                     $app_status = "Booked";
+    //                     $sent_flag = "0";
+    //                     $appnt_data = array(
+    //                         'appntmnt_date' => $appdate,
+    //                         'app_type_1' => $app_type,
+    //                         'created_at' => $today,
+    //                         'app_status' => $app_status,
+    //                         'client_id' => $client_id,
+    //                         'created_by' => $user_id,
+    //                         'active_app' => '1',
+    //                         'entry_point' => 'Web',
+    //                         'app_msg' => $cleaned_msg
+    //                     );
+    //                     $this->db->where('id', $id);
+    //                     $this->db->update('appointment', $appnt_data);
+    //                 }
+    //             } else {
+    //             }
+    //         }
+
+    //         $this->db->trans_complete();
+    //         if ($this->db->trans_status() === false) {
+    //             return false;
+    //         } else {
+    //             return true;
+    //         }
+    //     } else {
+    //         //New Appointment, do an insert
+
+
+    //         $appdate = str_replace('/', '-', $appdate);
+    //         $appdate = date("Y-m-d", strtotime($appdate));
+    //         $today = date('Y-m-d H:i:s');
+    //         $app_status = "Booked";
+    //         $sent_flag = "0";
+    //         $appnt_data = array(
+    //             'appntmnt_date' => $appdate,
+    //             'app_type_1' => $app_type_1,
+    //             'created_at' => $today,
+    //             'app_status' => $app_status,
+    //             'client_id' => $client_id,
+    //             'created_by' => $user_id,
+    //             'active_app' => '1',
+    //             'entry_point' => 'Web'
+    //         );
+    //         $this->db->insert('appointment', $appnt_data);
+    //     }
+    // }
 
     public function send_manual_sms($client_id, $destination, $msg)
     {
@@ -4375,14 +4234,14 @@ class DBCentral extends CI_Model
         //        $data = $this->data->commonGet($user_role_options);
 
         $query = "SELECT   * 
-FROM
-  tbl_module 
-  INNER JOIN tbl_user_permission 
-    ON tbl_user_permission.module_id = tbl_module.id 
-WHERE tbl_module.status = 'Active' 
-  AND user_id = '$user_id' 
-  AND tbl_user_permission.status = 'Active' GROUP BY tbl_module.`id`
-ORDER BY tbl_module.order ASC";
+        FROM
+        tbl_module 
+        INNER JOIN tbl_user_permission 
+            ON tbl_user_permission.module_id = tbl_module.id 
+        WHERE tbl_module.status = 'Active' 
+        AND user_id = '$user_id' 
+        AND tbl_user_permission.status = 'Active' GROUP BY tbl_module.`id`
+        ORDER BY tbl_module.order ASC";
         $data = $this->db->query($query)->result_array();
 
         return $data;
@@ -5130,7 +4989,7 @@ ORDER BY tbl_module.order ASC";
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
         $this->db->select('*');
-        $this->db->from('appointments_to_edit');
+        $this->db->from('appoinments_to_edit');
         if ($access_level == 'Partner') {
             $this->db->where('partner_id', $partner_id);
         }

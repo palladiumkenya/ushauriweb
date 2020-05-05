@@ -308,26 +308,7 @@
 
 
                             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <div class="edit_div" style="display: none;">
-
-
-
-
-
-
 
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -337,16 +318,7 @@
                                             </div>
                                             <div class="card-body">
 
-
-
-
-
-
-
                                                 <form class="edit_form" id="edit_form">
-
-
-
 
                                                     <?php
                                                     $csrf = array(
@@ -357,9 +329,6 @@
 
                                                     <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
 
-
-
-
                                                     <div class="row">
                                                         <div class="col-sm-6 ">
 
@@ -369,7 +338,8 @@
 
                                                             <h2> Client Personal Information </h2>
                                                             <label class='control-label'>Unique Patient Number* (Unique value : ) Once entered , cannot be changed </label>
-                                                            <input class='form-control' type='text' required='' name='clinic_number' id='edit_clinic_number'> <label class='control-label'>First Name </label>
+                                                            <input class='form-control' type='text' required='' name='clinic_number' id='edit_clinic_number'>
+                                                            <label class='control-label'>First Name </label>
                                                             <input class='form-control fname input-rounded input-sm' required="" type='text' name='fname' id='edit_fname'>
 
                                                             <label class='control-label'>Middle Name </label>
@@ -380,10 +350,6 @@
 
                                                             <label class='control-label'> Date of Birth: </label>
                                                             <input class='form-control dob input-rounded input-sm' required="" readonly="" type='text' name='p_year' id='edit_dob'>
-
-
-
-
 
                                                             <label class='control-label'> Gender : <span style="color: red">*</span> </label>
                                                             <select class='form-control gender input-rounded input-sm' required="" name='gender' id='edit_gender'>
@@ -406,9 +372,6 @@
                                                                 ?>
                                                             </select>
 
-
-
-
                                                             <label class='control-label'> Treatment</label>
 
                                                             <select class='form-control condition input-rounded input-sm' required="" name='condition' id='edit_condition'>
@@ -416,13 +379,6 @@
                                                                 <option value='ART'>ART </option>
                                                                 <option value='Pre ART'>Pre ART </option>
                                                             </select>
-
-
-
-
-
-
-
                                                             <label class='control-label'> HIV Enrollment Date: </label> <span style="color: red">*</span>
                                                             <input class='form-control enrollment_date date input-rounded input-sm' readonly="" required="" placeholder="Date enrolled to HIV Care" type='text' name='enrollment_date' id='edit_enrollment_date'>
 
@@ -431,13 +387,6 @@
 
                                                             <label class='control-label'> ART Start Date: </label>
                                                             <input class='form-control  date input-rounded input-sm' readonly="" placeholder="ART Start Date" type='text' name='art_date' id='edit_art_date'>
-
-
-
-
-
-
-
 
                                                             <label class='control-label'> Select Facility Attached : </label>
                                                             <?php
@@ -490,12 +439,6 @@
                                                                 <input class='form-control consent_date dob input-rounded input-sm' readonly="" type='text' name='consent_date' placeholder='Please enter Consent Date' id='edit_consent_date'>
                                                             </div>
 
-
-
-
-
-
-
                                                             <label class='control-label'> Receive Weekly Motivational/Informative Messages? <span style="color: red">*</span> </label>
                                                             <select class='form-control motivational_enable input-rounded input-sm ' required="" name='motivational_enable' id='edit_motivational_enable'>
                                                                 <option value=''> </option>
@@ -526,108 +469,32 @@
                                                             </select>
                                                             <div id="transfer_date_div" class="transfer_date_div" style="display: none;">
                                                                 <label class='control-label'>Transfer Date</label>
-                                                                <input class='form-control transfer_date date input-rounded input-sm ' readonly="" type='text' name='transfer_date' placeholder="Please enter Transfer Date " id='edit_transfer_date'>
+                                                                <input class='form-control transfer_date date input-rounded input-sm ' type='text' name='transfer_date' placeholder="Please enter Transfer Date " id='edit_transfer_date'>
                                                                 <!-- <label class='control-label'>Please specify new Clinic</label> 
                                                                 <input class='form-control transfer_new_clinic input-rounded input-sm'  type='text' name='transfer_new_clinic' placeholder="Please enter New Clinic MFL Code " id='edit_transfer_new_clinic'> -->
                                                                 <!-- <span class="selected_facility_name" id="selected_facility_name"></span> -->
                                                             </div>
-
-                                                            <div class='form'>
-                                                                <!--                                                                    <h2> Client Appointment Information </h2> 
-                                                                                                                                    <label class='control-label'> Next Appointment Date </lable> 
-                                                                                                                                        <input type='text' readonly=""  class='form-control appointment_date' name='apptdate' id='appointment_date'/> 
-                                                                                                                                        <input type='hidden'  name='appointment_type' id='edit_appointment_type' value='Appointment' class='form-control' readonly/>
-                                                                                                                                        <label class='control-label'> Appointment Status </label>
-                                                                                                                                        <input type='hidden' class='form-control' name='appstatus' id='edit_appstatus' value='Booked'/>
-                                                                
-                                                                                                                                        <div class="appointment_kept_div" id="appointment_kept_div" style="display: inline;">
-                                                                
-                                                                                                                                        </div>
-                                                                
-                                                                                                                                        <label class='control-label'> Appointment Type 1: </label>
-                                                                                                                                        <select class='form-control' name='p_apptype1' id='edit_p_apptype1' >
-                                                                                                                                            <option value=''>Please Select : </option>
-                                                                <?php
-                                                                foreach ($appointment_types as $value) {
-                                                                ?>
-                                                                                                                                                            <option value="<?php echo $value->name; ?>"><?php echo $value->name; ?></option>
-                                                                    <?php
-                                                                }
-                                                                    ?>
-                                                                                                                                        </select>-->
-
-
-                                                                <input type="hidden" name="appointment_id" class="appointment_id form-control" id="edit_appointment_id" />
-
+                                                            <div class="form">
                                                                 <hr>
 
                                                                 <button type="submit" class="submit_edit_div btn btn-success btn-small" id="submit_edit_div">Update Client</button>
                                                                 <button type="button" class="cancel_add_client btn btn-danger btn-small" id="cancel_add_client">Cancel</button>
-
                                                             </div>
 
 
                                                         </div>
                                                     </div>
-
-
-
-
-
-
-
                                                 </form>
-
-
-
-
-
-
-
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                 <div class="panel-body  formData" id="editForm">
                                     <h2 id="actionLabel">Edit Client</h2>
 
-
-
-
-
-
                                 </div>
-
-
-
-
                             </div>
-
-
-
-
-
-
-
-
-
-
                         </div>
                     </div>
                 </div>
@@ -635,43 +502,12 @@
         </div>
         <!-- End PAge Content -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <!-- END COMMENT AND NOTIFICATION  SECTION -->
-
     </div>
-
-
-
-
-
 
     <!--END MAIN WRAPPER -->
 
-
 </div>
-
-
-
-
 
 <!-- End PAge Content -->
 </div>
@@ -680,20 +516,6 @@
 <footer class="footer"> © 2018 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth Kenya Ltd</a></footer>
 <!-- End footer -->
 </div>
-<!-- End Page wrapper  -->
-
-
-
-
-
-<!--END BLOCK SECTION -->
-
-
-
-
-<!--END MAIN WRAPPER -->
-
-
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -744,11 +566,6 @@
             } else if (transfer_mfl_no.length > 5) {
                 $(".transfer_new_clinic").val("");
             }
-
-
-
-
-
         });
 
 
@@ -781,12 +598,6 @@
             }
 
         });
-
-
-
-
-
-
         $(".cancel_add_client").click(function() {
 
             $(".edit_div").hide();
@@ -848,6 +659,7 @@
                         $('#edit_mobile').val(value.phone_no);
                         $('#edit_altmobile').val(value.alt_phone_no);
                         $('#edit_sharename').val(value.shared_no_name);
+                        $('#edit_wellnessenable').val(value.wellness_enable);
                         //$('#edit_motivational_enable').val(value.motivational_enable);
                         $('#edit_lang option[value=' + value.language_id + ']').attr("selected", "selected");
                         $('#edit_smsenable option[value=' + value.smsenable + ']').attr("selected", "selected");
@@ -861,48 +673,19 @@
 
 
                         //$('#edit_motivational_enable option[value=' + value.motivational_enable + ']').attr("selected", "selected");
-                        $('#edit_wellnessenable option[value=' + value.wellness_enable + ']').attr("selected", "selected");
-
-
-
-
-
-
-
+                        //$('#edit_wellnessenable option[value=' + value.wellness_enable + ']').attr("selected", "selected");
                         var enrollment_date = value.enrollment_date;
                         var res = enrollment_date.substring(0, 10);
                         var new_enrollment_date = res.split("-").reverse().join("/");
 
                         $('#edit_enrollment_date').val(new_enrollment_date);
+                        $('#edit_transfer_date').val(value.transfer_date);
 
                         var art_date = value.art_date;
                         var art_res = art_date.substring(0, 10);
                         var new_art_date = art_res.split("-").reverse().join("/");
 
                         $('#edit_art_date').val(new_art_date);
-
-                        // var status_value = value.status;
-
-                        // if (status_value === "Transfer Out") {
-                        //     $(".transfer_date_div").show();
-                        //     $(".transfer_date").empty();
-                        //     //var consent_date = "<label class='control-label'> Consent Date : </label>    <input class='form-control consent_date date'  type='text' name='consent_date'  placeholder='Please enter Consent Date' id='edit_consent_date'>";
-                        //     //$(".consent_date_div").append(consent_date);
-                        //     var transfer_date = value.transfer_date;
-
-
-                        //     if (!transfer_date) {} else {
-                        //         var res_trans = transfer_date.substring(0, 10);
-                        //         var new_trans = res_trans.split("-").reverse().join("/");
-
-                        //         $('#edit_transfer_date').val(new_trans);
-
-                        //     }
-
-                        // } else {
-                        //     $(".transfer_date").empty();
-                        //     $(".transfer_date_div").hide();
-                        // }
 
 
 
@@ -955,98 +738,6 @@
                 }
 
             });
-
-
-
-
-
-            //get data
-            var data_id = $(this).closest('tr').find('input[name="client_id"]').val();
-            var controller = "home";
-            var get_function2 = "get_appointment_client_data";
-            var error_alert = "An Error Ocurred";
-
-            $('.loader').show();
-
-            $.ajax({
-                type: "GET",
-                async: true,
-                url: "<?php echo base_url(); ?>" + controller + "/" + get_function2 + "/" + data_id,
-                dataType: "JSON",
-                success: function(response) {
-                    $(".appointment_kept_div").empty();
-                    $('.loader').hide();
-                    $.each(response, function(i, value) {
-
-
-                        var appointment_date = value.appntmnt_date;
-                        if (appointment_date) {
-
-                            var appointment_kept = "<label class='control-label'> Was the  previous appointment Kept ? :</label>\n\
-                    <select class='form-control' name='app_kept' id='app_kept' required='' > \n\
-                     <option value=''>Please select :</option> <option value='Yes'>Yes</option>\n\
-                     <option value='No'>No</option> \n\
-                    </select>";
-                            $('.appointment_kept_div').append(appointment_kept);
-                        }
-
-
-                        $("#edit_p_custommsg").empty();
-
-                        $("#edit_p_apptype3").empty();
-
-                        $("#edit_p_apptype2").empty();
-
-                        $("#appointment_date").empty();
-
-
-
-                        $("#edit_appointment_id").val(value.appointment_id);
-
-                        var appntmnt_date = value.appntmnt_date;
-                        var res = appntmnt_date.substring(0, 10);
-                        var appntmnt_date = res.split("-").reverse().join("/");
-
-                        $('#appointment_date').val(appntmnt_date);
-
-                        $('#edit_p_apptype2').val(value.app_type_2);
-                        $('#edit_p_apptype3').val(value.expln_app);
-                        $('#edit_p_custommsg').val(value.custom_txt);
-
-
-
-
-
-
-
-                        $(".edit_div").show();
-                        $(".table_div").hide();
-
-
-
-
-
-                        $('#edit_created_at').val(value.created_at);
-                        $('#edit_timestamp').val(value.timestamp);
-                    });
-
-
-
-
-
-                },
-                error: function(data) {
-                    $('.loader').hide();
-                    sweetAlert("Oops...", "" + error_alert + "", "error");
-
-                }
-
-            });
-
-
-
-
-
 
 
         });

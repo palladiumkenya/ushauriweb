@@ -1365,7 +1365,7 @@ class Home extends MY_Controller
     {
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
-
+        $client_id = $this->input->post('client_id');
         $clinic_id = $this->input->post('clinic_id', true);
         $clinic_number = $this->input->post('clinic_number', true);
         $fname = $this->input->post('fname', true);
@@ -1382,31 +1382,22 @@ class Home extends MY_Controller
         $sharename = $this->input->post('sharename', true);
         $lang = $this->input->post('lang', true);
         $smsenable = $this->input->post('smsenable', true);
-        $appointment_types = $this->input->post('appointment_types', true);
-        $p_apptype1 = $this->input->post('p_apptype1', true);
-        $p_apptype2 = $this->input->post('p_apptype2', true);
-        $p_apptype3 = $this->input->post('p_apptype3', true);
-        $custom_appointsms = $this->input->post('custom_appointsms', true);
-        $apptdate = $this->input->post('apptdate', true);
         $gender = $this->input->post('gender', true);
         $marital = $this->input->post('marital', true);
         $status = $this->input->post('status', true);
         $motivational_enable = $this->input->post('motivational_enable', true);
-        $partner_id = $this->input->post('partner_name', true);
-        $client_id = $this->input->post('client_id');
         $wellnessenable = $this->input->post('wellnessenable', true);
         $enrollment_date = $this->input->post('enrollment_date', true);
         $art_date = $this->input->post('art_date', true);
         $transfer_date = $this->input->post('transfer_date', true);
-        $transfer_new_clinic = $this->input->post('transfer_new_clinic', true);
-        $consent_date = $this->input->post('consent_date', true);
-        $app_kept = $this->input->post('app_kept', true);
+        $partner_id = $this->input->post('partner_name', true);
 
 
 
 
-        $today = date("Y-m-d H:i:s");
-        $transaction = $this->data->update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $appointment_types, $p_apptype1, $p_apptype2, $p_apptype3, $custom_appointsms, $today, $apptdate, $status, $motivational_enable, $gender, $marital, $enrollment_date, $art_date, $wellnessenable, $transfer_date, $transfer_new_clinic, $consent_date, $app_kept);
+
+        $today = date('Y-m-d H:i:s');
+        $transaction = $this->data->update_client($client_id, $clinic_id, $clinic_number, $fname, $mname, $lname, $p_year, $condition, $group, $facilities, $frequency, $time, $mobile, $altmobile, $sharename, $lang, $smsenable, $gender, $marital, $status, $motivational_enable, $wellnessenable, $enrollment_date, $art_date, $transfer_date, $today);
         // if ($clinic_number > 0) {
         //     return "clinic number exists";
         // }
@@ -3853,69 +3844,69 @@ class Home extends MY_Controller
         }
     }
 
-    public function update_appointment()
-    {
-        $partner_id = $this->session->userdata('partner_id');
-        $facility_id = $this->session->userdata('facility_id');
+    // public function update_appointment()
+    // {
+    //     $partner_id = $this->session->userdata('partner_id');
+    //     $facility_id = $this->session->userdata('facility_id');
 
-        $client_id = $this->input->post('client_id', true);
-        $app_date = $this->input->post('apptdate', true);
-        $app_type_1 = $this->input->post('app_type_1', true);
-        //$transaction = $this->data->update_appointment($client_id, $app_date);
+    //     $client_id = $this->input->post('client_id', true);
+    //     $app_date = $this->input->post('apptdate', true);
+    //     $app_type_1 = $this->input->post('app_type_1', true);
+    //     //$transaction = $this->data->update_appointment($client_id, $app_date);
 
-        $appointment_id = $this->input->post('appointment_id', true);
+    //     $appointment_id = $this->input->post('appointment_id', true);
 
-        $app_kept = $this->input->post('app_kept', true);
-        $transaction = $this->data->update_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type_1);
-
-
-
-
-        if ($transaction) {
-            $response = array(
-                'response' => $transaction
-            );
-            echo json_encode([$response]);
-        } else {
-            $response = array(
-                'response' => $transaction
-            );
-            echo json_encode([$response]);
-        }
-    }
-
-    public function edit_appointment()
-    {
-        $partner_id = $this->session->userdata('partner_id');
-        $facility_id = $this->session->userdata('facility_id');
-
-        $client_id = $this->input->post('client_id', true);
-
-        $app_date = $this->input->post('appointment_date', true);
-        $app_type = $this->input->post('p_apptype1', true);
-
-        $appointment_id = $this->input->post('appointment_id', true);
-
-        $app_kept = $this->input->post('app_kept', true);
-        //echo 'Values => Clnt ID => ' . $client_id . '<br> App Date => ' . $app_date . '<br> App kept => ' . $app_kept . '<br> App ID => ' . $appointment_id . '<br> App type => ' . $app_type_1;
-
-        $transaction = $this->data->edit_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type);
+    //     $app_kept = $this->input->post('app_kept', true);
+    //     $transaction = $this->data->update_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type_1);
 
 
 
 
-        if ($transaction) {
-            $response = array(
-                'response' => $transaction
-            );
-            echo json_encode([$response]);
-        } else {
-            $response = array(
-                'response' => $transaction
-            );
-            echo json_encode([$response]);
-        }
-    }
+    //     if ($transaction) {
+    //         $response = array(
+    //             'response' => $transaction
+    //         );
+    //         echo json_encode([$response]);
+    //     } else {
+    //         $response = array(
+    //             'response' => $transaction
+    //         );
+    //         echo json_encode([$response]);
+    //     }
+    // }
+
+    // public function edit_appointment()
+    // {
+    //     $partner_id = $this->session->userdata('partner_id');
+    //     $facility_id = $this->session->userdata('facility_id');
+
+    //     $client_id = $this->input->post('client_id', true);
+
+    //     $app_date = $this->input->post('appointment_date', true);
+    //     $app_type = $this->input->post('p_apptype1', true);
+
+    //     $appointment_id = $this->input->post('appointment_id', true);
+
+    //     $app_kept = $this->input->post('app_kept', true);
+    //     //echo 'Values => Clnt ID => ' . $client_id . '<br> App Date => ' . $app_date . '<br> App kept => ' . $app_kept . '<br> App ID => ' . $appointment_id . '<br> App type => ' . $app_type_1;
+
+    //     $transaction = $this->data->edit_appointment($client_id, $app_date, $app_kept, $appointment_id, $app_type);
+
+
+
+
+    //     if ($transaction) {
+    //         $response = array(
+    //             'response' => $transaction
+    //         );
+    //         echo json_encode([$response]);
+    //     } else {
+    //         $response = array(
+    //             'response' => $transaction
+    //         );
+    //         echo json_encode([$response]);
+    //     }
+    // }
 
     public function client_groups()
     {

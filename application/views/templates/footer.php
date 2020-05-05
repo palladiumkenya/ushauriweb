@@ -1584,7 +1584,6 @@
                 },
                 success: function(results) {
                     result = JSON.parse(results)
-                    console.log(result)
                     $("#targetClients").empty();
                     $("#targetClients").append("  <b> " + result.target_active_clients +
                         "<br></b> Target Active Clients");
@@ -1848,7 +1847,6 @@
                 },
                 success: function(results) {
                     result = JSON.parse(results)
-                    console.log(result)
                     $("#allApps").empty();
                     $("#allApps").append("  <b> " + result.created_appointments +
                         "<br></b> Created Appointments");
@@ -3337,11 +3335,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.css" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript">
     var dtp = jQuery.noConflict();
     dtp(document).ready(function() {
@@ -3350,6 +3348,8 @@
         });
     });
     var date_picker = jQuery.noConflict();
+    var startD = new Date().setDate(new Date().getDate() + 7)
+    console.log(startD)
     date_picker(function() {
         date_picker(".appointment_date").datepicker({
             format: 'dd/mm/yyyy',
@@ -3359,6 +3359,15 @@
         date_picker(".transfer_appointment_date").datepicker({
             format: 'dd/mm/yyyy',
             startDate: '-0d',
+            autoclose: true
+        });
+        date_picker(".edit_appntmnt_date").datepicker({
+            format: 'yyyy-mm-dd',
+            minDate: startD,
+            autoclose: true
+        });
+        date_picker(".transfer_date").datepicker({
+            format: 'yyyy-mm-dd',
             autoclose: true
         });
         date_picker(".dob").datepicker({

@@ -9187,6 +9187,54 @@ FROM
         $this->load->vars($data);
         echo json_encode($data);
     }
+    public function edit_appointments()
+    {
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+        $access_level = $this->session->userdata('access_level');
+
+        $partner_id = $this->input->post('partner', true);
+        $mfl_code = $this->input->post('facility', true);
+
+        if ($access_level == "Partner" || $access_level == "Facility") {
+            $edit_apps = $this->data->getAppointmentsToEdit($partner_id, $mfl_code);
+        }
+        $appointment_types = array(
+            'table' => 'appointment_types',
+            'where' => array('status' => 'Active')
+        );
+
+        $data['edit_apps'] = $edit_apps;
+        $data['side_functions'] = $this->data->get_side_modules();
+        $data['top_functions'] = $this->data->get_top_modules();
+        $data['appointment_types'] = $this->data->commonGet($appointment_types);
+        $data['access_level'] = $access_level;
+        $data['partner_id'] = $partner_id;
+        $data['facility_id'] = $facility_id;
+        $this->load->vars($data);
+        //echo json_encode($edit_apps);
+        $this->load->template('Home/edit_clients');
+    }
+    public function update_appointment()
+    {
+
+
+        $partner_id = $this->session->userdata('partner_id');
+        $facility_id = $this->session->userdata('facility_id');
+
+        $appointment_id = $this->input->post('appointment_id');
+        $upn = $this->input->post('upn', true);
+        $appointment_date = $this->input->post('date', true);
+        $type = $this->input->post('type', true);
+        $comment = $this->input->post('comment', true);
+        $today = date("Y-m-d H:i:s");
+
+        $app_type = $this->db->query("select id FROM tbl_appointment_types WHERE name = '$type'")->result();
+
+        $app_type_id =  $app_type[0]->id;
+
+        $submission_edit = $this->data->insert_updated_date($appointment_id, $appointment_date, $app_type_id, $comment, $today);
+    }
 
     public function dashboard()
     {
