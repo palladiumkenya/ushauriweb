@@ -168,6 +168,8 @@
 
 <script type='text/javascript'>
     $(document).ready(function() {
+        var facilities = '<?php echo json_encode($facilities); ?>';
+        console.log(facilities)
         var data = '<?php echo json_encode($data); ?>';
         var bar_clients_data =
             '<?php echo json_encode($bar_clients_data); ?>';
@@ -178,11 +180,11 @@
         //console.log(data)
         async function maps(data) {
             data = JSON.parse(data)
-            // console.log(data)
+            console.log(data)
             const sumClients = data.reduce((total, data_) => total + parseInt(data_.Clients), 0)
             // console.log(sumClients)
             data.total_clients = sumClients;
-            console.log(data.total_clients)
+            //console.log(data)
 
             let geojson = await fetchJSON('/kenyan-counties.geojson');
             // Initiate the chart
@@ -235,7 +237,7 @@
                         format: '{point.properties.COUNTY}'
                     },
                     tooltip: {
-                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {this.point.sumClients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
+                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
                     }
                 }]
             });
