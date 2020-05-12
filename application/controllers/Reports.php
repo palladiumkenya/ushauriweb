@@ -9056,14 +9056,13 @@ FROM
         }
     }
 
-    public function app_dashboard()
+    public function appointments_dashboard()
     {
         $access_level = $this->session->userdata('access_level');
         $partner_id = $this->session->userdata('partner_id');
         $county_id = $this->session->userdata('county_id');
         $sub_county_id = $this->session->userdata('subcounty_id');
         $facility_id = $this->session->userdata('facility_id');
-        $access_level = $this->session->userdata('access_level');
 
 
         $partner_id = $this->input->post('partner', true);
@@ -9368,50 +9367,6 @@ FROM
             $this->load->vars($data);
             //echo json_encode($condition_records);
             $this->load->template('Home/tablechart');
-        }
-    }
-
-    public function appointments_dashboard()
-    {
-        //            $k = new /Ghunti/HighchartsPHP/Highchart;
-        $access_level = $this->session->userdata('access_level');
-        if ($access_level == 'Facility') {
-            redirect("Reports/facility_home", "refresh");
-        } else {
-            $partner_id = $this->session->userdata('partner_id');
-            $county_id = $this->session->userdata('county_id');
-            $sub_county_id = $this->session->userdata('subcounty_id');
-            $facility_id = $this->session->userdata('facility_id');
-            $access_level = $this->session->userdata('access_level');
-
-
-            $sql = " SELECT * FROM vw_client_summary_report WHERE 1 ";
-
-            if ($access_level == "Partner") {
-                $sql .= " AND vw_client_summary_report.partner_id='$partner_id' ";
-            } elseif ($access_level == "County") {
-                $sql .= " AND vw_client_summary_report.county_id = '$county_id' ";
-            } elseif ($access_level == "Sub County") {
-                $sql .= " AND vw_client_summary_report.sub_county_id='$sub_county_id' ";
-            } elseif ($access_level == "Facility") {
-                $sql .= " AND vw_client_summary_report.mfl_code = '$facility_id' ";
-            } else {
-            }
-
-
-
-            $data['side_functions'] = $this->data->get_side_modules();
-            $data['top_functions'] = $this->data->get_top_modules();
-            $data['output'] = $this->get_access_level();
-
-
-
-
-            $this->load->vars($data);
-            $this->load->template('dashboard/appointments');
-            $function_name = $this->uri->segment(2);
-
-            //// $this->output->enable_profiler(TRUE);
         }
     }
 
