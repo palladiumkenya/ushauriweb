@@ -128,7 +128,7 @@
                                         </select>
 
                                         <label for="comment">Reason For Editing</label>
-                                        <input class='form-control input-rounded input-sm' placeholder="Please Enter A Reason" type='text' name='comment' id='comment'>
+                                        <input class='form-control input-rounded input-sm' placeholder="Please Enter A Reason" type='text' name='comment' id='comment' required="true">
 
                                         <input type="hidden" id="appointment_id" name="appointment_id" class="appointment_id form-control" />
 
@@ -195,18 +195,19 @@
 
 
     }
-    $("#save_edited_app").click(function(e) {
-        e.preventDefault();
+    var btn = document.getElementById('save_edited_app')
+    btn.addEventListener('click', nextItem)
+
+    function nextItem() {
+        console.log('clicked')
         let new_upn = $('#edit_upn').val();
         let app_date = $('#edit_appntmnt_date').val();
         let app_type = $('#edit_appntmnt_type').val();
         let comment = $('#comment').val();
         let appointment_id = $('#appointment_id').val();
-        location.reload();
 
         var controller = "Reports";
         var get_function = "update_appointment";
-
         $.ajax({
             data: {
                 upn: new_upn,
@@ -217,25 +218,16 @@
             },
             method: 'POST',
             url: "<?php echo base_url(); ?>" + controller + "/" + get_function,
-            dataType: 'json',
-            success: function() {
-                location.reload();
+            dataType: 'JSON',
+            success: function(response) {
+                location.reload()
+                console.log(response)
             }
+
 
         })
 
-        // function handleData(data) {
-        //     //do some stuff
-        // }
-        // .fail(function() {
-        //     console.log('Error')
-        // })
-    });
-
-    // function update(data) {
-    //     console.log(data)
-
-    // }
+    }
 </script>
 
 

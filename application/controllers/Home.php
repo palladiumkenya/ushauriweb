@@ -3704,7 +3704,6 @@ class Home extends MY_Controller
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
         $clinic_id = $this->session->userdata('clinic_id');
-        //// $this->output->enable_profiler(TRUE);
         if ($access_level == "Partner") {
             $appointments = array(
                 'table' => 'appointment',
