@@ -150,7 +150,6 @@
                         </figure>
                     </div> -->
 
-
                 </div>
             </div>
         </div>
@@ -181,12 +180,36 @@
         async function maps(data) {
             var facilities = '<?php echo json_encode($facilities); ?>';
             data = JSON.parse(data)
-            //console.log(data)
-            const sumClients = data.reduce((total, data_) => total + parseInt(data_.Clients), 0)
-            // console.log(sumClients)
-            data.total_clients = sumClients;
-            //console.log(data)
-
+            let counties = new Set();
+            for (let dat of data) {
+                let county_id = dat.county_id;
+                counties.add(county_id)
+            }
+            counties = Array.from(counties);
+            let mapData = []
+            for (i in counties) {
+                let thisCounty = {
+                    county_id: parseInt(counties[i])
+                }
+                let incounty = data.filter(function(dat) {
+                    return dat.county_id == counties[i];
+                });
+                let clients = incounty.reduce((clients, dat) => clients + parseInt(dat.Clients), 0)
+                let consented = incounty.reduce((consented, dat) => consented + parseInt(dat.Consented), 0)
+                let target = incounty.reduce((target, dat) => target + parseInt(dat.Target_Clients), 0)
+                let male = incounty.reduce((male, dat) => male + parseInt(dat.Male), 0)
+                let female = incounty.reduce((female, dat) => female + parseInt(dat.Female), 0)
+                let trans = incounty.reduce((trans, dat) => trans + parseInt(dat.Trans_Gender), 0)
+                thisCounty.Facilities = incounty.length
+                thisCounty.Clients = clients;
+                thisCounty.Consented = clients;
+                thisCounty.Target_Clients = target
+                thisCounty.Male = male;
+                thisCounty.Female = female;
+                thisCounty.Transgender = trans
+                thisCounty.Percentage_Uptake = ((clients / target) * 100).toFixed(1)
+                mapData.push(thisCounty);
+            }
             let geojson = await fetchJSON('/kenyan-counties.geojson');
             // Initiate the chart
             Highcharts.mapChart('map', {
@@ -224,7 +247,7 @@
                     ]
                 },
                 series: [{
-                    data: data,
+                    data: mapData,
                     keys: ['Clients'],
                     joinBy: 'county_id',
                     name: 'Results by County',
@@ -238,7 +261,7 @@
                         format: '{point.properties.COUNTY}'
                     },
                     tooltip: {
-                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender}'
+                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.Facilities} <br> % Uptake Per County: {point.Percentage_Uptake}'
                     }
                 }]
             });
@@ -268,7 +291,6 @@
             for (let i = 0; i < result.length; i++) {
                 categories.add(result[i].MONTH)
             }
-
             let clientsArray = [];
             let consentedArray = [];
             let appointmentsArray = [];
