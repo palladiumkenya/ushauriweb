@@ -179,8 +179,9 @@
         columnChart(bar_clients_data, bar_appointments_data);
         //console.log(data)
         async function maps(data) {
+            var facilities = '<?php echo json_encode($facilities); ?>';
             data = JSON.parse(data)
-            console.log(data)
+            //console.log(data)
             const sumClients = data.reduce((total, data_) => total + parseInt(data_.Clients), 0)
             // console.log(sumClients)
             data.total_clients = sumClients;
@@ -237,7 +238,7 @@
                         format: '{point.properties.COUNTY}'
                     },
                     tooltip: {
-                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
+                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender}'
                     }
                 }]
             });
