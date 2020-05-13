@@ -7,9 +7,11 @@
         </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?php echo base_url(); ?>">Home</a>
+                <li class="breadcrumb-item"><a
+                        href="<?php echo base_url(); ?>">Home</a>
                 </li>
-                <li class="breadcrumb-item active"><a href="<?php echo base_url(); ?><?php echo $this->uri->segment(1); ?>/<?php echo $this->uri->segment(2); ?>">
+                <li class="breadcrumb-item active"><a
+                        href="<?php echo base_url(); ?><?php echo $this->uri->segment(1); ?>/<?php echo $this->uri->segment(2); ?>">
                         Clients Extract</a></li>
             </ol>
         </div>
@@ -22,55 +24,63 @@
         <?php echo $access_level ?>
         <div class="row">
             <form class="form-inline">
-                <input type='hidden' id="access_level" value="<?php echo $access_level; ?>" />
-                <input type='hidden' id="partner_id" value="<?php echo $partner_id; ?>" />
-                <input type='hidden' id="facility_id" value="<?php echo $facility_id; ?>" />
+                <input type='hidden' id="access_level"
+                    value="<?php echo $access_level; ?>" />
+                <input type='hidden' id="partner_id"
+                    value="<?php echo $partner_id; ?>" />
+                <input type='hidden' id="facility_id"
+                    value="<?php echo $facility_id; ?>" />
 
                 <?php if ($access_level == 'Admin' || $access_level == 'Donor') { ?>
 
-                    <select class="form-control filter_partner  input-rounded input-sm select2" name="filter_partner" id="filter_partner">
-                        <option value="">Please select Partner</option>
-                        <?php
+                <select class="form-control filter_partner  input-rounded input-sm select2" name="filter_partner"
+                    id="filter_partner">
+                    <option value="">Please select Partner</option>
+                    <?php
                         foreach ($filtered_partner as $value) {
-                        ?>
-                            <option value="<?php echo $value->partner_id; ?>">
-                                <?php echo $value->partner_name; ?>
-                            </option>
-                        <?php
+                            ?>
+                    <option
+                        value="<?php echo $value->partner_id; ?>">
+                        <?php echo $value->partner_name; ?>
+                    </option>
+                    <?php
                         }
                         ?>
-                        <option></option>
-                    </select>
+                    <option></option>
+                </select>
                 <?php } ?>
 
                 <?php if ($access_level == 'Admin' || $access_level == 'Donor' || $access_level == 'Partner') { ?>
 
-                    <select class="form-control filter_county  input-rounded input-sm select2" name="filter_county" id="filter_county">
-                        <option value="">Please select County</option>
-                        <?php
+                <select class="form-control filter_county  input-rounded input-sm select2" name="filter_county"
+                    id="filter_county">
+                    <option value="">Please select County</option>
+                    <?php
                         foreach ($filtered_county as $value) {
-                        ?>
-                            <option value="<?php echo $value->county_id; ?>">
-                                <?php echo $value->county_name; ?>
-                            </option>
-                        <?php
+                            ?>
+                    <option value="<?php echo $value->county_id; ?>">
+                        <?php echo $value->county_name; ?>
+                    </option>
+                    <?php
                         }
                         ?>
-                        <option></option>
-                    </select>
+                    <option></option>
+                </select>
 
-                    <span class="filter_sub_county_wait" style="display: none;">Loading , Please Wait ...</span>
-                    <select class="form-control filter_sub_county input-rounded input-sm select2" name="filter_sub_county" id="filter_sub_county">
-                        <option value="">Please Select Sub County : </option>
-                    </select>
+                <span class="filter_sub_county_wait" style="display: none;">Loading , Please Wait ...</span>
+                <select class="form-control filter_sub_county input-rounded input-sm select2" name="filter_sub_county"
+                    id="filter_sub_county">
+                    <option value="">Please Select Sub County : </option>
+                </select>
 
-                    <span class="filter_facility_wait" style="display: none;">Loading , Please Wait ...</span>
+                <span class="filter_facility_wait" style="display: none;">Loading , Please Wait ...</span>
 
-                    <select class="form-control filter_facility input-rounded input-sm select2" name="filter_facility" id="filter_facility">
-                        <option value="">Please select Facility : </option>
-                    </select>
+                <select class="form-control filter_facility input-rounded input-sm select2" name="filter_facility"
+                    id="filter_facility">
+                    <option value="">Please select Facility : </option>
+                </select>
 
-                    <!-- <?php } ?>
+                <!-- <?php } ?>
 
                 <input type="text" name="date_from" id="date_from"
                     class="form-controL date_from input-rounded input-sm " placeholder="Date From : " />
@@ -78,8 +88,10 @@
                 <input type="text" name="date_to" id="date_to" class="form-control date_to input-rounded input-sm "
                     placeholder="Date To : " /> -->
 
-                    <button class="btn btn-default filter_highcharts_dashboard btn-round  btn-small btn-primary  " type="button" name="filter_highcharts_dashboard" id="filter_highcharts_dashboard"> <i class="fa fa-filter"></i>
-                        Filter</button>
+                <button class="btn btn-default filter_highcharts_dashboard btn-round  btn-small btn-primary  "
+                    type="button" name="filter_highcharts_dashboard" id="filter_highcharts_dashboard"> <i
+                        class="fa fa-filter"></i>
+                    Filter</button>
 
             </form>
 
@@ -150,7 +162,6 @@
                         </figure>
                     </div> -->
 
-
                 </div>
             </div>
         </div>
@@ -180,12 +191,36 @@
         //console.log(data)
         async function maps(data) {
             data = JSON.parse(data)
-            console.log(data)
-            const sumClients = data.reduce((total, data_) => total + parseInt(data_.Clients), 0)
-            // console.log(sumClients)
-            data.total_clients = sumClients;
-            //console.log(data)
-
+            let counties = new Set();
+            for (let dat of data) {
+                let county_id = dat.county_id;
+                counties.add(county_id)
+            }
+            counties = Array.from(counties);
+            let mapData = []
+            for (i in counties) {
+                let thisCounty = {
+                    county_id: parseInt(counties[i])
+                }
+                let incounty = data.filter(function(dat) {
+                    return dat.county_id == counties[i];
+                });
+                let clients = incounty.reduce((clients, dat) => clients + parseInt(dat.Clients), 0)
+                let consented = incounty.reduce((consented, dat) => consented + parseInt(dat.Consented), 0)
+                let target = incounty.reduce((target, dat) => target + parseInt(dat.Target_Clients), 0)
+                let male = incounty.reduce((male, dat) => male + parseInt(dat.Male), 0)
+                let female = incounty.reduce((female, dat) => female + parseInt(dat.Female), 0)
+                let trans = incounty.reduce((trans, dat) => trans + parseInt(dat.Trans_Gender), 0)
+                thisCounty.Facilities = incounty.length
+                thisCounty.Clients = clients;
+                thisCounty.Consented = clients;
+                thisCounty.Target_Clients = target
+                thisCounty.Male = male;
+                thisCounty.Female = female;
+                thisCounty.Transgender = trans
+                thisCounty.Percentage_Uptake = ((clients / target) * 100).toFixed(1)
+                mapData.push(thisCounty);
+            }
             let geojson = await fetchJSON('/kenyan-counties.geojson');
             // Initiate the chart
             Highcharts.mapChart('map', {
@@ -223,7 +258,7 @@
                     ]
                 },
                 series: [{
-                    data: data,
+                    data: mapData,
                     keys: ['Clients'],
                     joinBy: 'county_id',
                     name: 'Results by County',
@@ -237,7 +272,7 @@
                         format: '{point.properties.COUNTY}'
                     },
                     tooltip: {
-                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.mfl_code} <br> % Uptake Per County: {point.Percentage_Uptake}'
+                        pointFormat: 'County: {point.properties.COUNTY}<br> Clients: {point.Clients} <br> Consented: {point.Consented} <br> Total Target Clients: {point.Target_Clients} <br> Male: {point.Male} <br> Female: {point.Female} <br> TransGender: {point.Trans_Gender} <br> No. of Facilities: {point.Facilities} <br> % Uptake Per County: {point.Percentage_Uptake}'
                     }
                 }]
             });
@@ -267,7 +302,6 @@
             for (let i = 0; i < result.length; i++) {
                 categories.add(result[i].MONTH)
             }
-
             let clientsArray = [];
             let consentedArray = [];
             let appointmentsArray = [];
