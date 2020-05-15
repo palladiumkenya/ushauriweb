@@ -486,9 +486,9 @@ class Home extends MY_Controller
             //Partner level access
 
             $clients = "SELECT a.id, a.f_name, a.m_name, a.l_name, a.clinic_number, a.file_no, a.status AS ST, d.name AS county_name, e.name AS sub_county, f.name AS facility_name , a.phone_no, a.dob, b.name, a.created_at FROM tbl_client a INNER JOIN tbl_groups b ON b.id = a.group_id INNER JOIN tbl_partner_facility c ON c.mfl_code = a.mfl_code INNER JOIN tbl_county d ON d.id = c.county_id INNER JOIN tbl_sub_county e ON e.id = c.sub_county_id INNER JOIN tbl_master_facility f ON f.`code` = c.mfl_code
-            WHERE a.partner_id = '$partner_id' AND a.status =  'Deceased' OR a.status= 'Dead' AND a.partner_id = '$partner_id'";
+            WHERE a.partner_id = '$partner_id' AND a.status !=  'Active' AND a.partner_id = '$partner_id'";
         } elseif ($access_level == "Facility") {
-            $clients = "SELECT a.id, a.f_name, a.m_name, a.l_name, a.clinic_number, a.file_no, a.status AS ST, a.phone_no, a.dob, b.name, a.created_at FROM tbl_client a INNER JOIN tbl_groups b ON b.id = a.group_id WHERE a.mfl_code = '$facility_id' AND a.status =  'Deceased' OR a.status= 'Dead' AND a.mfl_code = '$facility_id'";
+            $clients = "SELECT a.id, a.f_name, a.m_name, a.l_name, a.clinic_number, a.file_no, a.status AS ST, a.phone_no, a.dob, b.name, a.created_at FROM tbl_client a INNER JOIN tbl_groups b ON b.id = a.group_id WHERE a.mfl_code = '$facility_id' AND a.status !=  'Active' AND a.mfl_code = '$facility_id'";
         } elseif ($access_level == "County") {
             $facilities = array(
                 'table' => 'master_facility',
