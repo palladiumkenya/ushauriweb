@@ -211,7 +211,7 @@
     totalKept.push(totalK)
     totalMissed.push(totalM)
     totalLTFU.push(totalL)
-    console.log(totalDefaulted)
+    //console.log(totalDefaulted)
 
 
 

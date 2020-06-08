@@ -5272,13 +5272,22 @@ FROM tbl_client where age_group IS NOT NULL")->result();
             );
         } elseif ($access_level == "Partner") { //Partner level access
             $clients = array(
-                'select' => ' tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
+                'select' => 'tbl_client.file_no, groups.name as group_name,groups.id as group_id,language.name as language_name ,'
                     . ' language.id as language_id, f_name,m_name,l_name,dob,client.status,phone_no,master_facility.name as facility,county.name as county, sub_county.name as sub_county , '
                     . 'client.clinic_number,client.client_status ,concat(f_name,m_name, l_name) as client_name,client.created_at as created_at,client.enrollment_date,client.art_date,client.updated_at,client.id as client_id,gender.name as gender_name,gender.name as gender_name,marital_status.marital,gender.id as gender_id,marital_status.id as marital_id',
                 'table' => 'client',
-                'join' => array('gender' => 'gender.id = client.gender', 'marital_status' => 'marital_status.id = client.marital', 'language' => 'language.id = client.language_id', 'groups' => 'groups.id = client.group_id', 'partner_facility' => 'partner_facility.mfl_code = client.mfl_code', 'master_facility' => 'master_facility.code = partner_facility.mfl_code', 'county' => 'master_facility.county_id = county.id', 'sub_county' => 'master_facility.sub_county_id = sub_county.name'),
+                'join' => array(
+                    'gender' => 'gender.id = client.gender',
+                    'marital_status' => 'marital_status.id = client.marital',
+                    'language' => 'language.id = client.language_id',
+                    'groups' => 'groups.id = client.group_id',
+                    'partner_facility' => 'partner_facility.mfl_code = client.mfl_code',
+                    'master_facility' => 'master_facility.code = partner_facility.mfl_code',
+                    'county' => 'master_facility.county_id = county.id',
+                    'sub_county' => 'master_facility.sub_county_id = sub_county.id'
+                ),
                 'where' => array('client.status' => 'Active', 'client.smsenable' => 'Yes', 'client.partner_id' => $partner_id),
-                'order' => array('enrollment_date' => 'DESC')
+                'order' => array('enrollment_date' => 'DESC'),
             );
 
             $facilities = array(
