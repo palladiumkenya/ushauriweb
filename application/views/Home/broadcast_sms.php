@@ -784,7 +784,7 @@
             var submit_function = "set_user_broadcast_sms";
             var form_class = "broadcast_user_form";
             var success_alert = "Broadcast set successfully ... :) ";
-            var error_alert = " , An error occured:";
+            var error_alert = "  An error occured:";
             submit_data(controller, submit_function, form_class, success_alert, error_alert);
 
 

@@ -4724,12 +4724,12 @@ class Home extends MY_Controller
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
 
-        // $group = $this->input->post('group', true);
-        // $date_time = $this->input->post('date_time', true);
+        $group = $this->input->post('group', true);
+        $date_time = $this->input->post('date_time', true);
 
-        // $target_group = $this->input->post('target_group', true);
-        // $default_time = $this->input->post('default_time', true);
-        // $defaultsms = $this->input->post('defaultsms', true);
+        $target_group = $this->input->post('target_group', true);
+        $default_time = $this->input->post('default_time', true);
+        $defaultsms = $this->input->post('defaultsms', true);
         $county_id = $this->input->post('county', true);
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);

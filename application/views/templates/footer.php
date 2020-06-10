@@ -168,6 +168,7 @@
                         controller + "/" + submit_function + "",
                     data: dataString,
                     success: function(data) {
+                        // console.log(data)
                         // console.log(controller);
                         // console.log(submit_function);
                         // console.log(form_class);
@@ -177,6 +178,7 @@
                         $(".loader").hide();
 
                         data = JSON.parse(data);
+                        console.log(data)
                         var response = data[0].response;
                         console.log(response)
                         if (response === true) {
