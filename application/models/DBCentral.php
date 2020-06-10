@@ -3484,12 +3484,7 @@ class DBCentral extends CI_Model
 
     public function get_all_active_users($target_access_level, $county_id, $sub_county_id, $mfl_code)
     {
-        // $this->output->enable_profiler(TRUE);
-        $partner_id = $this->session->userdata('partner_id');
-        $facility_id = $this->session->userdata('facility_id');
-        $access_level = $this->session->userdata('access_level');
-
-
+        //// $this->output->enable_profiler(TRUE);
         $target_access_level = $this->input->post('access_level', true);
 
         $county_id = $this->input->post('county', true);
@@ -3500,78 +3495,16 @@ class DBCentral extends CI_Model
         $facility_id = $this->session->userdata('facility_id');
         $access_level = $this->session->userdata('access_level');
 
-        $sql = "";
-        if ($access_level === "Partner") {
+        $sql = "Select DISTINCT tbl_users.id, tbl_users.f_name, tbl_users.m_name, tbl_users.l_name, tbl_users.phone_no, tbl_users.facility_id from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id";
 
-            //Partner Access Level
-            $sql .= "Select DISTINCT * from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
-        } elseif ($access_level === "Facility") {
-
-            //Facility Access Level
-            $sql .= "Select DISTINCT * from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
-        } elseif ($access_level === "Admin") {
-
-            //Administration in the  System
-            //            $sql .= "Select count(DISTINCT tbl_users.id) as no_users from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
-            //Administration in the  System
-            $sql .= "Select DISTINCT *  from tbl_users  ";
-            // $sql .= "inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id";
-
-
-            if (!empty($target_access_level)) {
-                if ($target_access_level == '4') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_users.facility_id";
-                }
-                if ($target_access_level == '5') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.county_id = tbl_users.county_id";
-                }
-                if ($target_access_level == '6') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.sub_county_id = tbl_users.subcounty_id";
-                }
-                if ($target_access_level == '3') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_partner.id";
-                }
-                if ($target_access_level == '2') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.donor_id = tbl_donor.id";
-                }
-                if ($target_access_level == '1') {
-                    $sql .= "  ";
-                }
-            }
-
-            $sql .= " ";
-            $sql .= " where 1 ";
+        if ($access_level == "Partner") {
+            $sql .= " AND tbl_partner_facility.partner_id = '$partner_id' ";
+        } elseif ($access_level == "Facility") {
+            $sql .= " AND tbl_partner_facility.mfl_code = '$facility_id' and tbl_users.access_level='Facility' ";
         } else {
-            //Administration in the System
-            $sql .= "Select DISTINCT * from tbl_users  ";
-            // $sql .= "inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id";
-
-
-            if (!empty($target_access_level)) {
-                if ($target_access_level == '4') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_users.facility_id";
-                }
-                if ($target_access_level == '5') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.county_id = tbl_users.county_id";
-                }
-                if ($target_access_level == '6') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.sub_county_id = tbl_users.sub_county_id";
-                }
-                if ($target_access_level == '3') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_partner.id";
-                }
-                if ($target_access_level == '2') {
-                    $sql .= "inner join tbl_partner_facility on tbl_partner_facility.donor_id = tbl_donor.id";
-                }
-                if ($target_access_level == '1') {
-                    $sql .= "  ";
-                }
-            }
-
-
-            $sql .= " ";
-            $sql .= " where 1 ";
         }
+
+
         if (!empty($county_id)) {
             $sql .= " AND tbl_partner_facility.county_id = '$county_id' ";
         }
@@ -3580,59 +3513,17 @@ class DBCentral extends CI_Model
             $sql .= " AND tbl_partner_facility.sub_county_id = '$sub_county_id' ";
         }
         if (!empty($mfl_code)) {
-            $sql .= " AND tbl_client.mfl_code = '$mfl_code' ";
-        }
-
-
-        if ($access_level == "Partner") {
-            $sql .= "AND tbl_partner_facility.partner_id='$partner_id' ";
-        } elseif ($access_level == "Facility") {
-            $sql .= "AND tbl_partner_facility.mfl_code='$facility_id' and tbl_users.access_level='Facility' ";
-        } else {
-            if (!empty($target_access_level)) {
-                if ($target_access_level == '4') {
-                    $sql .= "AND  tbl_users.access_level='Facility' ";
-                    if (!empty($mfl_code)) {
-                        $sql .= " AND tbl_partner_facility.mfl_code='$facility_id' ";
-                    }
-                }
-                if ($target_access_level == '5') {
-                    $sql .= " and tbl_users.access_level='County' ";
-                    if (!empty($county_id)) {
-                        $sql .= " AND tbl_partner_facility.county_id='$county_id' ";
-                    }
-                }
-                if ($target_access_level == '6') {
-                    $sql .= " and tbl_users.access_level='Sub County'";
-
-                    if (!empty($county_id)) {
-                        $sql .= " AND tbl_partner_facility.sub_county_id='$sub_county_id'  ";
-                    }
-                }
-                if ($target_access_level == '3') {
-                    $sql .= " and tbl_users.access_level='Partner'";
-
-                    if (!empty($partner_id)) {
-                        $sql .= " AND tbl_partner_facility.partner_id='$partner_id'  ";
-                    }
-                }
-                if ($target_access_level == '2') {
-                    $sql .= " and tbl_users.access_level='Donor'";
-                }
-                if ($target_access_level == '1') {
-                    $sql .= " and tbl_users.access_level='Admin'";
-                }
-            }
+            $sql .= " AND tbl_users.facility_id = '$mfl_code' ";
         }
 
 
 
         $client_data = $this->db->query($sql)->result();
 
-
-
         return $client_data;
+        //echo json_encode($client_data);
     }
+
 
     public function get_all_active_clients_appointments($group, $county_id, $sub_county_id, $mfl_code, $appointment_from, $appointment_to, $target_group)
     {
@@ -3836,6 +3727,8 @@ class DBCentral extends CI_Model
             $msg = $broadcast_message;
 
             $clients = $this->get_all_active_users($target_access_level, $county_id, $sub_county_id, $mfl_code);
+
+
 
             foreach ($clients as $value) {
                 $user_name = $value->f_name . " " . $value->m_name . " " . $value->l_name;

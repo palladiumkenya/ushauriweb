@@ -4897,7 +4897,7 @@ class Home extends MY_Controller
             $user_sql .= "AND  d.partner_id ='$partner_id' ";
         } else {
         }
-        $user_sql .= " AND a.id = b.`broadcast_id` AND b.`clnt_usr_id` = c.`id` AND c.`facility_id` = d.`mfl_code` AND b.status='Active' and b.recepient_type='User' GROUP BY a.`id` ";
+        $user_sql .= " AND a.id = b.`broadcast_id` AND b.`clnt_usr_id` = c.`id` AND c.`facility_id` = d.`mfl_code` AND b.status='Active' GROUP BY a.`id` ";
 
 
         $data['sub_counties'] = $this->data->commonGet($sub_counties);
