@@ -161,6 +161,7 @@
     <!-- footer -->
     <footer class="footer"> © 2020 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth
             Kenya Ltd</a></footer>
+
     <!-- End footer -->
 </div>
 <!-- End Page wrapper  -->

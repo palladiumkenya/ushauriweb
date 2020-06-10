@@ -4724,12 +4724,12 @@ class Home extends MY_Controller
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
 
-        $group = $this->input->post('group', true);
-        $date_time = $this->input->post('date_time', true);
+        // $group = $this->input->post('group', true);
+        // $date_time = $this->input->post('date_time', true);
 
-        $target_group = $this->input->post('target_group', true);
-        $default_time = $this->input->post('default_time', true);
-        $defaultsms = $this->input->post('defaultsms', true);
+        // $target_group = $this->input->post('target_group', true);
+        // $default_time = $this->input->post('default_time', true);
+        // $defaultsms = $this->input->post('defaultsms', true);
         $county_id = $this->input->post('county', true);
         $sub_county_id = $this->input->post('sub_county', true);
         $mfl_code = $this->input->post('facility', true);
@@ -4897,7 +4897,7 @@ class Home extends MY_Controller
             $user_sql .= "AND  d.partner_id ='$partner_id' ";
         } else {
         }
-        $user_sql .= " AND a.id = b.`broadcast_id` AND b.`clnt_usr_id` = c.`id` AND c.`facility_id` = d.`mfl_code` AND b.status='Active' and b.recepient_type='User' GROUP BY a.`id` ";
+        $user_sql .= " AND a.id = b.`broadcast_id` AND b.`clnt_usr_id` = c.`id` AND c.`facility_id` = d.`mfl_code` AND b.status='Active' GROUP BY a.`id` ";
 
 
         $data['sub_counties'] = $this->data->commonGet($sub_counties);

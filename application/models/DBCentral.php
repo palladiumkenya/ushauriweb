@@ -3508,7 +3508,7 @@ class DBCentral extends CI_Model
         } elseif ($access_level === "Facility") {
 
             //Facility Access Level
-            $sql .= "Select DISTINCT * from tbl_users inner join tbl_partner_facility on tbl_partner_facility.partner_id = tbl_users.partner_id where 1 ";
+            $sql .= "Select DISTINCT * from tbl_users inner join tbl_partner_facility on tbl_partner_facility.mfl_code = tbl_users.facility_id where 1 ";
         } elseif ($access_level === "Admin") {
 
             //Administration in the  System
@@ -3580,7 +3580,7 @@ class DBCentral extends CI_Model
             $sql .= " AND tbl_partner_facility.sub_county_id = '$sub_county_id' ";
         }
         if (!empty($mfl_code)) {
-            $sql .= " AND tbl_client.mfl_code = '$mfl_code' ";
+            $sql .= " AND tbl_users.facility_id = '$mfl_code' ";
         }
 
 
