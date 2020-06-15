@@ -1366,7 +1366,13 @@
                     ]
                 });
             }
-        dTbles(".filter_monthly_appointment_extract").click(function() {
+        dTbles(".filter_monthly_appointment_extract").click(function(e) {
+            document.getElementById('loading').style.display = 'block'
+            // document.getElementById('loading').modal("show")
+
+
+
+            e.preventDefault()
             var access_level = $('#access_level').val();
             var partner_id = $('#partner_id').val();
             var facility_id = $('#facility_id').val();
@@ -1514,6 +1520,9 @@
                             })
                         ]
                     });
+                    document.getElementById('loading').style.display = 'none'
+                    //document.getElementById('loading').modal("hide")
+
                 }
             });
         }
