@@ -5,11 +5,13 @@
  * and open the template in the editor.
  */
 
-class Login extends CI_Controller {
+class Login extends CI_Controller
+{
 
     public $data = '';
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
         $this->data = new DBCentral();
         $this->load->library('session');
@@ -17,13 +19,15 @@ class Login extends CI_Controller {
         $this->botswana_verification();
     }
 
-    function index() {
+    function index()
+    {
 
         $view = 'Auth/login.php';
         $this->load->view($view);
     }
 
-    function check_access() {
+    function check_access()
+    {
         $logged_in = $this->session->userdata("logged_in");
 
         if ($logged_in) {
@@ -37,7 +41,8 @@ class Login extends CI_Controller {
         }
     }
 
-    function check_auth() {
+    function check_auth()
+    {
 
 
         $validate_user = $this->data->check_auth();
@@ -66,11 +71,13 @@ class Login extends CI_Controller {
         }
     }
 
-    function reset() {
+    function reset()
+    {
         $this->load->view('reset');
     }
 
-    function reset_password() {
+    function reset_password()
+    {
         $password = $this->input->post('password');
         $password2 = $this->input->post('password2');
         if ($password == $password2) {
@@ -80,12 +87,14 @@ class Login extends CI_Controller {
         }
     }
 
-    function Logout() {
+    function Logout()
+    {
         $this->session->sess_destroy();
         $this->index();
     }
 
-    function check_last_pass_reset() {
+    function check_last_pass_reset()
+    {
         $username = $this->input->post('username');
 
         if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
@@ -110,7 +119,6 @@ class Login extends CI_Controller {
                     $this->db->update('users', $data_update);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
                     } else {
                         //Reset Password 
                         return "Reset";
@@ -133,7 +141,6 @@ class Login extends CI_Controller {
                         $this->db->update('users', $data_update);
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
                         } else {
                             $reset_session = array(
                                 'user_id' => $user_id,
@@ -153,7 +160,8 @@ class Login extends CI_Controller {
         }
     }
 
-    function verify_otp() {
+    function verify_otp()
+    {
 
         $otp_pin = $this->input->post('otp_pin', TRUE);
         /*
@@ -178,7 +186,7 @@ class Login extends CI_Controller {
 
                     //$this->Set_session($id);
 
-                     $this->data->Set_session($user_id);
+                    $this->data->Set_session($user_id);
 
                     echo 'Correct';
                 } else {
@@ -190,10 +198,11 @@ class Login extends CI_Controller {
             echo 'Used';
         }
 
-//        $this->output->enable_profiler(TRUE);
+        //        $this->output->enable_profiler(TRUE);
     }
 
-    function botswana_verification() {
+    function botswana_verification()
+    {
 
         $this->db->trans_start();
         $today = date('Y-m-d H:i:s');
@@ -208,12 +217,9 @@ WHERE
         $query = $this->db->query($sql);
         $this->db->trans_complete();
         if ($this->db->trans_complete() === FALSE) {
-            
         } else {
-            
         }
 
-//        $this->output->enable_profiler(TRUE);
+        //        $this->output->enable_profiler(TRUE);
     }
-
 }
