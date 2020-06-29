@@ -4472,7 +4472,7 @@ class DBCentral extends CI_Model
         if ($this->db->trans_status() === false) {
             return false;
         } else {
-            $description = "Temporariy deleted  Language $clinic_id  details in  the  system.";
+            $description = "Temporariy deleted  Clinic $clinic_id  details in  the  system.";
             $this->log_action($description);
 
             return true;
