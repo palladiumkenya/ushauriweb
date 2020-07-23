@@ -7,11 +7,13 @@ ini_set('memory_limit', '2048M');
  * and open the template in the editor.
  */
 
-class Admin extends MY_Controller {
+class Admin extends MY_Controller
+{
 
     public $data = '';
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
         $this->load->library('session');
@@ -20,21 +22,23 @@ class Admin extends MY_Controller {
         $this->data = new DBCentral();
     }
 
-    function index() {
+    function index()
+    {
         redirect("Reports/dashboard", "refresh");
     }
 
-    function check_access() {
+    function check_access()
+    {
         $logged_in = $this->session->userdata("logged_in");
 
         if ($logged_in) {
-            
         } else {
             redirect("Login", "refresh");
         }
     }
 
-    function my_facilities() {
+    function my_facilities()
+    {
 
         $donor_id = $this->session->userdata('donor_id');
         $partner_id = $this->session->userdata('partner_id');
@@ -51,38 +55,44 @@ class Admin extends MY_Controller {
                 'select' => 'keph_level,is_approved,master_facility.name,master_facility.owner,county.name as county,sub_county.name as sub_county , master_facility.id,master_facility.code,county.name as county_name,sub_county.name as sub_county_name,master_facility.facility_type,partner_facility.is_approved , partner_facility.created_at,partner_facility.id as partner_facility_id  ',
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'partner_facility.mfl_code = master_facility.code', 'county' => 'county.id = master_facility.county_id', 'sub_county' => 'sub_county.id = master_facility.sub_county_id', 'partner_facility' => 'partner_facility.mfl_code = master_facility.code'),
-                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active'));
+                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active')
+            );
         } else if ($access_level == 'Partner') {
 
             $options = array(
                 'select' => 'keph_level,master_facility.name,master_facility.owner,county.name as county,sub_county.name as sub_county , master_facility.id,master_facility.code,county.name as county_name,sub_county.name as sub_county_name,master_facility.facility_type,partner_facility.is_approved  , partner_facility.created_at ,partner_facility.id as partner_facility_id  ',
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'partner_facility.mfl_code = master_facility.code', 'county' => 'county.id = master_facility.county_id', 'sub_county' => 'sub_county.id = master_facility.sub_county_id', 'partner_facility' => 'partner_facility.mfl_code = master_facility.code'),
-                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.partner_id' => $partner_id));
+                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.partner_id' => $partner_id)
+            );
         } else if ($access_level == 'County') {
             $options = array(
                 'select' => 'keph_level,master_facility.name,master_facility.owner,county.name as county,sub_county.name as sub_county , master_facility.id,master_facility.code,county.name as county_name,sub_county.name as sub_county_name,master_facility.facility_type,partner_facility.is_approved  , partner_facility.created_at ,partner_facility.id as partner_facility_id  ',
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'partner_facility.mfl_code = master_facility.code', 'county' => 'county.id = master_facility.county_id', 'sub_county' => 'sub_county.id = master_facility.sub_county_id', 'partner_facility' => 'partner_facility.mfl_code = master_facility.code'),
-                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.county_id' => $county_id));
+                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.county_id' => $county_id)
+            );
         } else if ($access_level == 'Sub County') {
             $options = array(
                 'select' => 'keph_level,master_facility.name,master_facility.owner,county.name as county,sub_county.name as sub_county , master_facility.id,master_facility.code,county.name as county_name,sub_county.name as sub_county_name,master_facility.facility_type,partner_facility.is_approved  , partner_facility.created_at ,partner_facility.id as partner_facility_id  ',
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'partner_facility.mfl_code = master_facility.code', 'county' => 'county.id = master_facility.county_id', 'sub_county' => 'sub_county.id = master_facility.sub_county_id', 'partner_facility' => 'partner_facility.mfl_code = master_facility.code'),
-                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.sub_county_id' => $sub_county_id));
+                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.sub_county_id' => $sub_county_id)
+            );
         } else if ($access_level == 'Facility') {
             $options = array(
                 'select' => 'keph_level,master_facility.name,master_facility.owner,county.name as county,sub_county.name as sub_county , master_facility.id,master_facility.code,county.name as county_name,sub_county.name as sub_county_name,master_facility.facility_type,partner_facility.is_approved  , partner_facility.created_at ,partner_facility.id as partner_facility_id  ',
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'partner_facility.mfl_code = master_facility.code', 'county' => 'county.id = master_facility.county_id', 'sub_county' => 'sub_county.id = master_facility.sub_county_id', 'partner_facility' => 'partner_facility.mfl_code = master_facility.code'),
-                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.mfl_code' => $facility_id));
+                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active', 'partner_facility.mfl_code' => $facility_id)
+            );
         } else {
             $options = array(
                 'select' => 'keph_level,master_facility.name,master_facility.owner,county.name as county,sub_county.name as sub_county , master_facility.id,master_facility.code,county.name as county_name,sub_county.name as sub_county_name,master_facility.facility_type,partner_facility.is_approved  , partner_facility.created_at ,partner_facility.id as partner_facility_id  ',
                 'table' => 'master_facility',
                 'join' => array('partner_facility' => 'partner_facility.mfl_code = master_facility.code', 'county' => 'county.id = master_facility.county_id', 'sub_county' => 'sub_county.id = master_facility.sub_county_id', 'partner_facility' => 'partner_facility.mfl_code = master_facility.code'),
-                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active'));
+                'where' => array('county.status' => 'Active', 'sub_county.status' => 'Active')
+            );
         }
 
 
@@ -112,7 +122,6 @@ class Admin extends MY_Controller {
 
 
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -124,17 +133,20 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_facility_details() {
+    function get_facility_details()
+    {
         $mfl_code = $this->uri->segment(3);
         $options = array(
             'table' => 'master_facility',
-            'where' => array('code' => $mfl_code));
+            'where' => array('code' => $mfl_code)
+        );
         $facility_data = $this->data->commonGet($options);
 
         echo json_encode($facility_data);
     }
 
-    public function search_master_facility() {
+    public function search_master_facility()
+    {
 
         if (isset($_GET['term'])) {
             $q = strtolower($_GET['term']);
@@ -142,7 +154,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function search_facility() {
+    function search_facility()
+    {
 
         $search_value = $this->uri->segment(3);
         $returned_value = $this->data->search_facility($search_value);
@@ -156,14 +169,13 @@ class Admin extends MY_Controller {
     }
 
     //FACILITIES MODULE STARTS HERE
-    function facilities() {
+    function facilities()
+    {
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
-                
             } else {
                 echo 'Unauthorised Access';
                 exit();
@@ -173,7 +185,8 @@ class Admin extends MY_Controller {
             'select' => 'master_facility.name , master_facility.id,master_facility.code,county.name as county_name,sub_county.name as sub_county_name,master_facility.facility_type',
             'table' => 'master_facility',
             'join' => array('county' => 'county.id = master_facility.county_id', 'sub_county' => 'sub_county.id = master_facility.sub_county_id', 'partner_facility' => 'partner_facility.mfl_code = master_facility.code'),
-            'where' => array('assigned' => '0', 'county.status' => 'Active', 'sub_county.status' => 'Active'));
+            'where' => array('assigned' => '0', 'county.status' => 'Active', 'sub_county.status' => 'Active')
+        );
         $partner_id = $this->session->userdata('partner_id');
 
         if ($partner_id == 0) {
@@ -197,7 +210,6 @@ class Admin extends MY_Controller {
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -209,7 +221,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function assign_partner_facility() {
+    function assign_partner_facility()
+    {
         $mfl_code = $this->input->post('mfl_code', TRUE);
         $status = $this->input->post('status', TRUE);
         $partner_id = $this->input->post('partner_name', TRUE);
@@ -230,18 +243,17 @@ class Admin extends MY_Controller {
 
     //FACILITIES MODULE ENDS HERE 
     //PARTNER CRUD STARTS 
-    function partners() {
+    function partners()
+    {
 
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
 
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
-                
             } else {
                 echo 'Unauthorised Access';
                 exit();
@@ -274,7 +286,6 @@ class Admin extends MY_Controller {
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -286,7 +297,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_logo() {
+    function add_logo()
+    {
         $this->db->trans_start();
         $user_type = $this->uri->segment(3);
         if ($user_type == "Donor") {
@@ -321,8 +333,8 @@ class Admin extends MY_Controller {
                             } else {
 
                                 $image = $this->upload->data();
-                                $file_path = $image ['file_path'];
-                                $file = $image ['full_path'];
+                                $file_path = $image['file_path'];
+                                $file = $image['full_path'];
                                 $file_ext = $image['file_ext'];
 
 
@@ -390,8 +402,8 @@ class Admin extends MY_Controller {
 
 
                                 $image = $this->upload->data();
-                                $file_path = $image ['file_path'];
-                                $file = $image ['full_path'];
+                                $file_path = $image['file_path'];
+                                $file = $image['full_path'];
                                 $file_ext = $image['file_ext'];
 
 
@@ -440,7 +452,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_partner_logo() {
+    function add_partner_logo()
+    {
 
         $get_partner_id = $this->db->query('Select max(id)as partner_id from tbl_partner LIMIT 1')->result();
         foreach ($get_partner_id as $value) {
@@ -473,8 +486,8 @@ class Admin extends MY_Controller {
 
 
                             $image = $this->upload->data();
-                            $file_path = $image ['file_path'];
-                            $file = $image ['full_path'];
+                            $file_path = $image['file_path'];
+                            $file = $image['full_path'];
                             $file_ext = $image['file_ext'];
 
 
@@ -505,7 +518,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_partner() {
+    function add_partner()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $location = $this->input->post('location', TRUE);
@@ -513,7 +527,7 @@ class Admin extends MY_Controller {
         $partner_type_id = $this->input->post('partner_type_id', TRUE);
         $e_mail = $this->input->post('e_mail');
         $phone_no = $this->input->post('phone_no');
-//$partner_logo = $_FILES['file']['name'];
+        //$partner_logo = $_FILES['file']['name'];
 
         $check_donor_existence = $this->db->get_where('donor', array('name' => $name));
         if ($check_donor_existence->num_rows() > 0) {
@@ -539,14 +553,16 @@ class Admin extends MY_Controller {
         }
     }
 
-    function rename_partner_logo() {
+    function rename_partner_logo()
+    {
 
         $current_file = FCPATH . 'public/images/tmp/';
         $new_file = FCPATH . 'public/images/tmp/';
         rename($oldDir . $file, $newDir . $file);
     }
 
-    function get_partner_data() {
+    function get_partner_data()
+    {
         $partner_id = $this->uri->segment(3);
 
         $partner_data = array(
@@ -560,7 +576,8 @@ class Admin extends MY_Controller {
         echo json_encode($data);
     }
 
-    function edit_partner() {
+    function edit_partner()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $location = $this->input->post('location', TRUE);
@@ -585,7 +602,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_partner() {
+    function delete_partner()
+    {
         $partner_id = $this->input->post('partner_id', TRUE);
 
 
@@ -604,9 +622,10 @@ class Admin extends MY_Controller {
         }
     }
 
-//PARTNER CRUDS ENDS HERE
-//USER CRUD STARTS HERE 
-    function users() {
+    //PARTNER CRUDS ENDS HERE
+    //USER CRUD STARTS HERE 
+    function users()
+    {
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
 
@@ -628,7 +647,8 @@ class Admin extends MY_Controller {
                 'table' => 'users',
                 'join' => array('clinic' => 'clinic.id = users.clinic_id'),
                 'where' => array('users.status' => 'Active'),
-                'order' => array('f_name' => 'ASC'));
+                'order' => array('f_name' => 'ASC')
+            );
 
             $partner = array(
                 'table' => 'partner',
@@ -668,7 +688,8 @@ class Admin extends MY_Controller {
                     'table' => 'users',
                     'join' => array('clinic' => 'clinic.id = users.clinic_id'),
                     'where' => array('users.status' => 'Active', 'donor_id' => $donor_id, 'partner_id' => $partner_id, 'facility_id' => $facility_id),
-                    'order' => array('f_name' => 'ASC'));
+                    'order' => array('f_name' => 'ASC')
+                );
 
                 $partner = array(
                     'table' => 'partner',
@@ -704,11 +725,13 @@ class Admin extends MY_Controller {
 
                 $facility = " ";
 
-                $options = array('select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
+                $options = array(
+                    'select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
                     'table' => 'users',
                     'join' => array('clinic' => 'clinic.id = users.clinic_id'),
                     'where' => array('users.status' => 'Active', 'partner_id' => $partner_id),
-                    'order' => array('f_name' => 'ASC'));
+                    'order' => array('f_name' => 'ASC')
+                );
 
                 $partner = array(
                     'table' => 'partner',
@@ -749,7 +772,8 @@ class Admin extends MY_Controller {
                     'table' => 'users',
                     'join' => array('clinic' => 'clinic.id = users.clinic_id'),
                     'where' => array('users.status' => 'Active', 'partner_id' => $partner_id, 'facility_id' => $facility_id),
-                    'order' => array('f_name' => 'ASC'));
+                    'order' => array('f_name' => 'ASC')
+                );
 
                 $partner = array(
                     'table' => 'partner',
@@ -787,11 +811,13 @@ class Admin extends MY_Controller {
 
 
 
-                $options = array('select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
+                $options = array(
+                    'select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
                     'table' => 'users',
                     'join' => array('clinic' => 'clinic.id = users.clinic_id'),
                     'where' => array('users.status' => 'Active', 'donor_id' => $donor_id, 'partner_id' => $partner_id, 'county_id' => $county_id),
-                    'order' => array('f_name' => 'ASC'));
+                    'order' => array('f_name' => 'ASC')
+                );
 
                 $partner = array(
                     'table' => 'partner',
@@ -830,11 +856,13 @@ class Admin extends MY_Controller {
 
 
 
-                $options = array('select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
+                $options = array(
+                    'select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
                     'table' => 'users',
                     'join' => array('clinic' => 'clinic.id = users.clinic_id'),
                     'where' => array('users.status' => 'Active', 'donor_id' => $donor_id, 'partner_id' => $partner_id, 'facility_id' => $facility_id, 'subcounty_id' => $subcounty_id),
-                    'order' => array('f_name' => 'ASC'));
+                    'order' => array('f_name' => 'ASC')
+                );
 
                 $partner = array(
                     'table' => 'partner',
@@ -871,11 +899,13 @@ class Admin extends MY_Controller {
                 $facility_id += "";
 
 
-                $options = array('select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
+                $options = array(
+                    'select' => 'f_name,m_name,l_name,dob,phone_no,e_mail,access_level,clinic.name as clinic_name, users.id as id ,users.status, users.created_at, users.updated_at',
                     'table' => 'users',
                     'join' => array('clinic' => 'clinic.id = users.clinic_id'),
                     'where' => array('users.status' => 'Active', 'donor_id' => $donor_id, 'partner_id' => $partner_id, 'facility_id' => $facility_id),
-                    'order' => array('f_name' => 'ASC'));
+                    'order' => array('f_name' => 'ASC')
+                );
 
                 $partner = array(
                     'table' => 'partner',
@@ -911,8 +941,10 @@ class Admin extends MY_Controller {
 
         $clinics = array(
             'table' => 'clinic',
-            'where' => array('status' => 'Active',
-                'name !=' => 'Not Assigned')
+            'where' => array(
+                'status' => 'Active',
+                'name !=' => 'Not Assigned'
+            )
         );
 
 
@@ -937,7 +969,6 @@ class Admin extends MY_Controller {
         $function_name = $this->uri->segment(2);
 
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -951,13 +982,14 @@ class Admin extends MY_Controller {
         }
     }
 
-    function check_no() {
+    function check_no()
+    {
         $validate_user = $this->data->check_user();
         $Email = "EExists";
         $Phone = "PExists";
         $UnderAge = "UnderAge";
         $Success = "Done";
-        if ($validate_user === $Success) {
+        if ($validate_user == $Success) {
             echo "Success";
         } elseif ($validate_user === $Email) {
             echo "MailExists";
@@ -968,7 +1000,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_donor() {
+    function add_donor()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1000,36 +1033,43 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_user_data() {
+    function get_user_data()
+    {
         $user_id = $this->uri->segment(3);
 
         $user_data = array(
             'table' => 'users',
-            'where' => array('id' => $user_id));
+            'where' => array('id' => $user_id)
+        );
 
         $data = $this->data->commonGet($user_data);
         echo json_encode($data);
     }
 
-    function get_facility_data() {
+    function get_facility_data()
+    {
         $partner_facility_id = $this->uri->segment(3);
 
         $user_data = array(
             'select' => 'partner_facility.mfl_code, master_facility.name as facility_name, county.name as county_name, '
-            . ' sub_county.name as sub_county, partner.name, partner.id,partner_facility.avg_clients, '
-            . ' partner.id as partner_id,partner_facility.id as partner_facility_id',
+                . ' sub_county.name as sub_county, partner.name, partner.id,partner_facility.avg_clients, '
+                . ' partner.id as partner_id,partner_facility.id as partner_facility_id',
             'table' => 'partner_facility',
-            'join' => array('master_facility' => 'master_facility.code = partner_facility.mfl_code',
+            'join' => array(
+                'master_facility' => 'master_facility.code = partner_facility.mfl_code',
                 'county' => 'county.id = master_facility.county_id',
                 'sub_county' => 'sub_county.id = master_facility.sub_county_id',
-                'partner' => 'partner.id = partner_facility.partner_id'),
-            'where' => array('partner_facility.id' => $partner_facility_id));
+                'partner' => 'partner.id = partner_facility.partner_id'
+            ),
+            'where' => array('partner_facility.id' => $partner_facility_id)
+        );
 
         $data = $this->data->commonGet($user_data);
         echo json_encode($data);
     }
 
-    function edit_partner_facility() {
+    function edit_partner_facility()
+    {
         $mfl_code = $this->input->post('mfl_code', TRUE);
         $partner_name = $this->input->post('partner_name', TRUE);
         $avg_clients = $this->input->post('avg_clients', TRUE);
@@ -1049,7 +1089,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_partner_facility() {
+    function delete_partner_facility()
+    {
 
         $partner_facility_id = $this->input->post('partner_facility_id', TRUE);
         $today = date("Y-m-d H:i:s");
@@ -1067,7 +1108,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function edit_user() {
+    function edit_user()
+    {
         $f_name = $this->input->post('f_name', TRUE);
         $l_name = $this->input->post('m_name', TRUE);
         $m_name = $this->input->post('l_name', TRUE);
@@ -1107,7 +1149,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_user() {
+    function delete_user()
+    {
         $user_id = $this->input->post('user_id', TRUE);
         $today = date("Y-m-d H:i:s");
         $transaction = $this->data->delete_user($user_id);
@@ -1124,7 +1167,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function reset_user() {
+    function reset_user()
+    {
         $user_id = $this->input->post('user_id', TRUE);
         $today = date("Y-m-d H:i:s");
         $transaction = $this->data->reset_user($user_id);
@@ -1141,9 +1185,10 @@ class Admin extends MY_Controller {
         }
     }
 
-//USER CRUD ENDS HERE
-//DONOR CRUD STARTS HERE
-    function donors() {
+    //USER CRUD ENDS HERE
+    //DONOR CRUD STARTS HERE
+    function donors()
+    {
 
         $donors = array(
             'table' => 'donor'
@@ -1157,7 +1202,6 @@ class Admin extends MY_Controller {
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1169,7 +1213,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_donor_data() {
+    function get_donor_data()
+    {
         $donor_id = $this->uri->segment(3);
 
         $donor_data = array(
@@ -1181,7 +1226,8 @@ class Admin extends MY_Controller {
         echo json_encode($data);
     }
 
-    function edit_donor() {
+    function edit_donor()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1206,7 +1252,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_donor() {
+    function delete_donor()
+    {
         $donor_id = $this->input->post('donor_id', TRUE);
 
 
@@ -1225,15 +1272,16 @@ class Admin extends MY_Controller {
         }
     }
 
-//DONOR CRUD ENDS HERE 
-//
+    //DONOR CRUD ENDS HERE 
     //
-    
-    
-    
-    
+    //
+
+
+
+
     //ROLE CRUD STARTS HERE
-    function role() {
+    function role()
+    {
 
         $roles = array(
             'table' => 'role'
@@ -1252,7 +1300,6 @@ class Admin extends MY_Controller {
 
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1264,7 +1311,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_role() {
+    function add_role()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1286,7 +1334,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_role_data() {
+    function get_role_data()
+    {
         $role_id = $this->uri->segment(3);
 
         $role_data = array(
@@ -1299,7 +1348,8 @@ class Admin extends MY_Controller {
         echo json_encode($data);
     }
 
-    function edit_role() {
+    function edit_role()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1322,7 +1372,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_role() {
+    function delete_role()
+    {
         $role_id = $this->input->post('role_id', TRUE);
 
 
@@ -1341,11 +1392,12 @@ class Admin extends MY_Controller {
         }
     }
 
-//ROLE CRUD ENDS HERE 
-//
+    //ROLE CRUD ENDS HERE 
+    //
     //
     //LANGUAGE CRUD STARTS HERE 
-    function languages() {
+    function languages()
+    {
 
         $languages = array(
             'table' => 'language'
@@ -1358,7 +1410,6 @@ class Admin extends MY_Controller {
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1370,7 +1421,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_language() {
+    function add_language()
+    {
         $name = $this->input->post('name', TRUE);
         $status = $this->input->post('status', TRUE);
         $today = date("Y-m-d H:i:s");
@@ -1388,7 +1440,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_language_data() {
+    function get_language_data()
+    {
         $language_id = $this->uri->segment(3);
 
         $language_data = array(
@@ -1400,7 +1453,8 @@ class Admin extends MY_Controller {
         echo json_encode($data);
     }
 
-    function edit_language() {
+    function edit_language()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1423,7 +1477,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_language() {
+    function delete_language()
+    {
         $language_id = $this->input->post('language_id', TRUE);
 
 
@@ -1442,9 +1497,10 @@ class Admin extends MY_Controller {
         }
     }
 
-//LANGUAGE CRUD ENDS HERE 
+    //LANGUAGE CRUD ENDS HERE 
     //county_tier CRUD STARTS HERE 
-    function county_tier() {
+    function county_tier()
+    {
 
         $county_tier = array(
             'table' => 'county_tier'
@@ -1457,7 +1513,6 @@ class Admin extends MY_Controller {
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1471,7 +1526,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_county_tier() {
+    function add_county_tier()
+    {
         $name = $this->input->post('name', TRUE);
         $status = $this->input->post('status', TRUE);
         $today = date("Y-m-d H:i:s");
@@ -1489,7 +1545,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_county_tier_data() {
+    function get_county_tier_data()
+    {
         $county_tier_id = $this->uri->segment(3);
 
         $county_tier_data = array(
@@ -1501,7 +1558,8 @@ class Admin extends MY_Controller {
         echo json_encode($data);
     }
 
-    function edit_county_tier() {
+    function edit_county_tier()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1524,7 +1582,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_county_tier() {
+    function delete_county_tier()
+    {
         $county_tier_id = $this->input->post('county_tier_id', TRUE);
 
 
@@ -1543,10 +1602,11 @@ class Admin extends MY_Controller {
         }
     }
 
-//COUNTY CRUD ENDS HERE 
-//
+    //COUNTY CRUD ENDS HERE 
+    //
     //LANGUAGE CRUD STARTS HERE 
-    function senders() {
+    function senders()
+    {
 
         $senders = array(
             'table' => 'sender'
@@ -1559,7 +1619,6 @@ class Admin extends MY_Controller {
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1571,7 +1630,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_sender() {
+    function add_sender()
+    {
         $name = $this->input->post('name', TRUE);
         $status = $this->input->post('status', TRUE);
         $today = date("Y-m-d H:i:s");
@@ -1589,7 +1649,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_sender_data() {
+    function get_sender_data()
+    {
         $sender_id = $this->uri->segment(3);
 
         $sender_data = array(
@@ -1601,7 +1662,8 @@ class Admin extends MY_Controller {
         echo json_encode($data);
     }
 
-    function edit_sender() {
+    function edit_sender()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1624,7 +1686,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_sender() {
+    function delete_sender()
+    {
         $sender_id = $this->input->post('sender_id', TRUE);
 
 
@@ -1643,9 +1706,10 @@ class Admin extends MY_Controller {
         }
     }
 
-//LANGUAGE CRUD ENDS HERE 
-//TIME CRUD STARTS HERE 
-    function time() {
+    //LANGUAGE CRUD ENDS HERE 
+    //TIME CRUD STARTS HERE 
+    function time()
+    {
 
         $time = array(
             'table' => 'time'
@@ -1658,7 +1722,6 @@ class Admin extends MY_Controller {
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1670,7 +1733,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function add_time() {
+    function add_time()
+    {
         $name = $this->input->post('name', TRUE);
         $status = $this->input->post('status');
         $today = date("Y-m-d H:i:s");
@@ -1689,7 +1753,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function get_time_data() {
+    function get_time_data()
+    {
         $time_id = $this->uri->segment(3);
 
         $time_data = array(
@@ -1701,7 +1766,8 @@ class Admin extends MY_Controller {
         echo json_encode($data);
     }
 
-    function edit_time() {
+    function edit_time()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -1724,7 +1790,8 @@ class Admin extends MY_Controller {
         }
     }
 
-    function delete_time() {
+    function delete_time()
+    {
         $time_id = $this->input->post('time_id', TRUE);
 
 
@@ -1743,9 +1810,10 @@ class Admin extends MY_Controller {
         }
     }
 
-//TIME CRUD ENDS HERE 
-//TARGET COUNTY CRUD STARTS HERE 
-    function target_county() {
+    //TIME CRUD ENDS HERE 
+    //TARGET COUNTY CRUD STARTS HERE 
+    function target_county()
+    {
 
 
         $target_county = array(
@@ -1754,8 +1822,8 @@ class Admin extends MY_Controller {
         );
 
         $target_county = $this->db->query("Select tbl_county.name,tbl_county.status, tbl_target_county.id, tbl_target_county.created_at,tbl_target_county.updated_at from tbl_target_county"
-                        . " inner join tbl_county on tbl_county.id = tbl_target_county.county_id"
-                        . " where tbl_target_county.status='Active' ")->result();
+            . " inner join tbl_county on tbl_county.id = tbl_target_county.county_id"
+            . " where tbl_target_county.status='Active' ")->result();
 
         $counties = "Select 
   * 
@@ -1776,7 +1844,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1789,7 +1856,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function add_target_county() {
+    function add_target_county()
+    {
         $name = $this->input->post('county_id', TRUE);
         $status = $this->input->post('status');
         $today = date("Y-m-d H:i:s");
@@ -1808,24 +1876,26 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_target_county_data() {
+    function get_target_county_data()
+    {
         //// $this->output->enable_profiler(TRUE);
         $target_county_id = $this->uri->segment(3);
 
-//        $target_county_data = array(
-//            'table' => 'target_county',
-//            'join' => array('county' => 'county.id = target_county.county_id'),
-//            'where' => array('target_county.status' => 'Active', 'target_county.id' => $target_county_id)
-//        );
-//
-//        $data = $this->data->commonGet($target_county_data);
+        //        $target_county_data = array(
+        //            'table' => 'target_county',
+        //            'join' => array('county' => 'county.id = target_county.county_id'),
+        //            'where' => array('target_county.status' => 'Active', 'target_county.id' => $target_county_id)
+        //        );
+        //
+        //        $data = $this->data->commonGet($target_county_data);
         $data = $this->db->query("Select tbl_county.name,tbl_county.status, tbl_target_county.id from tbl_target_county"
-                        . " inner join tbl_county on tbl_county.id = tbl_target_county.county_id"
-                        . " where tbl_target_county.status='Active' and tbl_target_county.id='$target_county_id'")->result();
+            . " inner join tbl_county on tbl_county.id = tbl_target_county.county_id"
+            . " where tbl_target_county.status='Active' and tbl_target_county.id='$target_county_id'")->result();
         echo json_encode($data);
     }
 
-    function edit_target_county() {
+    function edit_target_county()
+    {
         $county_id = $this->input->post('county_id', TRUE);
 
         $status = $this->input->post('status', TRUE);
@@ -1846,7 +1916,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_target_county() {
+    function delete_target_county()
+    {
         $target_county_id = $this->input->post('target_county_id', TRUE);
 
 
@@ -1865,9 +1936,10 @@ where tbl_county.status = 'Active'
         }
     }
 
-//TARGET COUNTY CRUD ENDS HERE 
-//TARGET COUNTY CRUD STARTS HERE 
-    function target_facilities() {
+    //TARGET COUNTY CRUD ENDS HERE 
+    //TARGET COUNTY CRUD STARTS HERE 
+    function target_facilities()
+    {
 
 
         $target_facilities = array(
@@ -1884,7 +1956,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -1897,7 +1968,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function add_target_facilities() {
+    function add_target_facilities()
+    {
         $mfl_code = $this->input->post('mfl_code', TRUE);
         $status = $this->input->post('status');
         $today = date("Y-m-d H:i:s");
@@ -1916,7 +1988,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_target_facility_data() {
+    function get_target_facility_data()
+    {
         $target_facilities_id = $this->uri->segment(3);
 
         $target_facilities_data = array(
@@ -1929,7 +2002,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_target_facility() {
+    function edit_target_facility()
+    {
         $mfl_code = $this->input->post('mfl_code', TRUE);
         $status = $this->input->post('status', TRUE);
         $target_facilities_id = $this->input->post('target_facilities_id', TRUE);
@@ -1949,7 +2023,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_target_facilities() {
+    function delete_target_facilities()
+    {
         $target_facilities_id = $this->input->post('target_facilities_id', TRUE);
 
 
@@ -1968,9 +2043,10 @@ where tbl_county.status = 'Active'
         }
     }
 
-//TARGET COUNTY CRUD ENDS HERE 
-//CONTENT CRUD STARTS 
-    function contents() {
+    //TARGET COUNTY CRUD ENDS HERE 
+    //CONTENT CRUD STARTS 
+    function contents()
+    {
 
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
@@ -1996,9 +2072,9 @@ where tbl_county.status = 'Active'
 
         $contents = array(
             'select' => 'content.id,content.content ,content.message_type_id, content.language_id,'
-            . ' content.status,content.created_at,content.updated_at,content.identifier,content.group_id,'
-            . 'content.status as content_status,message_types.name as message_type_name,language.name as language_name,'
-            . 'groups.name as group_name',
+                . ' content.status,content.created_at,content.updated_at,content.identifier,content.group_id,'
+                . 'content.status as content_status,message_types.name as message_type_name,language.name as language_name,'
+                . 'groups.name as group_name',
             'table' => 'content',
             'join' => array('message_types' => 'message_types.id = content.message_type_id', 'language' => 'language.id = content.language_id', 'groups' => 'groups.id = content.group_id')
         );
@@ -2020,20 +2096,20 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
                 $this->load->template('Admin/contents');
             } else {
                 $this->load->template('Admin/contents');
-//                echo 'Unauthorised Access';
-//                exit();
+                //                echo 'Unauthorised Access';
+                //                exit();
             }
         }
     }
 
-    function add_content() {
+    function add_content()
+    {
         $content = $this->input->post('content', TRUE);
         $response = $this->input->post('response', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2056,14 +2132,15 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_content_data() {
+    function get_content_data()
+    {
         $content_id = $this->uri->segment(3);
 
         $content_data = array(
             'select' => 'content.id,content.content ,content.message_type_id, content.language_id,'
-            . ' content.status,content.created_at,content.updated_at,content.identifier,content.group_id,'
-            . 'content.status as content_status,message_types.name as message_type_name,language.name as language_name,'
-            . 'groups.name as group_name',
+                . ' content.status,content.created_at,content.updated_at,content.identifier,content.group_id,'
+                . 'content.status as content_status,message_types.name as message_type_name,language.name as language_name,'
+                . 'groups.name as group_name',
             'table' => 'content',
             'join' => array('message_types' => 'message_types.id = content.message_type_id', 'language' => 'language.id = content.language_id', 'groups' => 'groups.id = content.group_id'),
             'where' => array('content.status' => 'Active', 'content.id' => $content_id)
@@ -2073,7 +2150,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_content() {
+    function edit_content()
+    {
         $content = $this->input->post('content', TRUE);
         $response = $this->input->post('response', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2096,7 +2174,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_content() {
+    function delete_content()
+    {
         $content_id = $this->input->post('content_id', TRUE);
 
 
@@ -2115,9 +2194,10 @@ where tbl_county.status = 'Active'
         }
     }
 
-//CONTENT CRUDS ENDS HERE
-//MESSAGE CRUD STARTS 
-    function messages() {
+    //CONTENT CRUDS ENDS HERE
+    //MESSAGE CRUD STARTS 
+    function messages()
+    {
         //// $this->output->enable_profiler(TRUE);
         $partner_id = $this->session->userdata('partner_id');
         $facility_id = $this->session->userdata('facility_id');
@@ -2143,8 +2223,8 @@ where tbl_county.status = 'Active'
 
         $messages = array(
             'select' => 'messages.id,messages.message ,messages.message_type_id, messages.language_id,'
-            . ' messages.status,messages.created_at,messages.updated_at,'
-            . 'messages.status as message_status,message_types.name as message_type_name,language.name as language_name,',
+                . ' messages.status,messages.created_at,messages.updated_at,'
+                . 'messages.status as message_status,message_types.name as message_type_name,language.name as language_name,',
             'table' => 'messages',
             'join' => array('message_types' => 'message_types.id = messages.message_type_id', 'language' => 'language.id = messages.language_id')
         );
@@ -2166,20 +2246,20 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
                 $this->load->template('Admin\messages');
             } else {
                 $this->load->template('Admin\messages');
-//                echo 'Unauthorised Access';
-//                exit();
+                //                echo 'Unauthorised Access';
+                //                exit();
             }
         }
     }
 
-    function add_message() {
+    function add_message()
+    {
         $message = $this->input->post('message', TRUE);
         $response = $this->input->post('response', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2202,13 +2282,14 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_message_data() {
+    function get_message_data()
+    {
         $message_id = $this->uri->segment(3);
 
         $message_data = array(
             'select' => 'messages.id,messages.message ,messages.message_type_id, messages.language_id,'
-            . ' messages.status,messages.created_at,messages.updated_at,'
-            . 'messages.status as message_status,message_types.name as message_type_name,language.name as language_name,',
+                . ' messages.status,messages.created_at,messages.updated_at,'
+                . 'messages.status as message_status,message_types.name as message_type_name,language.name as language_name,',
             'table' => 'messages',
             'join' => array('message_types' => 'message_types.id = messages.message_type_id', 'language' => 'language.id = messages.language_id'),
             'where' => array('messages.status' => 'Active', 'messages.id' => $message_id)
@@ -2218,7 +2299,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_message() {
+    function edit_message()
+    {
         $message = $this->input->post('message', TRUE);
         $response = $this->input->post('response', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2241,7 +2323,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_message() {
+    function delete_message()
+    {
         $message_id = $this->input->post('message_id', TRUE);
 
 
@@ -2260,10 +2343,11 @@ where tbl_county.status = 'Active'
         }
     }
 
-//MESSAGE CRUDS ENDS HERE
+    //MESSAGE CRUDS ENDS HERE
 
 
-    function notification_conf() {
+    function notification_conf()
+    {
         $notifications = array(
             'table' => 'notification_flow',
             'where' => array('status' => 'Active')
@@ -2275,7 +2359,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -2287,7 +2370,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_notificationtype_data() {
+    function get_notificationtype_data()
+    {
         $id = $this->uri->segment(3);
         $time_data = array(
             'table' => 'notification_flow',
@@ -2298,7 +2382,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_notification_flow() {
+    function edit_notification_flow()
+    {
         $notification_id = $this->input->post('notificaiton_id', TRUE);
         $days = $this->input->post('days', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2316,8 +2401,9 @@ where tbl_county.status = 'Active'
         }
     }
 
-//MODULE MANAGEMET CRUD STARTS 
-    function module() {
+    //MODULE MANAGEMET CRUD STARTS 
+    function module()
+    {
 
 
         $modules = array(
@@ -2331,7 +2417,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -2343,7 +2428,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function add_module() {
+    function add_module()
+    {
         $name = $this->input->post('name', TRUE);
         $controller = $this->input->post('controller', TRUE);
         $function = $this->input->post('function', TRUE);
@@ -2368,7 +2454,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_module_data() {
+    function get_module_data()
+    {
         $module_id = $this->uri->segment(3);
 
         $module_data = array(
@@ -2380,7 +2467,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_module() {
+    function edit_module()
+    {
         $name = $this->input->post('name', TRUE);
         $controller = $this->input->post('controller', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2406,7 +2494,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_module() {
+    function delete_module()
+    {
         $module_id = $this->input->post('module_id', TRUE);
 
 
@@ -2425,10 +2514,11 @@ where tbl_county.status = 'Active'
         }
     }
 
-//MODULE CRUDS ENDS HERE
+    //MODULE CRUDS ENDS HERE
 
 
-    function roles() {
+    function roles()
+    {
 
         $modules = array(
             'table' => 'module'
@@ -2446,7 +2536,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -2458,7 +2547,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_user_permissions() {
+    function get_user_permissions()
+    {
         $user_id = $this->uri->segment(3);
         $module_data = array(
             'table' => 'user_permission',
@@ -2469,7 +2559,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function assign_roles() {
+    function assign_roles()
+    {
         $this->db->trans_start();
         $functions = $this->input->post('functions');
         $temp = $this->input->post('functions');
@@ -2505,7 +2596,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_access($user_id) {
+    function delete_access($user_id)
+    {
         $this->db->trans_start();
         $query = $this->db->query("select id from tbl_user_permission where user_id='$user_id'");
         foreach ($query->result() as $value) {
@@ -2514,14 +2606,14 @@ where tbl_county.status = 'Active'
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
-            
         } else {
             $success = "SUCCESS";
             return $success;
         }
     }
 
-    function role_modules() {
+    function role_modules()
+    {
 
         $modules = array(
             'table' => 'module',
@@ -2541,7 +2633,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -2553,7 +2644,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_role_permissions() {
+    function get_role_permissions()
+    {
         $role_id = $this->uri->segment(3);
         $module_data = array(
             'table' => 'role_module',
@@ -2565,7 +2657,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function assign_roles_modules() {
+    function assign_roles_modules()
+    {
         $this->db->trans_start();
         $functions = $this->input->post('functions');
         $temp = $this->input->post('functions');
@@ -2636,7 +2729,6 @@ where tbl_county.status = 'Active'
                     $this->db->insert('role_module', $data_insert);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
                     } else {
                         echo 'Role ID added successfully ....<br>';
                     }
@@ -2662,9 +2754,7 @@ where tbl_county.status = 'Active'
                     $this->db->update('user_permission', $mark_module_inactive);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
                     } else {
-                        
                     }
                 }
             }
@@ -2705,16 +2795,15 @@ where tbl_county.status = 'Active'
                     $this->db->insert('user_permission', $data_insert);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
                     } else {
-                        
                     }
                 }
             }
         }
     }
 
-    function delete_role_modules_rights($role_id, $functions) {
+    function delete_role_modules_rights($role_id, $functions)
+    {
 
 
 
@@ -2745,15 +2834,15 @@ where tbl_county.status = 'Active'
 
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
-            
         } else {
-//$success = "SUCCESS";
+            //$success = "SUCCESS";
             return TRUE;
         }
     }
 
-//MESSAGE TYPES CRUD STARTS HERE
-    function message_types() {
+    //MESSAGE TYPES CRUD STARTS HERE
+    function message_types()
+    {
 
         $donors = array(
             'table' => 'message_types'
@@ -2767,7 +2856,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -2779,7 +2867,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function add_message_type() {
+    function add_message_type()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2800,7 +2889,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_message_type_data() {
+    function get_message_type_data()
+    {
         $message_types_id = $this->uri->segment(3);
 
         $donor_data = array(
@@ -2812,7 +2902,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_message_type() {
+    function edit_message_type()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2833,7 +2924,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_message_type() {
+    function delete_message_type()
+    {
         $message_type_id = $this->input->post('message_type_id', TRUE);
 
 
@@ -2852,9 +2944,10 @@ where tbl_county.status = 'Active'
         }
     }
 
-//MESSAGE TYPES CRUD ENDS HERE 
-//GROUP CRUD STARTS HERE
-    function groups() {
+    //MESSAGE TYPES CRUD ENDS HERE 
+    //GROUP CRUD STARTS HERE
+    function groups()
+    {
 
         $groups = array(
             'table' => 'groups'
@@ -2868,7 +2961,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -2876,13 +2968,14 @@ where tbl_county.status = 'Active'
                 $this->load->template('Admin/groups');
             } else {
                 $this->load->template('Admin/groups');
-//                echo 'Unauthorised Access';
-//                exit();
+                //                echo 'Unauthorised Access';
+                //                exit();
             }
         }
     }
 
-    function add_group() {
+    function add_group()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2904,7 +2997,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_group_data() {
+    function get_group_data()
+    {
         $group_id = $this->uri->segment(3);
 
         $group_data = array(
@@ -2916,7 +3010,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_group() {
+    function edit_group()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -2939,7 +3034,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_group() {
+    function delete_group()
+    {
         $group_id = $this->input->post('group_id', TRUE);
 
 
@@ -2958,9 +3054,10 @@ where tbl_county.status = 'Active'
         }
     }
 
-//GROUP CRUD ENDS HERE
-//COUNTY CRUD STARTS HERE
-    function county() {
+    //GROUP CRUD ENDS HERE
+    //COUNTY CRUD STARTS HERE
+    function county()
+    {
 
         $counties = array(
             'table' => 'county'
@@ -2982,7 +3079,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -2994,7 +3090,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function add_county() {
+    function add_county()
+    {
         $name = $this->input->post('name', TRUE);
         $code = $this->input->post('code', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -3016,7 +3113,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_county_data() {
+    function get_county_data()
+    {
         $county_id = $this->uri->segment(3);
 
         $county_data = array(
@@ -3028,7 +3126,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_county() {
+    function edit_county()
+    {
         $name = $this->input->post('name', TRUE);
         $code = $this->input->post('code', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -3051,7 +3150,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_county() {
+    function delete_county()
+    {
         $county_id = $this->input->post('county_id', TRUE);
 
 
@@ -3070,12 +3170,13 @@ where tbl_county.status = 'Active'
         }
     }
 
-//COUNTY CRUD ENDS HERE
+    //COUNTY CRUD ENDS HERE
 
 
 
 
-    function get_sub_counties() {
+    function get_sub_counties()
+    {
         $access_level = $this->uri->segment(3);
 
         $county_data = array(
@@ -3087,7 +3188,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function get_county_facilities() {
+    function get_county_facilities()
+    {
         $county_id = $this->uri->segment(3);
 
         $county_facilities = $this->db->query("Select * from tbl_master_facility inner join tbl_partner_facility on  tbl_partner_facility.mfl_code = tbl_master_facility.code where tbl_partner_facility.county_id = '$county_id'")->result();
@@ -3096,7 +3198,8 @@ where tbl_county.status = 'Active'
         echo json_encode($county_facilities);
     }
 
-    function get_sub_county_facilities() {
+    function get_sub_county_facilities()
+    {
         $sub_county_id = $this->uri->segment(3);
 
         $county_facilities = $this->db->query("Select * from tbl_master_facility inner join tbl_partner_facility on  tbl_partner_facility.mfl_code = tbl_master_facility.code where tbl_partner_facility.sub_county_id = '$sub_county_id'")->result();
@@ -3105,7 +3208,8 @@ where tbl_county.status = 'Active'
         echo json_encode($county_facilities);
     }
 
-    function get_access_roles() {
+    function get_access_roles()
+    {
         $access_level = $this->uri->segment(3);
         $access_level = urldecode($access_level);
 
@@ -3118,7 +3222,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function approve_facility() {
+    function approve_facility()
+    {
         $broadcast_id = $this->uri->segment(3);
 
 
@@ -3136,7 +3241,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function disapprove_facility() {
+    function disapprove_facility()
+    {
         $mfl_code = $this->uri->segment(3);
 
         $reason = $this->input->post('reason');
@@ -3154,21 +3260,23 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function generate_token() {
+    function generate_token()
+    {
 
         $csrf = array(
             'name' => $this->security->get_csrf_token_name(),
             'hash' => $this->security->get_csrf_hash()
         );
-        ?>
+?>
 
         <input type="text" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
-        <?php
+<?php
     }
 
     //
     //LANGUAGE CRUD STARTS HERE 
-    function clinics() {
+    function clinics()
+    {
 
         $clinics = array(
             'table' => 'clinic'
@@ -3181,7 +3289,6 @@ where tbl_county.status = 'Active'
         $this->load->vars($data);
         $function_name = $this->uri->segment(2);
         if (empty($function_name)) {
-            
         } else {
             $check_auth = $this->check_authorization($function_name);
             if ($check_auth) {
@@ -3192,7 +3299,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function add_clinic() {
+    function add_clinic()
+    {
         $name = $this->input->post('name', TRUE);
         $status = $this->input->post('status', TRUE);
         $today = date("Y-m-d H:i:s");
@@ -3210,7 +3318,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function get_clinic_data() {
+    function get_clinic_data()
+    {
         $clinic_id = $this->uri->segment(3);
 
         $clinic_data = array(
@@ -3222,7 +3331,8 @@ where tbl_county.status = 'Active'
         echo json_encode($data);
     }
 
-    function edit_clinic() {
+    function edit_clinic()
+    {
         $name = $this->input->post('name', TRUE);
         $description = $this->input->post('description', TRUE);
         $status = $this->input->post('status', TRUE);
@@ -3245,7 +3355,8 @@ where tbl_county.status = 'Active'
         }
     }
 
-    function delete_clinic() {
+    function delete_clinic()
+    {
         $clinic_id = $this->input->post('clinic_id', TRUE);
 
 
@@ -3264,5 +3375,5 @@ where tbl_county.status = 'Active'
         }
     }
 
-//LANGUAGE CRUD ENDS HERE
+    //LANGUAGE CRUD ENDS HERE
 }
