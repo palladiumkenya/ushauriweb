@@ -989,7 +989,7 @@ class Admin extends MY_Controller
         $Phone = "PExists";
         $UnderAge = "UnderAge";
         $Success = "Done";
-        if ($validate_user == $Success) {
+        if ($validate_user === $Success) {
             echo "Success";
         } elseif ($validate_user === $Email) {
             echo "MailExists";

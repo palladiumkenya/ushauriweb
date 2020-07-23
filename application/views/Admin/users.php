@@ -1633,7 +1633,7 @@
                 data: dataString,
                 success: function(data) {
                     $(".btn").prop('disabled', true);
-                    console.log(data);
+                    // console.log(data);
                     if (data == "Success") {
 
                         swal({
