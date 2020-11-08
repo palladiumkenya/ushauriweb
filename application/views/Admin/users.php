@@ -934,6 +934,24 @@
 <input type="text" name="user_county_id" value="<?php echo $this->session->userdata('county_id'); ?>" class="form-control user_county_id" id="user_county_id" />
 <input type="text" name="user_sub_county_id" value="<?php echo $this->session->userdata('subcounty_id'); ?>" class="form-control user_sub_county_id" id="user_sub_county_id" />
 
+<script src="<?php echo base_url(); ?>/assets/js/lib/jquery/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="<?php echo base_url(); ?>/assets/js/lib/bootstrap/js/popper.min.js"></script>
+<script src="<?php echo base_url(); ?>/assets/js/lib/bootstrap/js/bootstrap.min.js"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="<?php echo base_url(); ?>/assets/js/jquery.slimscroll.js"></script>
+<!--Menu sidebar -->
+<script src="<?php echo base_url(); ?>/assets/js/sidebarmenu.js"></script>
+<!--stickey kit -->
+<script src="<?php echo base_url(); ?>/assets/js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
+<!--Custom JavaScript -->
+<script src="<?php echo base_url(); ?>/assets/js/custom.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
 
 
 
@@ -1639,6 +1657,7 @@
                         swal({
                             title: "Awesome!",
                             text: "User added successfully",
+                            imageUrl: '<?php echo base_url(); ?>assets/images/hand.jpg'
 
                         }, function() {
                             window.location.reload(1);
