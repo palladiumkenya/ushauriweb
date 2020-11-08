@@ -132,7 +132,7 @@ class Login extends CI_Controller
                     $diff = $date_diff->format("%R%a days");
                     $diff = substr($diff, 1, 2);
 
-                    if ($diff >= 30) {
+                    if ($diff >= 400) {
                         $this->db->trans_start();
                         $data_update = array(
                             'first_access' => 'Yes'
