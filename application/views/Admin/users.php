@@ -1616,65 +1616,64 @@
             $(".table_div").show();
             $(".add_btn").show();
         });
-        // $(".submit_add_div").click(function() {
-        //     var controller = "admin";
-        //     var submit_function = "add_user";
-        //     var form_class = "add_form";
-        //     var success_alert = "User added successfully ... :) ";
-        //     var error_alert = "An Error Ocurred";
-        //     submit_data(controller, submit_function, form_class, success_alert, error_alert);
-        // });
+        $(".submit_add_div").click(function() {
+            var controller = "admin";
+            var submit_function = "check_no";
+            var form_class = "add_form";
+            var success_alert = "User added successfully ... :) ";
+            var error_alert = "An Error Ocurred";
+            submit_data(controller, submit_function, form_class, success_alert, error_alert);
+        });
 
 
 
 
         //Replaced this to easen validation process.
-        $('.add_form').submit(function(event) {
-            $(".btn").prop('disabled', true);
-            dataString = $(".add_form").serialize();
-            $.ajax({
-                type: "POST",
-                url: "<?php echo base_url(); ?>admin/check_no",
-                data: dataString,
-                success: function(data) {
-                    $(".btn").prop('disabled', true);
-                    // console.log(data);
-                    if (data == "Success") {
+        // $('.add_form').submit(function(event) {
+        //     $(".btn").prop('disabled', true);
+        //     dataString = $(".add_form").serialize();
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "<?php echo base_url(); ?>admin/check_no",
+        //         data: dataString,
+        //         success: function(data) {
+        //             $(".btn").prop('disabled', true);
+        //             if (data == "Success") {
 
-                        swal({
-                            title: "Awesome!",
-                            text: "User added successfully",
+        //                 swal({
+        //                     title: "Awesome!",
+        //                     text: "User added successfully",
+        //                     imageUrl: '<?php echo base_url(); ?>assets/images/hand.jpg'
 
+        //                 }, function(data) {
+        //                     window.location.reload(1);
+        //                 });
+        //             } else if (data == "PhoneExists") {
+        //                 swal({
+        //                     title: "Oops!",
+        //                     text: "Mobile No. provided exists in the system",
 
-                        }, function(data) {
-                            window.location.reload(1);
-                        });
-                    } else if (data == "PhoneExists") {
-                        swal({
-                            title: "Oops!",
-                            text: "Mobile No. provided exists in the system",
+        //                 });
+        //             } else if (data == "MailExists") {
+        //                 swal({
+        //                     title: "Oops!",
+        //                     text: "Email address provided exists in the system",
+        //                     imageUrl: '<?php echo base_url(); ?>assets/images/oops.jpg'
+        //                 });
+        //             } else if (data == "UnderAge") {
+        //                 swal({
+        //                     title: "Oh Not!",
+        //                     text: "Year of birth provided is below 18 years!",
+        //                     imageUrl: '<?php echo base_url(); ?>assets/images/oops.jpg'
+        //                 });
+        //             }
 
-                        });
-                    } else if (data == "MailExists") {
-                        swal({
-                            title: "Oops!",
-                            text: "Email address provided exists in the system",
-                            imageUrl: '<?php echo base_url(); ?>assets/images/oops.jpg'
-                        });
-                    } else if (data == "UnderAge") {
-                        swal({
-                            title: "Oh Not!",
-                            text: "Year of birth provided is below 18 years!",
-                            imageUrl: '<?php echo base_url(); ?>assets/images/oops.jpg'
-                        });
-                    }
+        //         }
 
-                }
-
-            });
-            event.preventDefault();
-            return false;
-        });
+        //     });
+        //     event.preventDefault();
+        //     return false;
+        // });
         $(document).on('click', ".submit_edit_div", function() {
 
             //        $(".submit_edit_div").click(function () {
