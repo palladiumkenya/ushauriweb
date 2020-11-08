@@ -1644,7 +1644,7 @@
                         swal({
                             title: "Awesome!",
                             text: "User added successfully",
-                            imageUrl: '<?php echo base_url(); ?>assets/images/hand.jpg'
+
 
                         }, function(data) {
                             window.location.reload(1);
