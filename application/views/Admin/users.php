@@ -1611,14 +1611,14 @@
             $(".table_div").show();
             $(".add_btn").show();
         });
-        //        $(".submit_add_div").click(function () {
-        //            var controller = "admin";
-        //            var submit_function = "add_user";
-        //            var form_class = "add_form";
-        //            var success_alert = "User added successfully ... :) ";
-        //            var error_alert = "An Error Ocurred";
-        //            submit_data(controller, submit_function, form_class, success_alert, error_alert);
-        //        });
+        // $(".submit_add_div").click(function() {
+        //     var controller = "admin";
+        //     var submit_function = "add_user";
+        //     var form_class = "add_form";
+        //     var success_alert = "User added successfully ... :) ";
+        //     var error_alert = "An Error Ocurred";
+        //     submit_data(controller, submit_function, form_class, success_alert, error_alert);
+        // });
 
 
 
@@ -1639,7 +1639,7 @@
                         swal({
                             title: "Awesome!",
                             text: "User added successfully",
-                            imageUrl: '<?php echo base_url(); ?>assets/images/thumbs-up.jpg'
+
                         }, function() {
                             window.location.reload(1);
                         });
