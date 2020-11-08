@@ -990,13 +990,13 @@ class Admin extends MY_Controller
         $UnderAge = "UnderAge";
         $Success = "Done";
         if ($validate_user === $Success) {
-            echo "Success";
+            echo json_encode("Success");
         } elseif ($validate_user === $Email) {
-            echo "MailExists";
+            echo json_encode("Success");
         } elseif ($validate_user === $Phone) {
-            echo "PhoneExists";
+            echo json_encode("Success");
         } elseif ($validate_user === $UnderAge) {
-            echo "UnderAge";
+            echo json_encode("Success");
         }
     }
 

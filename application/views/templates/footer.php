@@ -168,12 +168,12 @@
                         controller + "/" + submit_function + "",
                     data: dataString,
                     success: function(data) {
-                        // console.log(data)
-                        // console.log(controller);
-                        // console.log(submit_function);
-                        // console.log(form_class);
-                        // console.log(success_alert);
-                        // console.log(error_alert);
+                        console.log(data)
+                        console.log(controller);
+                        console.log(submit_function);
+                        console.log(form_class);
+                        console.log(success_alert);
+                        console.log(error_alert);
                         $(".btn").prop('disabled', false);
                         $(".loader").hide();
 
