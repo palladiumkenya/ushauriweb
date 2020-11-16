@@ -2871,6 +2871,8 @@ class DBCentral extends CI_Model
     {
         $this->db->trans_start();
         $user_id = $this->session->userdata('user_id');
+        if (empty($transfer_date)) {
+        }
         if (empty($enrollment_date) and empty($art_date)) {
         } elseif (empty($enrollment_date) and !empty($art_date)) {
             $art_date = str_replace('/', '-', $art_date);
