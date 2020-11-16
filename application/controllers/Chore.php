@@ -1089,9 +1089,10 @@ class Chore extends MY_Controller {
             $language_id = $value->language_id;
             $client_id = $value->client_id;
             $client_name = ucwords(strtolower($f_name)) . " ";
+            $client_name = str_replace("'", '', $client_name);
 
-            // echo 'Client Name => ' . $client_name . 'and client id ' . $client_id . '</br>';
-            // exit;
+            //  echo 'Client Name => ' . $client_name . 'and client id ' . $client_id . '</br>';
+            //  exit;
 
 
 
