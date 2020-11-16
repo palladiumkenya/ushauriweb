@@ -871,6 +871,7 @@ class Chore extends MY_Controller {
             $language_id = $value->language_id;
             $client_id = $value->client_id;
             $client_name = ucwords(strtolower($f_name)) . " ";
+            $client_name = str_replace("'", '', $client_name);
 
             /// // echo 'Client Name => ' . $client_name . 'and client id ' . $client_id . '</br>';
 
@@ -1342,6 +1343,7 @@ class Chore extends MY_Controller {
             $language_id = $value->language_id;
             $client_id = $value->client_id;
             $client_name = ucwords(strtolower($f_name)) . " ";
+            $client_name = str_replace("'", '', $client_name);
 
 
 
@@ -1569,6 +1571,7 @@ class Chore extends MY_Controller {
             $client_id = $value->client_id;
             $group_id = $value->group_id;
             $client_name = ucwords(strtolower($f_name)) . " ";
+            $client_name = str_replace("'", '', $client_name);
            // echo $appointment_id . '<br>';
 
             // // // echo 'Client Name : ' . $client_name . '<br>';
@@ -1707,6 +1710,7 @@ class Chore extends MY_Controller {
             $client_id = $value->client_id;
             $group_id = $value->group_id;
             $client_name = ucwords(strtolower($f_name)) . " ";
+            $client_name = str_replace("'", '', $client_name);
 
                         $this->db->trans_start();
                         $update_appointment_array = array(
