@@ -106,11 +106,11 @@ class Chore extends MY_Controller {
 
 
 
-                $check_welcome = $this->db->query(" Select * from tbl_clnt_outgoing where message_type_id='3' and  clnt_usr_id='$clnt_usr_id' and status='Sent' LIMIT 1 ")->num_rows();
-                if ($check_welcome > 0) {
-                    $message = "Welcome message has been sent , send other messages....<br>";
+                // $check_welcome = $this->db->query(" Select * from tbl_clnt_outgoing where message_type_id='3' and  clnt_usr_id='$clnt_usr_id' and status='Sent' LIMIT 1 ")->num_rows();
+                // if ($check_welcome > 0) {
+                   // $message = "Welcome message has been sent , send other messages....<br>";
 
-                    log_message("INFO", $message);
+                   // log_message("INFO", $message);
                     //Welcome has been sent, send other messages ...
 
                     if ($status == "Not Sent") {
@@ -175,12 +175,12 @@ class Chore extends MY_Controller {
                             }
                         }
                     }
-                } else if ($check_welcome <= 0) {
-                    $log_message = 'Send welcome first ... for client ID =>' . $clnt_usr_id . '<br>';
-                    log_message("INFO", $log_message);
-                    //Send the welcome first ....
-                    $this->welcome_msg($clnt_usr_id);
-                }
+                // } else if ($check_welcome <= 0) {
+                //     $log_message = 'Send welcome first ... for client ID =>' . $clnt_usr_id . '<br>';
+                //     log_message("INFO", $log_message);
+                //     //Send the welcome first ....
+                //     $this->welcome_msg($clnt_usr_id);
+                // }
             }
         }
 
