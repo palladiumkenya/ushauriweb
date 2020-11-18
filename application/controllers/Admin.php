@@ -992,11 +992,11 @@ class Admin extends MY_Controller
         if ($validate_user === $Success) {
             echo json_encode("Success");
         } elseif ($validate_user === $Email) {
-            echo json_encode("Success");
+            echo json_encode("EExists");
         } elseif ($validate_user === $Phone) {
-            echo json_encode("Success");
+            echo json_encode("PExists");
         } elseif ($validate_user === $UnderAge) {
-            echo json_encode("Success");
+            echo json_encode("UnderAge");
         }
     }
 

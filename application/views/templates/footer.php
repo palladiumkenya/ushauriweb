@@ -168,7 +168,7 @@
                         controller + "/" + submit_function + "",
                     data: dataString,
                     success: function(data) {
-                        //console.log(data)
+                        console.log(data)
                         // console.log(controller);
                         // console.log(submit_function);
                         // console.log(form_class);
@@ -194,11 +194,11 @@
                         } else if (response === 'Taken') {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info", "Clinic No already taken ", 'info');
-                        } else if (response === 'Phone Taken') {
+                        } else if (data === "PExists") {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info", "Phone No already used in the System ",
                                 'info');
-                        } else if (response === 'Email Taken') {
+                        } else if (data === "EExists") {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info",
                                 "Email Address already used in the System ", 'info');
@@ -207,7 +207,7 @@
                             sweetAlert("Info",
                                 "Phone No and Email Address already used in the System ",
                                 'info');
-                        } else if (response === 'Under Age') {
+                        } else if (data === "UnderAge") {
                             $(".btn").prop('disabled', false);
                             sweetAlert("Info",
                                 "Under Age are not allowed in the System ", 'info');
