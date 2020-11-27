@@ -1855,19 +1855,12 @@ class Home extends MY_Controller
                     . " WHERE 1   ";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_partner_facility.sub_county_id='$sub_county_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' and active_app='1'   ";
             } elseif ($access_level == "Facility") {
-                $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE 1 ";
+                $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id, f_name,m_name,l_name, phone_no, tbl_client.status,tbl_client.clinic_number,
+                tbl_client.id as client_id,tbl_appointment.appntmnt_date,tbl_appointment.app_type_1,tbl_appointment_types.id as appointment_types_id, 
+                tbl_appointment_types.name as appointment_types, tbl_clinic.`name` as clinic from tbl_client
+                 INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id
+                 INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 
+                INNER JOIN tbl_clinic on tbl_clinic.id = tbl_client.clinic_id";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' ";
             } else {
                 $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
@@ -1953,19 +1946,11 @@ class Home extends MY_Controller
         foreach ($get_app_date as $value) {
             $appntmnt_date = $value->appntmnt_date;
             if ($access_level == "Facility") {
-                $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " , CONCAT( tbl_appointment.appntmnt_date, ', Attended: ',  tbl_appointment.unscheduled_date) AS appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE 1 ";
+                $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id, f_name,m_name,l_name,phone_no,tbl_client.status,tbl_client.clinic_number,
+                tbl_client.id as client_id,tbl_appointment.appntmnt_date,tbl_appointment.app_type_1,tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types, tbl_clinic.`name` as clinic, CONCAT( tbl_appointment.appntmnt_date, ', Attended: ',  tbl_appointment.unscheduled_date) AS appntmnt_date from tbl_client
+                 INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id
+                 INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 
+                INNER JOIN tbl_clinic on tbl_clinic.id = tbl_client.clinic_id";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' AND visit_type = 'Un-Scheduled'  ";
             }
             $data['appointments'] = $this->db->query($query)->result();
@@ -1987,19 +1972,12 @@ class Home extends MY_Controller
         foreach ($get_app_date as $value) {
             $appntmnt_date = $value->appntmnt_date;
             if ($access_level == "Facility") {
-                $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id,tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,"
-                    . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                    . " tbl_client.created_at as created_at,tbl_client.enrollment_date,tbl_client.art_date,tbl_client.updated_at,"
-                    . "tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                    . " tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                    . " ,tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,"
-                    . " tbl_appointment.app_type_1,"
-                    . "      tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types from tbl_client"
-                    . " INNER JOIN tbl_language ON tbl_language.id = tbl_client.language_id"
-                    . " INNER JOIN tbl_groups on tbl_groups.id = tbl_client.group_id"
-                    . " INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id"
-                    . " INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 "
-                    . " WHERE 1 ";
+                $query = "Select tbl_client.file_no, tbl_appointment.id as appointment_id, f_name,m_name,l_name, phone_no, tbl_client.status,tbl_client.clinic_number,
+                tbl_client.id as client_id,tbl_appointment.appntmnt_date,tbl_appointment.app_type_1,tbl_appointment_types.id as appointment_types_id, 
+                tbl_appointment_types.name as appointment_types, tbl_clinic.`name` as clinic from tbl_client
+                 INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id
+                 INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 
+                INNER JOIN tbl_clinic on tbl_clinic.id = tbl_client.clinic_id";
                 $query .= " AND tbl_client.status = 'Active' AND tbl_client.mfl_code='$facility_id'  AND tbl_appointment.appntmnt_date = '$appntmnt_date' AND active_app = '0' AND date_attended='$appntmnt_date'  ";
             }
             $data['appointments'] = $this->db->query($query)->result();
@@ -3770,18 +3748,12 @@ class Home extends MY_Controller
                 'join' => array('client' => 'client.id = appointment.client_id'),
                 'where' => array('client.status' => 'Active', 'client.mfl_code' => $facility_id)
             );
-            $notified_details = "Select tbl_client.file_no, tbl_groups.name as group_name,tbl_groups.id as group_id,tbl_language.name as language_name ,app_type_1,tbl_appointment_types.id as appointment_types_id , tbl_appointment_types.name as appointment_types,"
-                . " tbl_language.id as language_id, f_name,m_name,l_name,dob,tbl_client.status,phone_no,tbl_client.clinic_number,"
-                . "tbl_client.created_at as enrollment_date,tbl_client.updated_at,tbl_client.id as client_id,tbl_client.clinic_number,tbl_client.client_status,tbl_client.txt_frequency,"
-                . "tbl_client.txt_time,tbl_client.alt_phone_no,tbl_client.shared_no_name,tbl_client.smsenable"
-                . ",tbl_appointment.appntmnt_date,tbl_appointment.app_msg,tbl_appointment.updated_at,tbl_appointment.app_type_1  "
-                . " from tbl_client inner join tbl_language on tbl_language.id = tbl_client.language_id "
-                . " inner join tbl_groups on tbl_groups.id = tbl_client.group_id "
-                . "inner join tbl_master_facility on tbl_master_facility.code = tbl_client.mfl_code "
-                . "inner JOIN `tbl_county`  ON `tbl_county`.`id` = `tbl_master_facility`.county_id "
-                . " inner join tbl_appointment on tbl_appointment.client_id =tbl_client.id "
-                . " inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1"
-                . " where tbl_client.status='Active'  and DATE(appntmnt_date)  >= CURDATE() and active_app='1' and tbl_client.mfl_code='$facility_id' ";
+            $notified_details = "Select tbl_client.file_no, tbl_appointment.id as appointment_id, f_name,m_name,l_name,phone_no,tbl_client.status,tbl_client.clinic_number,
+            tbl_client.id as client_id,tbl_appointment.appntmnt_date,tbl_appointment.app_type_1,tbl_appointment_types.id as appointment_types_id, tbl_appointment_types.name as appointment_types, tbl_clinic.`name` as clinic from tbl_client
+             INNER JOIN tbl_appointment on tbl_appointment.client_id = tbl_client.id
+             INNER  JOIN tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1 
+            INNER JOIN tbl_clinic on tbl_clinic.id = tbl_client.clinic_id";
+            $notified_details .= " AND tbl_client.status = 'Active' AND DATE(appntmnt_date)  >= CURDATE() AND active_app = '1' AND tbl_client.mfl_code='$facility_id' ";
         } else {
             $appointments = array(
                 'table' => 'appointment',
