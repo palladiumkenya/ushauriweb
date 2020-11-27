@@ -3,7 +3,8 @@
     <!-- Bread crumb -->
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Dashboard</h3> </div>
+            <h3 class="text-primary">Dashboard</h3>
+        </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?php echo base_url(); ?>">Home</a></li>
@@ -30,7 +31,7 @@
 
 
 
-                            <div class="panel-body"> 
+                            <div class="panel-body">
 
 
                                 <div class="table_div">
@@ -48,18 +49,18 @@
                                                 <th>Appointment Date</th>
                                                 <th>Appointment Type</th>
                                                 <th>Status</th>
-                                                <th>Outgoing Msg</th>
+                                                <th>Clinic</th>
+                                                <th>Action</th>
                                                 <?php
                                                 $access_level = $this->session->userdata('access_level');
                                                 if ($access_level == "Facility") {
-                                                    ?>
-                                                    <th>Action</th>
-                                                    <?php
+                                                ?>
+                                                <?php
                                                 } else {
-                                                    ?>
+                                                ?>
 
 
-                                                    <?php
+                                                <?php
                                                 }
                                                 ?>
 
@@ -70,7 +71,7 @@
                                             <?php
                                             $i = 1;
                                             foreach ($notified as $value) {
-                                                ?>
+                                            ?>
                                                 <tr>
                                                     <td class="a-center"><?php echo $i; ?></td>
 
@@ -80,9 +81,9 @@
                                                     $view_client = $this->session->userdata('view_client');
 
                                                     if ($view_client == "Yes") {
-                                                        ?>
+                                                    ?>
                                                         <td>
-                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>"/>
+                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>" />
                                                             <button class="btn btn-default btn-small edit_btn" id="edit_btn">
                                                                 <?php echo $value->clinic_number; ?>
                                                             </button>
@@ -95,28 +96,29 @@
                                                             echo $client_name;
                                                             ?></td>
                                                         <td><?php echo $value->phone_no; ?></td>
-                                                        <?php
+                                                    <?php
                                                     } else {
-                                                        ?>
+                                                    ?>
 
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
                                                         <td>XXXXXX XXXXXXX</td>
-                                                        <?php
+                                                        <td>XXXXXX XXXXXXX</td>
+                                                    <?php
                                                     }
                                                     ?>
                                                     <td><?php echo $value->appntmnt_date; ?></td>
                                                     <td><?php echo $value->appointment_types; ?></td>
                                                     <td><?php echo $value->status; ?></td>
-                                                    <td><?php echo $value->app_msg; ?></td>
+                                                    <td><?php echo $value->clinic; ?></td>
                                                     <?php
                                                     $access_level = $this->session->userdata('access_level');
                                                     if ($access_level == "Facility") {
-                                                        ?>
-                                                        <td>  
-                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>"/>
-                                                            <input type="hidden" id="app_type_1" name="app_type_1" class="app_type_1 form-control" value="<?php echo $value->app_type_1; ?>"/>
-                                                            <button class="btn btn-primary btn-small confirm_btn" id="confirm_btn">Confirm</button></td>
+                                                    ?>
+                                                        <td>
+                                                            <input type="hidden" id="client_id" name="client_id" class="client_id form-control" value="<?php echo $value->client_id; ?>" />
+                                                            <input type="hidden" id="app_type_1" name="app_type_1" class="app_type_1 form-control" value="<?php echo $value->app_type_1; ?>" />
+                                                            <!-- <button class="btn btn-primary btn-small confirm_btn" id="confirm_btn">Confirm</button></td> -->
 
                                                         <?php
                                                     } else {
@@ -126,8 +128,9 @@
 
                                                         <?php
                                                     }
-                                                    ?> </tr>
-                                                <?php
+                                                        ?>
+                                                </tr>
+                                            <?php
                                                 $i++;
                                             }
                                             ?>
@@ -168,31 +171,32 @@
                                             <div class='col-xs-10 form-group'>
                                                 <div class='col-xs-5'>
                                                     <section class='panel'>
-                                                        <header class='panel-heading'>   
+                                                        <header class='panel-heading'>
                                                         </header>
-                                                        <div class='panel-body'>  <div class='form'>
+                                                        <div class='panel-body'>
+                                                            <div class='form'>
 
 
-                                                                <input type="hidden" id="confirm_client_id" class="client_id" name="client_id"/>
+                                                                <input type="hidden" id="confirm_client_id" class="client_id" name="client_id" />
 
-                                                                <h2> Client Personal Information </h2> 
+                                                                <h2> Client Personal Information </h2>
                                                                 <label class='control-label'>Clinic Number* (Unique value : )</label>
-                                                                <input class='form-control' type='text' readonly="" required='' name='clinic_number'  id='confirm_clinic_number' >
-                                                                <label class='control-label'>First Name </label> 
-                                                                <input class='form-control fname' readonly="" type='text' name='fname'  id='confirm_fname' >
+                                                                <input class='form-control' type='text' readonly="" required='' name='clinic_number' id='confirm_clinic_number'>
+                                                                <label class='control-label'>First Name </label>
+                                                                <input class='form-control fname' readonly="" type='text' name='fname' id='confirm_fname'>
 
-                                                                <label class='control-label'>Middle Name </label>  
-                                                                <input type='text' class='form-control mname' readonly="" name='mname'  id='confirm_mname'>
+                                                                <label class='control-label'>Middle Name </label>
+                                                                <input type='text' class='form-control mname' readonly="" name='mname' id='confirm_mname'>
 
-                                                                <label class='control-label'>Last Name</label>  
-                                                                <input class='form-control lame' type='text' readonly="" name='lname'  id='confirm_lname' >
+                                                                <label class='control-label'>Last Name</label>
+                                                                <input class='form-control lame' type='text' readonly="" name='lname' id='confirm_lname'>
 
-                                                                <label class='control-label'>Cell Phone Number (Own) </label> 
-                                                                <input class='form-control mobile' readonly=""  type='text' name='mobile' id='confirm_mobile'   >
+                                                                <label class='control-label'>Cell Phone Number (Own) </label>
+                                                                <input class='form-control mobile' readonly="" type='text' name='mobile' id='confirm_mobile'>
 
 
-                                                                <label class='control-label'>Appointment Type </label> 
-                                                                <input class='form-control app_type_1' placeholder="Appointment Type " readonly=""  type='text' name='app_type_1' id='app_type_1'   >
+                                                                <label class='control-label'>Appointment Type </label>
+                                                                <input class='form-control app_type_1' placeholder="Appointment Type " readonly="" type='text' name='app_type_1' id='app_type_1'>
 
 
                                                                 <div class="appointment_kept_div" id="appointment_kept_div" style="display: inline;">
@@ -200,9 +204,9 @@
                                                                 </div>
 
 
-                                                                <label class='control-label'> Next Appointment Date </lable> 
-                                                                    <input type='text' readonly="" placeholder="DD/MM/YYYY" class='form-control appointment_date' name='apptdate' id='appointment_date'/> 
-                                                                    <input type='hidden'  name='appointment_type' id='edit_appointment_type' value='Appointment' class='form-control' readonly/>
+                                                                <label class='control-label'> Next Appointment Date </lable>
+                                                                    <input type='text' readonly="" placeholder="DD/MM/YYYY" class='form-control appointment_date' name='apptdate' id='appointment_date' />
+                                                                    <input type='hidden' name='appointment_type' id='edit_appointment_type' value='Appointment' class='form-control' readonly />
 
 
                                                             </div>
@@ -210,7 +214,9 @@
                                                             <button type="button" class="cancel_confirm_client btn btn-danger btn-small" id="cancel_confirm_client">Cancel</button>
 
 
-                                                        </div> </section></div>
+                                                        </div>
+                                                    </section>
+                                                </div>
 
 
 
@@ -222,7 +228,7 @@
 
 
                                             </div>
-                                        </div>   
+                                        </div>
 
 
 
@@ -235,7 +241,7 @@
 
 
 
-                                </div>  
+                                </div>
 
 
 
@@ -312,7 +318,7 @@
 </div>
 <!-- End Container fluid  -->
 <!-- footer -->
-<footer class="footer"> © 2018 Ushauri -  All rights reserved. Powered  by <a href="https://mhealthkenya.org">mHealth Kenya Ltd</a></footer>
+<footer class="footer"> © 2018 Ushauri - All rights reserved. Powered by <a href="https://mhealthkenya.org">mHealth Kenya Ltd</a></footer>
 <!-- End footer -->
 </div>
 <!-- End Page wrapper  -->
@@ -341,18 +347,18 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
 
-        $(".back_button").click(function () {
+        $(".back_button").click(function() {
             $(".table_div").show();
             $(".edit_div").hide();
         });
 
 
 
-        $(document).on('click', ".confirm_btn", function () {
+        $(document).on('click', ".confirm_btn", function() {
             $('.loader').show();
             //get data
             var data_id = $(this).closest('tr').find('input[name="client_id"]').val();
@@ -367,9 +373,9 @@
                 async: true,
                 url: "<?php echo base_url(); ?>" + controller + "/" + get_function + "/" + data_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $('.loader').hide();
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
 
                         $("#confirm_client_id").empty();
 
@@ -423,7 +429,8 @@
 
 
 
-                }, error: function (data) {
+                },
+                error: function(data) {
                     $('.loader').hide();
                     sweetAlert("Oops...", "" + error_alert + "", "error");
 
@@ -454,7 +461,7 @@
 
 
 
-        $(document).on('click', ".edit_btn", function () {
+        $(document).on('click', ".edit_btn", function() {
             $('.loader').show();
 
             //get data
@@ -471,10 +478,10 @@
                 async: true,
                 url: "<?php echo base_url(); ?>" + controller + "/" + get_function + "/" + data_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $('.loader').hide();
                     get_appointment_logs(data_id);
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
                         $("#edit_user_id").empty();
 
                         $("#edit_status").empty();
@@ -538,7 +545,8 @@
 
 
 
-                }, error: function (data) {
+                },
+                error: function(data) {
                     sweetAlert("Oops...", "" + error_alert + "", "error");
 
                 }
@@ -568,13 +576,13 @@
                 async: true,
                 url: "<?php echo base_url(); ?>" + controller + "/" + get_function + "/" + client_id,
                 dataType: "JSON",
-                success: function (response) {
+                success: function(response) {
                     $('.loader').hide();
                     var table = "<table class='table table-bordered table-hover table-condensed table-stripped '><thead><th>No . </th><th>Clinic No</th><th>Client Name.</th><th>Phone No</th><th>Message Type.</th><th>Status </th><th>Sent On </th><th>App Message .</th></thead>\n\
                 <tbody id='app_results_tbody' class='app_results_tbody'></tbody></table>";
                     $(".appointment_logs_div").append(table);
                     var no = 1;
-                    $.each(response, function (i, value) {
+                    $.each(response, function(i, value) {
 
                         var clinic_no = value.clinic_number;
                         var client_name = value.f_name + " " + value.m_name + " " + value.l_name;
@@ -597,7 +605,8 @@
 
 
 
-                }, error: function (data) {
+                },
+                error: function(data) {
                     sweetAlert("Oops...", "" + error_alert + "", "error");
 
                 }
@@ -609,19 +618,19 @@
         }
 
 
-        $(".cancel_add_client").click(function () {
+        $(".cancel_add_client").click(function() {
             $(".edit_form").hide();
             $(".table_div").show();
             $(".edit_div").hide();
         });
 
-        $(".cancel_confirm_client").click(function () {
+        $(".cancel_confirm_client").click(function() {
             $(".confirm_div").hide();
             $(".table_div").show();
         });
 
 
-        $(".close_add_div").click(function () {
+        $(".close_add_div").click(function() {
             $(".add_div").hide();
             $(".table_div").show();
             $(".f_name").empty();
@@ -643,7 +652,7 @@
 
 
 
-        $(".submit_edit_div").click(function () {
+        $(".submit_edit_div").click(function() {
             var controller = "home";
             var submit_function = "update_client";
             var form_class = "edit_form";
@@ -656,7 +665,7 @@
 
 
 
-        $(".submit_confirm_div").click(function () {
+        $(".submit_confirm_div").click(function() {
             var controller = "home";
             var submit_function = "update_appointment";
             var form_class = "confirm_form";
@@ -683,24 +692,3 @@
 
 
 <!--END MAIN WRAPPER -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
