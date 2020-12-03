@@ -9696,6 +9696,7 @@ FROM
             $get_query = $query->result_array();
 
             echo json_encode($get_query);
+            exit;
         } else {
             $filename = "Client Report";
 

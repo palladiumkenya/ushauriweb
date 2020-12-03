@@ -2790,7 +2790,7 @@
                             var txt_time = value.txt_time;
                             var enrollment_date = value.enrollment_date;
                             var art_date = value.art_date;
-                            var partner_id = value.partner_id;
+                            // var partner_id = value.partner_id;
                             var partner_name = value.partner_name;
                             var county_name = value.county_name;
                             var sub_county = value.sub_county;
@@ -2798,7 +2798,7 @@
                             var facility_name = value.facility_name;
                             var smsenable = value.smsenable;
                             var consent_date = value.consent_date;
-                            var motivational_enable = value.motivational_enable;
+                            // var motivational_enable = value.motivational_enable;
                             var wellness_enable = value.wellness_enable;
                             var tr_results = "<tr>\n\
             <td>" + clinic_number + "</td>\n\
@@ -2818,9 +2818,9 @@
             <td>" + facility_name + "</td>\n\
             <td>" + smsenable + "</td>\n\
             <td>" + consent_date + "</td>\n\
-            <td>" + motivational_enable + "</td>\n\
             <td>" + wellness_enable + "</td>\n\
             </tr>";
+
                             dTbles(".results_tbody").append(tr_results);
                         });
                         dTbles(".client_reports_div").show();
