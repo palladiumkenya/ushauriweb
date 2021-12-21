@@ -31,6 +31,7 @@ class Chore extends MY_Controller {
 
     }
 
+
     function sender() {
 
         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -51,9 +52,6 @@ class Chore extends MY_Controller {
         AND tbl_time.`id` = (HOUR(NOW()) + 1) GROUP by tbl_client.id, tbl_clnt_outgoing.id ";
 
         $no_outgoing_msgs = $this->db->query($query)->num_rows();
-
-        // echo $no_outgoing_msgs;
-        // exit;
 
         if ($no_outgoing_msgs > 0) {
             //$limit = round($no_outgoing_msgs / 2);
@@ -89,14 +87,13 @@ class Chore extends MY_Controller {
             //get all Client messages due  today that have not been sent from the  system and limit them to 200 after every 1 minute
             $clnt_outgoing = $this->db->query($new_query)->result();
 
-
-
             foreach ($clnt_outgoing as $value) {
                 $clnt_outgoing_id = $value->id;
                 $source = $value->source;
                 $destination = $value->destination;
                 $msg = $value->msg;
                 $status = $value->status;
+                $at_status = $value->at_status;
                 $responded = $value->responded;
                 $content_id = $value->content_id;
                 $message_type_id = $value->message_type_id;
@@ -113,26 +110,11 @@ class Chore extends MY_Controller {
                    // log_message("INFO", $message);
                     //Welcome has been sent, send other messages ...
 
-                    if ($status == "Not Sent") {
+                    if ($at_status !== "Success") {
 
 
                         $check_if_similiar_msg_sent_qry = $this->db->query("Select * from tbl_clnt_outgoing where msg LIKE '%$msg%' and destination='$destination' and status='Sent' and created_at >= CURDATE()- INTERVAL 1 DAY AND created_at <= CURDATE() + INTERVAL 1 DAY ")->num_rows();
                         if ($check_if_similiar_msg_sent_qry < 1) {
-
-
-                            $this->db->trans_start();
-
-                            $data_update_clnt_outgoing = array(
-                                'status' => 'Sent'
-                            );
-                            $this->db->where('id', $clnt_outgoing_id);
-                            $this->db->update('clnt_outgoing', $data_update_clnt_outgoing);
-                            $this->db->trans_complete();
-                            if ($this->db->trans_status() === FALSE) {
-                                echo "FAILED TO UPDATE THE  LOGS SUCCESFULLY. ";
-                            } else {
-                                echo 'Outgoing Logs Update successfuly </br> ';
-                            }
 
                             $log_message = 'Message has not been sent , send the current message ... <br>';
                             log_message("INFO", $log_message);
@@ -144,11 +126,10 @@ class Chore extends MY_Controller {
                                 $destination = "+254" . $mobile;
                             }
 
-
-
                             //Password the access credentials for sending message 
 
                             $send_text = $this->data->send_message($source, $destination, $msg, $clnt_outgoing_id);
+
                             $today = date("Y-m-d H:i:s");
                             $log_message = 'Msg #1' . $msg . '</br>Destination  # 1 : ' . $destination . '<br>Source => ' . $source . '</br>';
 
@@ -159,6 +140,23 @@ class Chore extends MY_Controller {
                                 echo "Message sent. ";
                                 $log_message = "Sent message Successfully for message id =>  $clnt_outgoing_id </br> ";
                                 log_message("INFO", $log_message);
+
+                                $this->db->trans_start();
+
+                                $data_update_clnt_outgoing = array(
+                                    'status' => 'Sent',
+                                    'at_status' => $send_text->status,
+                                    'status_code' => $send_text->statusCode,
+                                );
+                                $this->db->where('id', $clnt_outgoing_id);
+                                $this->db->update('clnt_outgoing', $data_update_clnt_outgoing);
+                                $this->db->trans_complete();
+                                if ($this->db->trans_status() === FALSE) {
+                                    echo "FAILED TO UPDATE THE  LOGS SUCCESFULLY. ";
+                                } else {
+                                    echo 'Outgoing Logs Update successfuly </br> ';
+                                }
+
                             }
                         } else {
                             echo "message delete";
@@ -182,8 +180,7 @@ class Chore extends MY_Controller {
                 //     $this->welcome_msg($clnt_usr_id);
                 // }
             }
-        }
-
+        } 
 
 
         // $this->output->enable_profiler(TRUE);
@@ -228,6 +225,10 @@ class Chore extends MY_Controller {
     function lost_query(){
         $this->db->query("DROP TABLE IF EXISTS tbl_lost");
         $this->db->query("CREATE TABLE tbl_lost AS SELECT * FROM lost_query");
+    }
+    function pull_past_appointment_new(){
+        $this->db->query("DROP TABLE IF EXISTS tbl_past_appointment_new");
+        $this->db->query("CREATE TABLE tbl_past_appointment_new AS SELECT * FROM past_appointments_view");
     }
     
     function client_list(){
