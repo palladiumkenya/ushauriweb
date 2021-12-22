@@ -110,7 +110,7 @@ class Chore extends MY_Controller {
                    // log_message("INFO", $message);
                     //Welcome has been sent, send other messages ...
 
-                    if ($at_status !== "Success") {
+                    if ($status !== "Sent") {
 
 
                         $check_if_similiar_msg_sent_qry = $this->db->query("Select * from tbl_clnt_outgoing where msg LIKE '%$msg%' and destination='$destination' and status='Sent' and created_at >= CURDATE()- INTERVAL 1 DAY AND created_at <= CURDATE() + INTERVAL 1 DAY ")->num_rows();
