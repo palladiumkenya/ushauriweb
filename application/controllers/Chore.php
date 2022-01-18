@@ -229,6 +229,10 @@ class Chore extends MY_Controller {
         $this->db->query("DROP TABLE IF EXISTS tbl_lost");
         $this->db->query("CREATE TABLE tbl_lost AS SELECT * FROM lost_query");
     }
+    function pull_past_appointment_new(){
+        $this->db->query("DROP TABLE IF EXISTS tbl_past_appointment_new");
+        $this->db->query("CREATE TABLE tbl_past_appointment_new AS SELECT * FROM past_appointments_view");
+    }
     
     function client_list(){
         $this->db->query("DROP TABLE IF EXISTS tbl_client_list_new");
