@@ -28,10 +28,11 @@ class Chore extends MY_Controller {
                 $this->db->insert('tbl_outcome_report_raw', $new_client);
             }
         }
-
     }
 
-    function sender() {
+
+
+function sender() {
 
         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
         $this->config->load('config', TRUE);
@@ -52,15 +53,12 @@ class Chore extends MY_Controller {
 
         $no_outgoing_msgs = $this->db->query($query)->num_rows();
 
-        // echo $no_outgoing_msgs;
-        // exit;
-
         if ($no_outgoing_msgs > 0) {
             //$limit = round($no_outgoing_msgs / 2);
-            $log_message = 'No of outgoing msgs => ' . $no_outgoing_msgs .  '<br>';
+            //$log_message = 'No of outgoing msgs => ' . $no_outgoing_msgs .  '<br>';
 
 
-            log_message("INFO", $log_message);
+           // log_message("INFO", $log_message);
 
             $new_query = "SELECT 
             tbl_clnt_outgoing.id,
@@ -88,8 +86,6 @@ class Chore extends MY_Controller {
 
             //get all Client messages due  today that have not been sent from the  system and limit them to 200 after every 1 minute
             $clnt_outgoing = $this->db->query($new_query)->result();
-
-
 
             foreach ($clnt_outgoing as $value) {
                 $clnt_outgoing_id = $value->id;
@@ -120,22 +116,9 @@ class Chore extends MY_Controller {
                         if ($check_if_similiar_msg_sent_qry < 1) {
 
 
-                            $this->db->trans_start();
-
-                            $data_update_clnt_outgoing = array(
-                                'status' => 'Sent'
-                            );
-                            $this->db->where('id', $clnt_outgoing_id);
-                            $this->db->update('clnt_outgoing', $data_update_clnt_outgoing);
-                            $this->db->trans_complete();
-                            if ($this->db->trans_status() === FALSE) {
-                                echo "FAILED TO UPDATE THE  LOGS SUCCESFULLY. ";
-                            } else {
-                                echo 'Outgoing Logs Update successfuly </br> ';
-                            }
-
-                            $log_message = 'Message has not been sent , send the current message ... <br>';
-                            log_message("INFO", $log_message);
+                           
+                           // $log_message = 'Message has not been sent , send the current message ... <br>';
+                            //log_message("INFO", $log_message);
                             //Message has not been sent, send the  current message
                             //Number process , Append conutry code prefix on the  phone no if its not appended e.g 0712345678 => 254712345678	
                             $mobile = substr($destination, -9);
@@ -143,27 +126,49 @@ class Chore extends MY_Controller {
                             if ($len < 10) {
                                 $destination = "+254" . $mobile;
                             }
-
-
-
                             //Password the access credentials for sending message 
-
+                            //call Africastalking api
                             $send_text = $this->data->send_message($source, $destination, $msg, $clnt_outgoing_id);
                             $today = date("Y-m-d H:i:s");
                             $log_message = 'Msg #1' . $msg . '</br>Destination  # 1 : ' . $destination . '<br>Source => ' . $source . '</br>';
 
-                            log_message("INFO", $log_message);
+                            //log_message("INFO", $log_message);
 
+                            // var_dump($send_text, true);
+                            // exit;
 
-                            if ($send_text) {
-                                echo "Message sent. ";
-                                $log_message = "Sent message Successfully for message id =>  $clnt_outgoing_id </br> ";
-                                log_message("INFO", $log_message);
+                            $this->db->trans_start();
+                            foreach ($send_text as $result) {
+                                $number = $result->number;
+                                $status = $result->status;
+                                $messageid = $result->messageId;
+                                $cost = $result->cost;
+                                $statusCode = $result->statusCode;
+
+                                $data_update_clnt_outgoing = array(
+                                    'status' => $status,
+                                    'cost' => $cost,
+                                    'message_id' => $messageid
+
+                                );
+                                $this->db->where('id', $clnt_outgoing_id);
+                                $this->db->update('clnt_outgoing', $data_update_clnt_outgoing);
+                                    
                             }
+                            $this->db->trans_complete();
+                            if ($this->db->trans_status() === FALSE) {
+                               // $log_message = "Failed to commit changes for message id =>  $clnt_outgoing_id </br>" ;
+                            } else {
+                                //$log_message = "Changes committed successfully for message id =>  $clnt_outgoing_id </br> ";
+                            }
+
+                            //$log_message = "Sent message Successfully for message id =>  $clnt_outgoing_id </br> ";
+                            //log_message("INFO", $log_message);
+                            
                         } else {
                             echo "message delete";
-                            $log_message = 'Message has been sent , do not send the  current message<br>';
-                            log_message("INFO", $log_message);
+                            //$log_message = 'Message has been sent , do not send the  current message<br>';
+                            //log_message("INFO", $log_message);
                             $this->db->trans_start();
                             $this->db->delete('clnt_outgoing', array('id' => $clnt_outgoing_id));  // Produces: // DELETE FROM mytable  // WHERE id = $id
 
@@ -188,6 +193,8 @@ class Chore extends MY_Controller {
 
         // $this->output->enable_profiler(TRUE);
     }
+
+
     //Decided to query from the view itself
     
     // function client_raw_report(){
@@ -228,6 +235,10 @@ class Chore extends MY_Controller {
     function lost_query(){
         $this->db->query("DROP TABLE IF EXISTS tbl_lost");
         $this->db->query("CREATE TABLE tbl_lost AS SELECT * FROM lost_query");
+    }
+    function pull_past_appointment_new(){
+        $this->db->query("DROP TABLE IF EXISTS tbl_past_appointment_new");
+        $this->db->query("CREATE TABLE tbl_past_appointment_new AS SELECT * FROM past_appointments_view");
     }
     
     function client_list(){

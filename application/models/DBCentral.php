@@ -3830,7 +3830,7 @@ class DBCentral extends CI_Model
                 }
 
 
-                $source = "40146";
+                $source = "40149";
                 $today = date("Y-m-d H:i:s");
                 $status = "Not Sent";
                 $post_data = array(
@@ -3870,7 +3870,7 @@ class DBCentral extends CI_Model
                     }
 
 
-                    $source = "40146";
+                    $source = "40149";
                     $today = date("Y-m-d H:i:s");
                     $status = "Not Sent";
                     $post_data = array(
@@ -3939,7 +3939,7 @@ class DBCentral extends CI_Model
             foreach ($get_broadcast_sms_queue as $broadcast_value) {
                 $this->db->trans_start();
                 $sms_queue_id = $broadcast_value->id;
-                $source = "40146";
+                $source = "40149";
                 $today = date("Y-m-d H:i:s");
                 $status = "Not Sent";
                 $post_data = array(
@@ -3974,7 +3974,7 @@ class DBCentral extends CI_Model
 
 
 
-                            $source = "40146";
+                            $source = "40149";
                             $today = date("Y-m-d H:i:s");
                             $status = "Not Sent";
                             $this->db->trans_start();
@@ -4020,7 +4020,7 @@ class DBCentral extends CI_Model
                             }
 
 
-                            $source = "40146";
+                            $source = "40149";
                             $today = date("Y-m-d H:i:s");
                             $status = "Not Sent";
 
@@ -4389,8 +4389,8 @@ class DBCentral extends CI_Model
         //Africa's Talking Library.
         // require_once('AfricasTalkingGateway.php');
         //Africa's Talking API key and username.
-        $username = 'mhealthuser';
-        $apikey = '1f6943f6c8f0d5d6b0dd54cd940935bdec8f7454c4e7863672048dae496ae355';
+        $username = 'Ushauri_KE';
+        $apikey = '972bdb6f53893725b09eaa3581a264ebf77b0e816ef5e9cb9f29e0c7738e41c1';
 
         //Shortcode.
 
@@ -4398,14 +4398,7 @@ class DBCentral extends CI_Model
         try {
             $results = $gateway->sendMessage($destination, $msg, $source);
 
-            foreach ($results as $result) {
-                $number = $result->number;
-                $status = $result->status;
-                $messageid = $result->messageId;
-                $cost = $result->cost;
-                $statusCode = $result->statusCode;
-            }
-            return true;
+            return $results;
         } catch (GatewayException $e) {
             echo "Oops an error encountered while sending: " . $e->getMessage();
             return false;
@@ -4896,3 +4889,4 @@ class DBCentral extends CI_Model
         return $query->result_array();
     }
 }
+
