@@ -21,8 +21,8 @@ class Chore extends MY_Controller {
     function sync_tracing_outcome(){
         $latest_ids = $this->db->query("SELECT MAX(Outcome_ID) as Outcome_ID FROM tbl_outcome_report_raw")->result();
         foreach ($latest_ids as $latest) {
-            
-          
+
+
             $new_clients = $this->db->query("SELECT * FROM partner_outcome_report WHERE Outcome_ID > '$latest->Outcome_ID'")->result();
             foreach($new_clients as $new_client){
                 $this->db->insert('tbl_outcome_report_raw', $new_client);
@@ -39,15 +39,15 @@ function sender() {
         // Retrieve a config item named site_name contained within the blog_settings array
         $shortcode = $this->config->item('shortcode', 'config');
 
-        $query = "    SELECT 
-        tbl_clnt_outgoing.id 
+        $query = "    SELECT
+        tbl_clnt_outgoing.id
       FROM
-        tbl_clnt_outgoing 
-        INNER JOIN tbl_client 
-          ON tbl_client.`id` = tbl_clnt_outgoing.`clnt_usr_id` 
-        INNER JOIN tbl_time 
-          ON tbl_time.`id` = tbl_client.`txt_time` 
-      WHERE  DATE(tbl_clnt_outgoing.created_at) = CURDATE() 
+        tbl_clnt_outgoing
+        INNER JOIN tbl_client
+          ON tbl_client.`id` = tbl_clnt_outgoing.`clnt_usr_id`
+        INNER JOIN tbl_time
+          ON tbl_time.`id` = tbl_client.`txt_time`
+      WHERE  DATE(tbl_clnt_outgoing.created_at) = CURDATE()
         AND tbl_clnt_outgoing.STATUS = 'Not Sent' AND tbl_client.status='Active'
         AND tbl_time.`id` = (HOUR(NOW()) + 1) GROUP by tbl_client.id, tbl_clnt_outgoing.id ";
 
@@ -60,7 +60,7 @@ function sender() {
 
            // log_message("INFO", $log_message);
 
-            $new_query = "SELECT 
+            $new_query = "SELECT
             tbl_clnt_outgoing.id,
             source,
             destination,
@@ -72,15 +72,15 @@ function sender() {
             clnt_usr_id,
             tbl_clnt_outgoing.`created_at`,
             tbl_clnt_outgoing.`updated_at`,
-            tbl_clnt_outgoing.`recepient_type` 
+            tbl_clnt_outgoing.`recepient_type`
           FROM
-            tbl_clnt_outgoing 
-            INNER JOIN tbl_client 
-              ON tbl_client.`id` = tbl_clnt_outgoing.`clnt_usr_id` 
-            INNER JOIN tbl_time 
-              ON tbl_time.`id` = tbl_client.`txt_time` 
-          WHERE 1 
-            AND DATE(tbl_clnt_outgoing.created_at) = CURDATE() 
+            tbl_clnt_outgoing
+            INNER JOIN tbl_client
+              ON tbl_client.`id` = tbl_clnt_outgoing.`clnt_usr_id`
+            INNER JOIN tbl_time
+              ON tbl_time.`id` = tbl_client.`txt_time`
+          WHERE 1
+            AND DATE(tbl_clnt_outgoing.created_at) = CURDATE()
             AND tbl_clnt_outgoing.STATUS = 'Not Sent' AND tbl_client.status='Active'
             AND tbl_time.`name` = HOUR(NOW())  GROUP by tbl_client.id, tbl_clnt_outgoing.id";
 
@@ -116,17 +116,17 @@ function sender() {
                         if ($check_if_similiar_msg_sent_qry < 1) {
 
 
-                           
+
                            // $log_message = 'Message has not been sent , send the current message ... <br>';
                             //log_message("INFO", $log_message);
                             //Message has not been sent, send the  current message
-                            //Number process , Append conutry code prefix on the  phone no if its not appended e.g 0712345678 => 254712345678	
+                            //Number process , Append conutry code prefix on the  phone no if its not appended e.g 0712345678 => 254712345678
                             $mobile = substr($destination, -9);
                             $len = strlen($mobile);
                             if ($len < 10) {
                                 $destination = "+254" . $mobile;
                             }
-                            //Password the access credentials for sending message 
+                            //Password the access credentials for sending message
                             //call Africastalking api
                             $send_text = $this->data->send_message($source, $destination, $msg, $clnt_outgoing_id);
                             $today = date("Y-m-d H:i:s");
@@ -153,7 +153,7 @@ function sender() {
                                 );
                                 $this->db->where('id', $clnt_outgoing_id);
                                 $this->db->update('clnt_outgoing', $data_update_clnt_outgoing);
-                                    
+
                             }
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
@@ -164,7 +164,7 @@ function sender() {
 
                             //$log_message = "Sent message Successfully for message id =>  $clnt_outgoing_id </br> ";
                             //log_message("INFO", $log_message);
-                            
+
                         } else {
                             echo "message delete";
                             //$log_message = 'Message has been sent , do not send the  current message<br>';
@@ -196,7 +196,7 @@ function sender() {
 
 
     //Decided to query from the view itself
-    
+
     // function client_raw_report(){
     //     $latest_ids = $this->db->query("SELECT MAX(client_id) as client_id FROM tbl_client_raw_report")->result();
     //     foreach ($latest_ids as $latest) {
@@ -240,7 +240,7 @@ function sender() {
         $this->db->query("DROP TABLE IF EXISTS tbl_past_appointment_new");
         $this->db->query("CREATE TABLE tbl_past_appointment_new AS SELECT * FROM past_appointments_view");
     }
-    
+
     function client_list(){
         $this->db->query("DROP TABLE IF EXISTS tbl_client_list_new");
         $this->db->query("CREATE TABLE tbl_client_list_new AS SELECT * FROM client_list");
@@ -264,13 +264,13 @@ function sender() {
         $this->db->query("DROP TABLE IF EXISTS tbl_defaulted_query");
         $this->db->query("CREATE TABLE tbl_defaulted_query AS SELECT * FROM defaulted_query");
     }
-    
+
     function future_appointments_query(){
         $this->db->query("DROP TABLE IF EXISTS tbl_future_appointments_query");
         $this->db->query("CREATE TABLE tbl_future_appointments_query AS SELECT * FROM future_appointments_query");
 
     }
-    
+
     function alt_send_msgs() {
         $gateway = $this->load->database('gateway', TRUE); // the TRUE paramater tells CI that you'd like to return the database object.
         $get_failed_msgs = $gateway->query("SELECT * FROM `delivery_report` WHERE failureReason != 'undefined' AND date(created_at) = CURRENT_DATE GROUP BY msg_id ORDER BY created_at ASC")->result();
@@ -290,15 +290,15 @@ function sender() {
                         $trtmnt_buddy_phone_no = $value->buddy_phone_no;
                         $send_message = $this->data->send_message($source, $alt_phone_no, $msg, $outgoing_id);
                         if ($send_message) {
-                            
+
                         } else {
-                            
+
                         }
                         $send_message = $this->data->send_message($source, $trtmnt_buddy_phone_no, $msg, $outgoing_id);
                         if ($send_message) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
@@ -309,7 +309,7 @@ function sender() {
     function broadcast() {
 
 
-        $broadcast = $this->db->query(" SELECT 
+        $broadcast = $this->db->query(" SELECT
             tbl_sms_queue.id,
             clnt_usr_id,
             recepient_type,
@@ -324,15 +324,15 @@ function sender() {
             tbl_sms_queue.broadcast_date,
             tbl_time.name,
             clnt_usr_id,
-            recepient_type 
+            recepient_type
             FROM
-            tbl_sms_queue 
-            INNER JOIN tbl_time 
-                ON tbl_time.id = tbl_sms_queue.time_id 
-            INNER JOIN tbl_broadcast 
-                ON tbl_sms_queue.`broadcast_id` = tbl_broadcast.id 
-            WHERE sms_status = 'Not Sent' 
-            AND DATE(tbl_sms_queue.broadcast_date) = CURDATE() 
+            tbl_sms_queue
+            INNER JOIN tbl_time
+                ON tbl_time.id = tbl_sms_queue.time_id
+            INNER JOIN tbl_broadcast
+                ON tbl_sms_queue.`broadcast_id` = tbl_broadcast.id
+            WHERE sms_status = 'Not Sent'
+            AND DATE(tbl_sms_queue.broadcast_date) = CURDATE()
             AND tbl_broadcast.is_approved = 'Yes' group by destination  ")->result();
                     //print_r($broadcast);
 
@@ -355,7 +355,7 @@ function sender() {
             $broadcat_time = $time;
             //$broadcast_hour = explode(":", $broadcat_time);
             $broadcast_hour = $time;
-          
+
             //echo 'Broadcast date : ' . $broadcast_day . 'Broadcast time : ' . $broadcast_hour[0] . '</br>';
             $today = date("d");
             $hour = date("H");
@@ -385,8 +385,8 @@ function sender() {
                             //echo "Broadcast Hour  " . $broadcast_hour[0] . '   Current Hour   ' . $hour . '<br>';
                             if ( $broadcast_hour == $broadcat_time) {
                                 echo 'Hour Found...<br>';
-                                
-                                //Number process        
+
+                                //Number process
                                 $mobile = substr($destination, -9);
                                 $len = strlen($mobile);
                                 if ($len < 10) {
@@ -395,7 +395,7 @@ function sender() {
 
                                 echo 'Msg => ' . $msg . '</br>';
                                 echo 'Source' . $source;
-                                
+
                                 $send_text = $this->data->send_message($source, $destination, $msg, $broadcast_id);
 
                                 echo "Sent status => " . $send_text;
@@ -412,7 +412,7 @@ function sender() {
                                     $this->db->update('sms_queue', $sms_update);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
                                         $this->db->trans_start();
@@ -458,9 +458,9 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     }
                                 } else {
@@ -475,7 +475,7 @@ function sender() {
                                 }
 
 
-                                ///END OF INFOBIP API 
+                                ///END OF INFOBIP API
                             }
                         }
                     }
@@ -493,11 +493,11 @@ function sender() {
     }
 
     // function booked_scheduler() {
-    //     //Current Date 
+    //     //Current Date
     //     $current_date = date("Y-m-d");
 
     //             // Get all appointments who status is booked
-    //             $appointments = $this->db->query("  SELECT 
+    //             $appointments = $this->db->query("  SELECT
     //     tbl_appointment.id AS appointment_id,
     //     f_name,
     //     m_name,
@@ -517,20 +517,20 @@ function sender() {
     //     tbl_client.alt_phone_no,
     //     tbl_client.shared_no_name,
     //     tbl_client.smsenable,
-            
+
     //     tbl_appointment.appntmnt_date,
     //     tbl_appointment.app_status,
     //     tbl_appointment.app_msg,
     //     tbl_appointment.updated_at,
     //     tbl_appointment.app_type_1,
     //     tbl_client.group_id,
-        
+
     //     tbl_appointment.sent_status,
     //     tbl_appointment.notified
     //     FROM
-    //     tbl_appointment 
-    //     INNER JOIN tbl_client 
-    //         ON tbl_client.id = tbl_appointment.client_id 
+    //     tbl_appointment
+    //     INNER JOIN tbl_client
+    //         ON tbl_client.id = tbl_appointment.client_id
     //     WHERE tbl_client.status = 'Active' AND tbl_client.partner_id = 1
     //     AND active_app = '1' AND date(tbl_appointment.appntmnt_date) > CURDATE() + interval 7 day  ORDER BY appntmnt_date ASC ")->result();
 
@@ -561,7 +561,7 @@ function sender() {
     //             $language_id;
     //         }
 
-    //         $check_outgoing_msg_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id ='1' and clnt_usr_id='$client_id' and 
+    //         $check_outgoing_msg_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id ='1' and clnt_usr_id='$client_id' and
     //         destination='$phone_no' and DATE(created_at) = DATE(NOW()) ")->num_rows();
     //         if ($check_outgoing_msg_existence > 0) {
     //             echo 'Out going msg found';
@@ -591,7 +591,7 @@ function sender() {
     //                 $days_diff = $current_date2->diff($appointment_date2)->format("%a");
 
     //                 if ($app_status == $notification_type && $notification_flow_days == 0) {
-    //                     $notification_type = $this->db->query("Select notification_type,days,value,tbl_notification_flow.id as notification_flow_id from tbl_notification_flow 
+    //                     $notification_type = $this->db->query("Select notification_type,days,value,tbl_notification_flow.id as notification_flow_id from tbl_notification_flow
     //                          where  notification_type ='$notification_type' ")->result();
     //                     // echo json_encode($notification_type);
     //                     // exit;
@@ -602,20 +602,20 @@ function sender() {
     //                             //Booked Sent Do Nothing
     //                         } else {
 
-                               
+
     //                             $get_content = $this->db->query("Select * from tbl_content where identifier='$notification_flow_id' and message_type_id='1' and
     //                              language_id='$language_id' and group_id='$group_id' LIMIT 1")->result();
     //                               echo json_encode($get_content);
     //                                 exit;
 
-                                 
+
 
     //                             foreach ($get_content as $value) {
     //                                 $content = $value->content;
     //                                 $booked = "Booked";
     //                                 $content_id = $value->id;
     //                                 $message_type_id = $value->message_type_id;
-    //                                 //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
+    //                                 //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
 
     //                                 $new_msg = str_replace("XXX", $client_name, $content);
     //                                 $appointment_date = date("d-m-Y", strtotime($appointment_date));
@@ -628,9 +628,9 @@ function sender() {
     //                                 $app_status = "Booked";
     //                                 $Booked_status = "Booked Sent";
 
-                                     
 
-                                    
+
+
 
     //                                 $this->db->trans_start();
 
@@ -645,7 +645,7 @@ function sender() {
 
     //                                 $this->db->trans_complete();
     //                                 if ($this->db->trans_status() === FALSE) {
-                                        
+
     //                                 } else {
 
 
@@ -656,7 +656,7 @@ function sender() {
     //                                     $check_if_its_first_appointment = $this->db->query("Select * from tbl_appointment where client_id='$client_id'")->num_rows();
     //                                     if ($check_if_its_first_appointment < 1) {
     //                                         //This is the  first appointment , please ignore messaging
-                                            
+
     //                                     } else {
     //                                         //This is not the  first appointment , schedule the  message
     //                                     }
@@ -692,15 +692,15 @@ function sender() {
 
     //                                                 $this->db->trans_complete();
     //                                                 if ($this->db->trans_status() === FALSE) {
-                                                        
+
     //                                                 } else {
-                                                        
+
     //                                                 }
     //                                             } else {
-                                                    
+
     //                                             }
     //                                         } else {
-                                                
+
     //                                         }
     //                                     }
     //                                 }
@@ -716,14 +716,14 @@ function sender() {
 
 
     //                             if ($sent_status == "Booked Sent") {
-                                    
+
     //                             } else {
     //                                 $get_content = $this->db->query("Select * from tbl_content where identifier='$notification_flow_id' and message_type_id='1' and language_id='$language_id' and group_id='$group_id' ")->result();
     //                                 foreach ($get_content as $value) {
     //                                     $booked = "Booked";
     //                                     $content = $value->content;
     //                                     $content_id = $value->id;
-    //                                     //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
+    //                                     //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
 
 
     //                                     $new_msg = str_replace("XXX", $client_name, $content);
@@ -749,11 +749,11 @@ function sender() {
 
     //                                     $this->db->trans_complete();
     //                                     if ($this->db->trans_status() === FALSE) {
-                                            
+
     //                                     } else {
     //                                         $check_outgoing_msg_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id ='1' and clnt_usr_id='$client_id' and destination='$phone_no' and DATE(created_at) = CURDATE()")->num_rows();
     //                                         if ($check_outgoing_msg_existence > 0) {
-                                                
+
     //                                         } else {
 
 
@@ -799,12 +799,12 @@ function sender() {
     //                                                             $this->db->insert('clnt_outgoing', $outgoing);
     //                                                             $this->db->trans_complete();
     //                                                             if ($this->db->trans_status() === FALSE) {
-                                                                    
+
     //                                                             } else {
-                                                                    
+
     //                                                             }
     //                                                         } else {
-                                                                
+
     //                                                         }
     //                                                     }
     //                                                 }
@@ -822,10 +822,10 @@ function sender() {
     // }
 
     function one_day_scheduler() {
-        //Current Date 
+        //Current Date
         $current_date = date("Y-m-d");
-        // Get all appointment dates 
-        $appointments = $this->db->query(" SELECT 
+        // Get all appointment dates
+        $appointments = $this->db->query(" SELECT
             tbl_appointment.id AS appointment_id,
             f_name,
             m_name,
@@ -845,23 +845,23 @@ function sender() {
             tbl_client.alt_phone_no,
             tbl_client.shared_no_name,
             tbl_client.smsenable,
-            
+
             tbl_appointment.appntmnt_date,
             tbl_appointment.app_status,
             tbl_appointment.app_msg,
             tbl_appointment.updated_at,
-                
+
             tbl_appointment.app_type_1,
-            
-            
+
+
             sent_status,
-            tbl_appointment.notified 
+            tbl_appointment.notified
             FROM
-            tbl_appointment 
-            INNER JOIN tbl_client 
-                ON tbl_client.id = tbl_appointment.client_id 
-            WHERE tbl_client.status = 'Active' 
-            AND active_app = '1' 
+            tbl_appointment
+            INNER JOIN tbl_client
+                ON tbl_client.id = tbl_appointment.client_id
+            WHERE tbl_client.status = 'Active'
+            AND active_app = '1'
                 AND  DATE(`tbl_appointment`.`appntmnt_date`) = DATE(NOW() + INTERVAL 1 DAY) group by appointment_id ")->result();
         foreach ($appointments as $value) {
             $f_name = $value->f_name;
@@ -954,13 +954,15 @@ function sender() {
 
 
 
+                                $get_partner_id = $this->db->query("Select partner_id from tbl_client");
 
-                                $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and logic_flow='$logic_flow_id' 
+                                if($get_partner_id !== 30){
+                                    $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='0' and logic_flow='$logic_flow_id'
                                 and language_id='$language_id' LIMIT 1 ")->result();
                                 foreach ($get_content as $value) {
                                     $content_id = $value->id;
                                     $content = $value->message;
-                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
+                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
 
 
                                     $today = date("Y-m-d H:i:s");
@@ -971,7 +973,7 @@ function sender() {
                                     $appointment_date = date("d-m-Y", strtotime($appointment_date));
                                     $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
 
-                                   
+
                                     $status = "Not Sent";
                                     $responded = "No";
                                     $yes_notified = 'Yes';
@@ -989,7 +991,7 @@ function sender() {
                                     $this->db->update('appointment', $update_appointment_array);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -1018,16 +1020,93 @@ function sender() {
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
-                            }
+
+                             } else{
+                                $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='1' and logic_flow='$logic_flow_id'
+                                and language_id='$language_id' LIMIT 1 ")->result();
+                                foreach ($get_content as $value) {
+                                    $content_id = $value->id;
+                                    $content = $value->message;
+                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
+
+
+                                    $today = date("Y-m-d H:i:s");
+                                    $dayofweek = date('l', strtotime($appointment_date))
+
+                                    $new_msg = str_replace("DDD", $dayofweek, $content);
+                                    // echo 'nini hii' . $new_msg;
+                                    // exit;
+                                    $appointment_date = date("y-m-d", strtotime($appointment_date));
+                                    $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+
+
+                                    $status = "Not Sent";
+                                    $responded = "No";
+                                    $yes_notified = 'Yes';
+                                    $app_status = "Notified";
+                                    $Notified_status = "Notified Sent";
+                                    $this->db->trans_start();
+                                    $update_appointment_array = array(
+                                        'app_status' => $app_status,
+                                        'app_msg' => $cleaned_msg,
+                                        'notified' => $yes_notified,
+                                        'sent_status' => $Notified_status,
+                                        'updated_by' => '1'
+                                    );
+                                    $this->db->where('id', $appointment_id);
+                                    $this->db->update('appointment', $update_appointment_array);
+                                    $this->db->trans_complete();
+                                    if ($this->db->trans_status() === FALSE) {
+
+                                    } else {
+
+
+
+                                        // echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                        if ($smsenable == 'Yes') {
+                                            $this->db->trans_start();
+                                            // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
+                                            $this->config->load('config', TRUE);
+                                            // Retrieve a config item named site_name contained within the blog_settings array
+                                            $source = $this->config->item('shortcode', 'config');
+                                            $message_type_id = 1;
+                                            $clnt_outgoing = array(
+                                                'destination' => $phone_no,
+                                                'msg' => $cleaned_msg,
+                                                'responded' => $responded,
+                                                'status' => $status,
+                                                'message_type_id' => $message_type_id,
+                                                'source' => $source,
+                                                'clnt_usr_id' => $client_id,
+                                                'recepient_type' => 'Client',
+                                                'content_id' => $content_id,
+                                                'created_at' => $today,
+                                                'created_by' => '1'
+                                            );
+                                            $this->db->insert('clnt_outgoing', $clnt_outgoing);
+                                            $this->db->trans_complete();
+                                            if ($this->db->trans_status() === FALSE) {
+
+                                            } else {
+
+                                            }
+                                        } else {
+
+                                        }
+                                    }
+                                }
+                             }
+
+                            } //end
                         }
                     }
                 }
@@ -1036,12 +1115,12 @@ function sender() {
     }
 
     function seven_day_scheduler() {
-        //Current Date 
+        //Current Date
         $current_date = date("Y-m-d");
         // echo "this is today" . $current_date;
         // exit;
-        // Get all appointment dates 
-        $appointments = $this->db->query(" SELECT 
+        // Get all appointment dates
+        $appointments = $this->db->query(" SELECT
             tbl_appointment.id AS appointment_id,
             f_name,
             m_name,
@@ -1061,27 +1140,27 @@ function sender() {
             tbl_client.alt_phone_no,
             tbl_client.shared_no_name,
             tbl_client.smsenable,
-            
+
             tbl_appointment.appntmnt_date,
             tbl_appointment.app_status,
             tbl_appointment.app_msg,
             tbl_appointment.updated_at,
-                
+
             tbl_appointment.app_type_1,
-            
-            
+
+
             sent_status,
-            tbl_appointment.notified 
+            tbl_appointment.notified
             FROM
-            tbl_appointment 
-            INNER JOIN tbl_client 
-                ON tbl_client.id = tbl_appointment.client_id 
-            WHERE tbl_client.status = 'Active' 
-            AND active_app = '1' 
+            tbl_appointment
+            INNER JOIN tbl_client
+                ON tbl_client.id = tbl_appointment.client_id
+            WHERE tbl_client.status = 'Active'
+            AND active_app = '1'
                 AND  DATE(`tbl_appointment`.`appntmnt_date`) = DATE(NOW() + INTERVAL 7 DAY) group by appointment_id ")->result();
         foreach ($appointments as $value) {
 
-          
+
 
             $f_name = $value->f_name;
             $m_name = $value->m_name;
@@ -1108,7 +1187,7 @@ function sender() {
 
 
 
-            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW()) 
+            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW())
             AND clnt_usr_id= $client_id LIMIT 1")->num_rows();
             if ($check_clnt_outgoing_msg_existence > 0) {
                   echo 'Message found ....<br>';
@@ -1178,17 +1257,19 @@ function sender() {
 
 
 
-                            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW()) 
+                            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW())
                             AND clnt_usr_id=$client_id LIMIT 1")->num_rows();
                             if ($check_clnt_outgoing_msg_existence > 0) {
-                                 echo 'Message found again bruh....<br>';  
-                                                             
+                                 echo 'Message found again bruh....<br>';
+
                             } else {
                                  echo 'No message was found bruh....';
-                                 
-                 
 
-                                $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and logic_flow='$logic_flow_id' 
+
+                                $get_partner_id = $this->db->query("Select partner_id from tbl_client");
+
+                                if($get_partner_id !== 30) {
+                                    $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='0' and logic_flow='$logic_flow_id'
                                 and language_id='$language_id' LIMIT 1 ")->result();
                                 foreach ($get_content as $value) {
 
@@ -1196,7 +1277,7 @@ function sender() {
                                     // exit;
                                     $content_id = $value->id;
                                     $content = $value->message;
-                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
+                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
 
 
                                     $today = date("Y-m-d H:i:s");
@@ -1224,14 +1305,14 @@ function sender() {
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
                                         echo "Nothing";
-                                        
+
                                     } else {
 
 
 
                                          echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
                                         // exit;
-                                        
+
                                         if ($smsenable == 'Yes') {
                                             $this->db->trans_start();
                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -1257,19 +1338,105 @@ function sender() {
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
-                                                
+
+
                                             } else {
                                                 echo "Client message also sent";
-                                               
-                                                
+
+
                                             }
                                         } else {
-                                            
+
                                         }
 
                                     }
                                 }
+
+                                } else{
+                                    $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='1' and logic_flow='$logic_flow_id'
+                                and language_id='$language_id' LIMIT 1 ")->result();
+                                foreach ($get_content as $value) {
+
+                                     echo json_encode($value);
+                                    // exit;
+                                    $content_id = $value->id;
+                                    $content = $value->message;
+                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
+
+
+                                    $today = date("Y-m-d H:i:s");
+                                    $dayofweek = date('l', strtotime($appointment_date))
+                                    $new_msg = str_replace("DDD", $dayofweek, $content);
+                                    $appointment_date = date("y-m-d", strtotime($appointment_date));
+                                    $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+
+
+                                    $status = "Not Sent";
+                                    $responded = "No";
+                                    $yes_notified = 'Yes';
+                                    $app_status = "Notified";
+                                    $Notified_status = "Notified Sent";
+                                    $this->db->trans_start();
+                                    $update_appointment_array = array(
+                                        'app_status' => $app_status,
+                                        'app_msg' => $cleaned_msg,
+                                        'notified' => $yes_notified,
+                                        'sent_status' => $Notified_status,
+                                        'updated_by' => '1'
+                                    );
+                                    $this->db->where('id', $appointment_id);
+                                    $this->db->update('appointment', $update_appointment_array);
+                                    $this->db->trans_complete();
+                                    if ($this->db->trans_status() === FALSE) {
+                                        echo "Nothing";
+
+                                    } else {
+
+
+
+                                         echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                        // exit;
+
+                                        if ($smsenable == 'Yes') {
+                                            $this->db->trans_start();
+                                            // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
+                                            $this->config->load('config', TRUE);
+                                            // Retrieve a config item named site_name contained within the blog_settings array
+                                            $source = $this->config->item('shortcode', 'config');
+
+
+                                            $message_type_id = 1;
+                                            $clnt_outgoing = array(
+                                                'destination' => $phone_no,
+                                                'msg' => $cleaned_msg,
+                                                'responded' => $responded,
+                                                'status' => $status,
+                                                'message_type_id' => $message_type_id,
+                                                'source' => $source,
+                                                'clnt_usr_id' => $client_id,
+                                                'recepient_type' => 'Client',
+                                                'content_id' => $content_id,
+                                                'created_at' => $today,
+                                                'created_by' => '1'
+                                            );
+                                            $this->db->insert('clnt_outgoing', $clnt_outgoing);
+                                            $this->db->trans_complete();
+                                            if ($this->db->trans_status() === FALSE) {
+
+
+                                            } else {
+                                                echo "Client message also sent";
+
+
+                                            }
+                                        } else {
+
+                                        }
+
+                                    }
+                                }
+                                }
+
                             }
                         }else{
                             echo "Not found";
@@ -1287,10 +1454,10 @@ function sender() {
     }
 
     function missed_scheduler() {
-        //Current Date 
+        //Current Date
         $current_date = date("Y-m-d");
-                // Get all appointment dates 
-                $appointments = $this->db->query(" SELECT 
+                // Get all appointment dates
+                $appointments = $this->db->query(" SELECT
         tbl_appointment.id AS appointment_id,
         tbl_groups.name AS group_name,
         tbl_groups.id AS group_id,
@@ -1312,24 +1479,25 @@ function sender() {
         tbl_client.alt_phone_no,
         tbl_client.shared_no_name,
         tbl_client.smsenable,
-            
+
         tbl_appointment.appntmnt_date,
         tbl_appointment.app_status,
         tbl_appointment.app_msg,
         tbl_appointment.updated_at,
         tbl_appointment.app_type_1,
-        
+
         tbl_appointment.sent_status,
         tbl_appointment.notified
         FROM
-        tbl_appointment 
-        INNER JOIN tbl_client 
-            ON tbl_client.id = tbl_appointment.client_id 
-        INNER JOIN tbl_groups 
-            ON tbl_groups.id = tbl_client.group_id 
-        WHERE tbl_client.status = 'Active' 
-        AND tbl_groups.status = 'Active' 
-        AND datediff( CURDATE( ), date( appntmnt_date ) ) BETWEEN 1 
+        tbl_appointment
+        INNER JOIN tbl_client
+            ON tbl_client.id = tbl_appointment.client_id
+        INNER JOIN tbl_groups
+            ON tbl_groups.id = tbl_client.group_id
+        WHERE tbl_client.status = 'Active'
+        AND tbl_groups.status = 'Active'
+        AND tbl_client.partner_id != '30'
+        AND datediff( CURDATE( ), date( appntmnt_date ) ) BETWEEN 1
             AND 4
         AND tbl_appointment.active_app = '1' AND app_status != 'Missed' ")->result();
 
@@ -1401,9 +1569,9 @@ function sender() {
                             $logic_flow_id = 4;
 
                             echo 'Notification ID =>    ' . $notification_flow_id . ' Lang ID  => ' . $language_id . 'Group ID => ' . $group_id;
-                          
 
-                            $get_content = $this->db->query("Select * from tbl_content where identifier='$notification_flow_id' and message_type_id='1' 
+
+                            $get_content = $this->db->query("Select * from tbl_content where identifier='$notification_flow_id' and message_type_id='1'
                             and language_id='$language_id' and group_id='$group_id' LIMIT 1 ")->result();
 
                             if(empty($get_content)){
@@ -1426,7 +1594,7 @@ function sender() {
                                 $this->db->update('appointment', $update_appointment_array);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else{
                                     echo "Missed Updated";
                                 }
@@ -1438,7 +1606,7 @@ function sender() {
 
                                     $content_id = $value->id;
                                     $message_type_id = $value->message_type_id;
-                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
+                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
                                     $today = date("Y-m-d H:i:s");
                                     $new_msg = str_replace("XXX", $client_name, $content);
                                     $appointment_date = date("d-m-Y", strtotime($appointment_date));
@@ -1464,14 +1632,14 @@ function sender() {
                                     $this->db->update('appointment', $update_appointment_array);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
                                         $check_outgoing_msg_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id ='1' and clnt_usr_id='$client_id' and destination='$phone_no' and DATE(created_at) = CURDATE()")->num_rows();
                                         if ($check_outgoing_msg_existence > 0) {
 
                                             echo 'found' . '<br>';
-                                            
+
                                         } else {
                                             echo 'not found' . '<br>';
 
@@ -1501,12 +1669,12 @@ function sender() {
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
                                                     echo 'it is failed';
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -1520,9 +1688,9 @@ function sender() {
     }
 
     function defaulted_scheduler() {
-        //Current Date 
+        //Current Date
         $current_date = date("Y-m-d");
-        // Get all appointment dates 
+        // Get all appointment dates
         $appointments = $this->db->query("SELECT
         tbl_appointment.appntmnt_date,
         tbl_appointment.id AS appointment_id,
@@ -1550,15 +1718,16 @@ function sender() {
         tbl_appointment.app_type_1,
         tbl_client.group_id,
         sent_status,
-        tbl_appointment.notified 
+        tbl_appointment.notified
         FROM
             tbl_appointment
-            INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.client_id 
+            INNER JOIN tbl_client ON tbl_client.id = tbl_appointment.client_id
         WHERE
-            tbl_client.STATUS = 'Active' 
-            AND active_app = '1' 
-            AND tbl_appointment.appntmnt_date < CURDATE( ) 
-            AND datediff( CURDATE( ), date( appntmnt_date ) ) BETWEEN 5 
+            tbl_client.STATUS = 'Active'
+            AND active_app = '1'
+            AND tbl_client.partner_id != '30'
+            AND tbl_appointment.appntmnt_date < CURDATE( )
+            AND datediff( CURDATE( ), date( appntmnt_date ) ) BETWEEN 5
             AND 30  AND tbl_appointment.app_status != 'Defaulted'
         ORDER BY
             appntmnt_date ASC  ")->result();
@@ -1617,12 +1786,12 @@ function sender() {
                     // Defaulted check up
                     echo 'Days Diff in here' . $days_diff . '</br>';
                     $check_existence_defaulted = $this->db->query("SELECT id FROM tbl_notification_flow WHERE 5 <= days <=  '$days_diff' AND notification_type = 'Defaulted'")->num_rows();
-                    
+
                     if ($check_existence_defaulted == 1 && $notification_type == "Defaulted") {
 
-                        
-                        
-                    
+
+
+
 
                         $target_group = 'All';
                         $message_type_id = 1;
@@ -1647,13 +1816,13 @@ function sender() {
                         $this->db->update('appointment', $update_appointment_array);
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
 
 
                             echo "Defaulter Updated";
-                            
-                            
+
+
                         }
                     }
                 }
@@ -1662,10 +1831,10 @@ function sender() {
     }
 
     function ltfu_scheduler() {
-        //Current Date 
+        //Current Date
         $current_date = date("Y-m-d");
-        // Get all appointment dates 
-        $appointments = $this->db->query("SELECT 
+        // Get all appointment dates
+        $appointments = $this->db->query("SELECT
         tbl_appointment.id AS appointment_id,
         f_name,
         m_name,
@@ -1685,21 +1854,21 @@ function sender() {
         tbl_client.alt_phone_no,
         tbl_client.shared_no_name,
         tbl_client.smsenable,
-            
+
         tbl_appointment.appntmnt_date,
         tbl_appointment.app_status,
         tbl_appointment.app_msg,
         tbl_appointment.updated_at,
         tbl_appointment.app_type_1,
         tbl_client.group_id,
-        
+
         sent_status,
         tbl_appointment.notified
         FROM
-        tbl_appointment 
-        INNER JOIN tbl_client 
-            ON tbl_client.id = tbl_appointment.client_id 
-        WHERE tbl_client.status = 'Active'  AND active_app = '1' AND app_status != 'LTFU'
+        tbl_appointment
+        INNER JOIN tbl_client
+            ON tbl_client.id = tbl_appointment.client_id
+        WHERE tbl_client.status = 'Active'  AND active_app = '1' AND app_status != 'LTFU' AND tbl_client.partner_id != '30'
         AND tbl_appointment.appntmnt_date <= DATE_SUB(CURRENT_DATE, INTERVAL 31 DAY) ")->result();
 
         foreach ($appointments as $value) {
@@ -1733,7 +1902,7 @@ function sender() {
                         $this->db->update('appointment', $update_appointment_array);
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         }else{
                             echo "LTFU Updated";
                         }
@@ -1744,10 +1913,10 @@ function sender() {
 
     function map_client_responses() {
         $response_type = '';
-        $get_all_today_responses = $this->db->query(" SELECT 
-        * 
+        $get_all_today_responses = $this->db->query(" SELECT
+        *
         FROM
-        tbl_responses 
+        tbl_responses
         WHERE  recognised = 'UnRecognised' and created_at > NOW() - INTERVAL 48 HOUR   ")->result();
         //print_r($get_all_today_responses);
         //exit();
@@ -1783,9 +1952,9 @@ function sender() {
                     $this->db->update('responses', $data_update);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        //Get the notification flow messages for comparison 
+                        //Get the notification flow messages for comparison
                         // echo 'Client Respone found => ' . $msg . ' Phone No ' . $source . ' Client ID => ' . $client_id . '<br>';
 
 
@@ -1817,7 +1986,7 @@ function sender() {
                                     $this->db->insert('ok', $data_insert);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
                                         $response_type .= 'Positive';
 
@@ -1837,9 +2006,9 @@ function sender() {
                                         $this->db->insert('sms_checkin', $data_insert);
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     }
                                 } else if ($negative == $msg) {
@@ -1859,7 +2028,7 @@ function sender() {
                                     $this->db->insert('not_ok', $data_insert);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
                                         $response_type .= 'Negative';
 
@@ -1879,14 +2048,14 @@ function sender() {
                                         $this->db->insert('sms_checkin', $data_insert);
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
                                             $type = 'Negative';
                                             $this->not_ok_folllow_up($client_id, $msg, $type, $response_id);
                                         }
                                     }
                                 } else {
-                                    
+
                                 }
                             }
                         } else {
@@ -1908,7 +2077,7 @@ function sender() {
                             $this->db->insert('unrecognised', $data_insert);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
                                 $response_type .= 'Other';
 
@@ -1930,9 +2099,9 @@ function sender() {
                                 $this->db->insert('sms_checkin', $data_insert);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                             $type = 'Other';
@@ -1954,9 +2123,9 @@ function sender() {
                 $this->db->update('responses', $data_update);
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
@@ -2017,7 +2186,7 @@ function sender() {
                 if ($this->db->trans_status() === FALSE) {
                     echo 'Error => <br> ';
                 } else {
-                    
+
                 }
             }
         }
@@ -2149,16 +2318,16 @@ function sender() {
             $this->db->insert('incoming', $data_insert);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE) {
-                
+
             } else {
-                          
+
             }
 
             echo json_encode($return_msg);
 
 
 
-             
+
         } else {
             $segment3 = $this->uri->segment(3);
             if (is_numeric($segment3)) {
@@ -2212,7 +2381,7 @@ function sender() {
                     } else {
                         echo 'Insert Response Not Found...';
                         $this->db->trans_start();
-                        //Insert the  message in the response 
+                        //Insert the  message in the response
                         $response_array = array(
                             'source' => $source,
                             'destination' => $destination,
@@ -2227,7 +2396,7 @@ function sender() {
                         $response_id = $this->db->insert_id();
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
 
                             if (strpos($responded_msg, 'BRD') !== false) {
@@ -2303,9 +2472,9 @@ function sender() {
                             $this->db->update('incoming', $update_incoming);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-                                
+
                             }
                         }
                     }
@@ -2315,10 +2484,10 @@ function sender() {
         }
     }
 
-    
-    
-    
-    
+
+
+
+
     function receiver_post() {
 
 
@@ -2440,9 +2609,9 @@ function sender() {
             $this->db->insert('incoming', $data_insert);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE) {
-                
+
             } else {
-                
+
             }
 
 
@@ -2505,7 +2674,7 @@ function sender() {
                     } else {
                         echo 'Insert Response Not Found...';
                         $this->db->trans_start();
-                        //Insert the  message in the response 
+                        //Insert the  message in the response
                         $response_array = array(
                             'source' => $source,
                             'destination' => $destination,
@@ -2520,7 +2689,7 @@ function sender() {
                         $response_id = $this->db->insert_id();
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
 
                             if (strpos($responded_msg, 'BRD') !== false) {
@@ -2593,9 +2762,9 @@ function sender() {
                             $this->db->update('incoming', $update_incoming);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-                                
+
                             }
                         }
                     }
@@ -2612,8 +2781,8 @@ function sender() {
     function receiver_backlog() {
 
         $get_response = $this->db->query("
-        select * from tbl_incoming where id not in (select incoming_id from tbl_responses) and date(created_at) <= DATE(NOW()) 
-	
+        select * from tbl_incoming where id not in (select incoming_id from tbl_responses) and date(created_at) <= DATE(NOW())
+
         ")->result();
 
 
@@ -2655,7 +2824,7 @@ function sender() {
                 } else {
                     echo 'Insert Response Not Found...';
                     $this->db->trans_start();
-                    //Insert the  message in the response 
+                    //Insert the  message in the response
                     $response_array = array(
                         'source' => $source,
                         'destination' => $destination,
@@ -2670,7 +2839,7 @@ function sender() {
                     $response_id = $this->db->insert_id();
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
 
                         if (strpos($responded_msg, 'BRD') !== false) {
@@ -2743,14 +2912,14 @@ function sender() {
                         $this->db->update('incoming', $update_incoming);
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
             } else {
-                
+
             }
         }
     }
@@ -2758,7 +2927,7 @@ function sender() {
     function appointment_backlog() {
 
         $get_response = $this->db->query("
-       select * from tbl_incoming where id not in (select incoming_id from tbl_responses) 
+       select * from tbl_incoming where id not in (select incoming_id from tbl_responses)
        and date(created_at) = '2019-04-16' and msg LIKE '%APP%' LIMIT 100
         ")->result();
 
@@ -2801,7 +2970,7 @@ function sender() {
                 } else {
                     echo 'Insert Response Not Found...<br>';
                     $this->db->trans_start();
-                    //Insert the  message in the response 
+                    //Insert the  message in the response
                     $response_array = array(
                         'source' => $source,
                         'destination' => $destination,
@@ -2816,7 +2985,7 @@ function sender() {
                     $response_id = $this->db->insert_id();
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
 
                         $this->appointment_checker($response_id);
@@ -2830,14 +2999,14 @@ function sender() {
                         $this->db->update('incoming', $update_incoming);
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
             } else {
-                
+
             }
         }
     }
@@ -2849,7 +3018,7 @@ function sender() {
 
         if (is_numeric($response_id)) {
             $query = $this->db->query(" select * from tbl_responses   where ID ='$response_id'")->result();
-            //Get new response from tbl_response based on the response id passed 
+            //Get new response from tbl_response based on the response id passed
             foreach ($query as $value) {
                 $user_source = $value->source;
                 $user_destination = $value->destination;
@@ -2928,9 +3097,9 @@ function sender() {
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
@@ -3004,7 +3173,7 @@ function sender() {
                         //echo 'Count ....' . count($exploded_msg) . '<br>'; // Output of 18
 
                         if ($count_msg == 20) {
-                            //Success Go Ahead 
+                            //Success Go Ahead
                             echo 'Success , new application kindly go ahead....<br>';
 
                             $reg = @$exploded_msg[0]; //CODE = REG => REGISTRATION
@@ -3020,7 +3189,7 @@ function sender() {
                             $art_start_date = @$exploded_msg[10]; //ART START DATE
                             $phone_no = @$exploded_msg[11]; //PHONE NUMBE
                             $language = @$exploded_msg[12]; //LANGUAGE
-                            $sms_enable = @$exploded_msg[13]; //SMS ENABLE 
+                            $sms_enable = @$exploded_msg[13]; //SMS ENABLE
                             $motivation_enable = @$exploded_msg[14]; //MOTIVATIONAL ALERTS ENABLE
                             $messaging_time = @$exploded_msg[15]; //MESSAGING TIME
                             $client_status = @$exploded_msg[16]; //CLIENT STATUS
@@ -3131,10 +3300,10 @@ function sender() {
 
 
                                         /* Transaction Types .....
-                                         * 
+                                         *
                                          * Transaction #1 =>  Add new client
                                          * Transaction #2 => Update Client
-                                         * Transaction #3 => Transfer Client 
+                                         * Transaction #3 => Transfer Client
                                          */
 
 
@@ -3208,7 +3377,7 @@ function sender() {
                                                 if ($get_facility_user->num_rows() > 0) {
                                                     $get_user_details = $get_facility_user->result();
                                                     foreach ($get_user_details as $value) {
-                                                        
+
                                                     }
                                                 }
 
@@ -3234,7 +3403,7 @@ function sender() {
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     $this->db->trans_start();
                                                     $response_update = array(
@@ -3246,7 +3415,7 @@ function sender() {
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
@@ -3342,7 +3511,7 @@ function sender() {
                                                 log_message("INFO", $client_id);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
 
@@ -3359,7 +3528,7 @@ function sender() {
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -3413,7 +3582,7 @@ function sender() {
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
@@ -3484,7 +3653,7 @@ function sender() {
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     $this->db->trans_start();
                                                     $response_update = array(
@@ -3496,7 +3665,7 @@ function sender() {
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -3590,7 +3759,7 @@ function sender() {
                                                     // // // echo $client_id;
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -3620,7 +3789,7 @@ function sender() {
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
 
                                                             $this->db->trans_start();
@@ -3633,7 +3802,7 @@ function sender() {
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -3659,7 +3828,7 @@ function sender() {
                                             }
                                         } elseif ($transaction_type == $transfer_trans) {
                                             //TRANSFER CLIENT GOES IN HERE ...
-                                            /* Explode clients UPN Number to get his/her enrollment facility 
+                                            /* Explode clients UPN Number to get his/her enrollment facility
                                              * Useing the mfl code you can be bale to determine the  client's previous clinic
                                              *  and through the  enrollment officer you can determine his current clinic
                                              */
@@ -3746,7 +3915,7 @@ function sender() {
                                                     // // // echo $client_id;
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -3772,7 +3941,7 @@ function sender() {
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
 
                                                             $this->db->trans_start();
@@ -3784,7 +3953,7 @@ function sender() {
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -3877,7 +4046,7 @@ function sender() {
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
 
@@ -3894,7 +4063,7 @@ function sender() {
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -3922,7 +4091,7 @@ function sender() {
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
 
 
@@ -3955,7 +4124,7 @@ function sender() {
 
 
 
-                                        //Conditions were not met , queue out going message 
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         // // // echo 'Out going message => ' . $outgoing_msg . '</br> ';
                                         $message = "Error encountered = > " . $outgoing_msg;
@@ -3980,7 +4149,7 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
@@ -4016,9 +4185,9 @@ function sender() {
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
 
                                             // // // // echo 'Record inserted successfullly ....';
@@ -4053,7 +4222,7 @@ function sender() {
 
                                 $message = "Error encountered = > " . $outgoing_msg;
 
-                                //Conditions were not met , queue out going message 
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_source,
@@ -4075,7 +4244,7 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -4110,9 +4279,9 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -4126,7 +4295,7 @@ function sender() {
                                     . "T4A :Your Friendly Reminder .";
 
 
-                            //Conditions were not met , queue out going message 
+                            //Conditions were not met , queue out going message
                             $created_at = date('Y-m-d H:i:s');
                             $data_outgoing = array(
                                 'destination' => $user_source,
@@ -4149,7 +4318,7 @@ function sender() {
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
 
 
@@ -4180,9 +4349,9 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
@@ -4193,7 +4362,7 @@ function sender() {
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
                         // // // // echo 'Record inserted successfullly ....';
                     }
@@ -4235,7 +4404,7 @@ function sender() {
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
 
 
@@ -4264,9 +4433,9 @@ function sender() {
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
@@ -4282,9 +4451,9 @@ function sender() {
 
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
@@ -4390,7 +4559,7 @@ function sender() {
                             $appointment_type_id .= $this->db->insert_id();
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
                                 $appointment_type_id .= $this->db->insert_id();
                             }
@@ -4425,7 +4594,7 @@ function sender() {
                         $app_date = date("Y-m-d", strtotime($app_date));
                         echo "New " . $app_date . '<br>';
                         if ($app_date == "1970-01-01") {
-                            //Invalid Appointment Date 
+                            //Invalid Appointment Date
                             $created_at = date('Y-m-d H:i:s');
                             $message = "Invalid Appointment Date , DD/MM/YYYY is the  appropriate date format .  ";
                             $data_outgoing = array(
@@ -4444,7 +4613,7 @@ function sender() {
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
 
 
@@ -4458,7 +4627,7 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
                                     // End Process Here ....
                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -4481,7 +4650,7 @@ function sender() {
                             }
                         } else {
                             //Appointment date is correct proceed to appointment processing
-                            //Get Client Details from the  Client Number 
+                            //Get Client Details from the  Client Number
 
 
 
@@ -4532,9 +4701,9 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     } else {
                                         //Apointment does not exist in the  system please create a new one ...
@@ -4606,7 +4775,7 @@ function sender() {
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     // // // echo  'Appointment Updated ...';
 
@@ -4649,7 +4818,7 @@ function sender() {
                                                     $this->db->insert('appointment', $appointment_insert);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -4658,7 +4827,7 @@ function sender() {
 
 
 
-                                                        //Conditions were not met , queue out going message 
+                                                        //Conditions were not met , queue out going message
                                                         $created_at = date('Y-m-d H:i:s');
                                                         $message = "Client $clinic_number appointment was succesfully updated in the  system  ";
                                                         $data_outgoing = array(
@@ -4678,7 +4847,7 @@ function sender() {
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
                                                             // // // // echo  'Record inserted successfullly ....';
 
@@ -4692,7 +4861,7 @@ function sender() {
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -4762,7 +4931,7 @@ function sender() {
                                             $this->db->insert('appointment', $appointment_insert);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
 
 
@@ -4789,7 +4958,7 @@ function sender() {
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     // // // echo  'Record inserted successfullly ....';
 
@@ -4803,7 +4972,7 @@ function sender() {
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -4858,7 +5027,7 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
                                     $this->db->trans_start();
 
@@ -4870,7 +5039,7 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -4925,7 +5094,7 @@ function sender() {
                     $this->db->insert('usr_outgoing', $data_outgoing);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
                         $this->db->trans_start();
 
@@ -4937,7 +5106,7 @@ function sender() {
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
 
                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -4967,16 +5136,16 @@ function sender() {
 
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
     }
 
     function process_il_ORU($response_id) {
-        
+
     }
 
     function map_responsed() {
@@ -5011,9 +5180,9 @@ function sender() {
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 } else {
                     // // // echo 'Phone No : ' . $source . '</br>';
@@ -5028,9 +5197,9 @@ function sender() {
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
@@ -5081,7 +5250,7 @@ function sender() {
 
                     $check_user_exist = $get_facility->num_rows();
                     if ($check_user_exist > 0) {
-                        /* Process the  sent message 
+                        /* Process the  sent message
                         Check if the specified number exists in the  system,
                         If it's not found, then send a failed message back to the  user
                         Else process and move the  client to our facility.
@@ -5119,7 +5288,7 @@ function sender() {
                                     $this->db->update('client', $data_update);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -5149,7 +5318,7 @@ function sender() {
                                             $destination = $phone_no;
 
                                             $msg = "Client CCC No : $ccc_number was successfully transfered in the  system.";
-                                         
+
                                             $usr_otgoing_id = "User";
 
                                             if ($this->data->send_message($source, $destination, $msg, $usr_otgoing_id)) {
@@ -5163,12 +5332,12 @@ function sender() {
                                                 );
                                                 $this->db->where('id', $response_id);
                                                 $this->db->update('responses', $update_response);
-    
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             } else {
                                                 echo 'FALSE';
@@ -5229,9 +5398,9 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -5287,9 +5456,9 @@ function sender() {
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-                                
+
                             }
                         }
                     }
@@ -5321,7 +5490,7 @@ function sender() {
                         $source = $this->config->item('shortcode', 'config');
                         $destination = $phone_no;
                         $msg = "Kindly update your application to be able to use this feature. You are using an older version";
-                        
+
                         $usr_otgoing_id = "User";
 
                         $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
@@ -5348,9 +5517,9 @@ function sender() {
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
@@ -5369,7 +5538,7 @@ function sender() {
 
                 $check_user_exist = $get_facility->num_rows();
                 if ($check_user_exist > 0) {
-                    /* Process the  sent message 
+                    /* Process the  sent message
                     Check if the specified number exists in the  system,
                     If it's not found, then send a failed message back to the  user
                     Else process and move the  client to our facility.
@@ -5380,13 +5549,13 @@ function sender() {
                         $new_mfl_code = $value->facility_id;
                         $message_code = "Transfer";
                         $ccc_number = $unencrypted;
-                    
+
                         // echo "Message Code => " . $message_code . '     CCC Number ' . $ccc_number . '<br>';
                         //Check if the  client exists in the  system
                         $geT_client = $this->db->query("Select * from tbl_client where clinic_number='$ccc_number'");
                         $check_client_existence = $geT_client->num_rows();
                         if ($check_client_existence > 0) {
-                      
+
 
                             foreach ($geT_client->result() as $value) {
                                 # code...
@@ -5404,11 +5573,11 @@ function sender() {
                                 $this->db->update('client', $data_update);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
                                         $msg = "Client CCC No : $ccc_number was successfully transfered in the  system.";
-                                     
+
                                         return $msg;
 
                                 }
@@ -5466,22 +5635,22 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
                     }
                 } else {
                         $msg = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you ";
-                        return $msg;                      
-                    
+                        return $msg;
+
                 }
             }else{
 
                     $msg = "Kindly update your application to be able to use this feature. You are using an older version";
-                    
+
                     $this->db->trans_start();
                     $update_response = array(
                         'user_type' => 'User',
@@ -5493,11 +5662,11 @@ function sender() {
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
                         return $msg;
                     }
-                
+
             }
             return $unencrypted;
         }
@@ -5511,22 +5680,22 @@ function sender() {
         $this->config->load('config', TRUE);
             // Retrieve a config item named site_name contained within the blog_settings array
         $user_destination = $this->config->item('shortcode', 'config');
-        
+
         if (is_numeric($response_id)) {
             /*
-        
-             * Message sent is via SMS , hence process it as SMS Process flow  
+
+             * Message sent is via SMS , hence process it as SMS Process flow
              *             */
-        
-        
-        
-        
+
+
+
+
             $created_at = date("Y-m-d H:i:s");
-        
-        
-        
+
+
+
             $query = $this->db->query("SELECT * FROM tbl_responses WHERE msg LIKE '%CON%' AND processed='No' AND id='$response_id'")->result();
-        
+
             foreach ($query as $value) {
                 $source = $value->source;
                 $user_phone_no = $source;
@@ -5535,23 +5704,23 @@ function sender() {
                 $response_id = $value->id;
                 $mobile = substr($user_phone_no, -9);
                 $len = strlen($mobile);
-        
+
                 $encrypted_msg = $value->msg;
-        
-        
-        
-        
+
+
+
+
                 $count_special = substr_count($encrypted_msg, "*");
                 if ($count_special < 2) {
                     //New Encrypted Message
                     echo " New Encrypted Message => " . $count_special;
-        
-        
-        
-        
-        
+
+
+
+
+
                     echo 'Encrypted Message => ' . $encrypted_msg . '<br>';
-        
+
                     $explode_msg = explode("*", $encrypted_msg);
                     $identifier = $explode_msg[0];
                     $message = $explode_msg[1];
@@ -5561,43 +5730,43 @@ function sender() {
 
 
                     //$msg = $new_msg;
-        
+
                     echo 'Decrpyted Msg => ' . $msg . '<br>';
-        
-       
+
+
                     if ($len = 9) {
-        
+
                         $user_phone_no = "0" . $mobile;
                     }
                     echo 'New From : ' . $user_phone_no;
-        
-        
+
+
                     $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_phone_no' and access_level='Facility'");
-        
+
                     $check_user_exist = $get_facility->num_rows();
                     if ($check_user_exist > 0) {
-                        /* Process the  sent message 
+                        /* Process the  sent message
                           Check if the specified number exists in the  system,
                           If it's not found, then send a failed message back to the  user
                           Else process and move the  client to our facility.
                          */
                          //$get_user_details = $get_facility->result();
-        
+
                         foreach ($get_facility->result() as $value) {
                             # code...
                             $new_mfl_code = $value->facility_id;
-        
-        
+
+
                             $exploded_msg = explode("*", $msg);
                             $message_code = @$exploded_msg[0];
                             $ccc_number = @$exploded_msg[1];
                             $consent_date = @$exploded_msg[2];
                             $preferred_time = @$exploded_msg[3];
                             $client_phone_no = @$exploded_msg[4];
-        
+
                             $preferred_time = substr($preferred_time, 0, 2);
-        
-        
+
+
                             $count_msg = count($exploded_msg);
                             if ($count_msg == 5) {
                                 //Check if the  client exists in the  system
@@ -5607,17 +5776,17 @@ function sender() {
                                     $shortcode = $user_destination;
 
                                     //$preferred_time = $get_time_id->result();
-        
+
                                     foreach ($get_time_id->result() as $value) {
                                         $time_name = $value->name;
                                         $time_id = $value->id;
-        
+
                                         $date = str_replace('/', '-', $consent_date);
                                         $consent_date = date('Y-m-d', strtotime($date));
-        
-        
-        
-        
+
+
+
+
                                         //Check if the  client exists in the  system
                                         $geT_client = $this->db->get_where('tbl_client', array('clinic_number' => $ccc_number));
                                         $check_client_existence = $geT_client->num_rows();
@@ -5641,7 +5810,7 @@ function sender() {
                                                 $this->db->insert('usr_outgoing', $data_insert);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                     $this->config->load('config', TRUE);
@@ -5671,34 +5840,34 @@ function sender() {
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     }  else {
                                                     }
-        
+
                                                 }
                                             } else {
                                                 //Client Has not Consented....
                                                 //Get client details
                                                 foreach ($geT_client->result() as $value) {
                                                     # code...
-        
+
                                                     $client_id = $value->id;
-        
+
                                                     $this->db->trans_start();
                                                     $data_update = array(
                                                         'consent_date' => $consent_date,
                                                         'smsenable' => 'Yes',
                                                         'phone_no' => $client_phone_no,
                                                         'txt_time' => $time_id);
-        
+
                                                     $this->db->where('id', $client_id);
                                                     $this->db->update('client', $data_update);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-        
-        
+
+
                                                         //$message = "Client CCC No : $ccc_number Consent Date was successfully updated in the  system.";
                                                         $this->db->trans_start();
                                                         $data_insert = array(
@@ -5749,17 +5918,17 @@ function sender() {
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
-                                                                
+
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
                                         } else {
-        
-        
+
+
                                             //$message = "Consent Not updated , Client CCC No : $ccc_number was not found in the  system.";
                                             $this->db->trans_start();
                                             $data_insert = array(
@@ -5809,17 +5978,17 @@ function sender() {
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
                                     }
                                 } else {
                                     //Time ID was not found in the system
-        
-        
+
+
                                     $this->db->trans_start();
                                     $data_insert = array(
                                         'destination' => $user_phone_no,
@@ -5868,16 +6037,16 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
                             } else {
-        
-        
-        
+
+
+
                                 $this->db->trans_start();
                                 $data_insert = array(
                                     'destination' => $user_phone_no,
@@ -5927,9 +6096,9 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -5984,54 +6153,54 @@ function sender() {
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-                                
+
                             }
                         }
                     }
                 } else {
                     //Old Non Encrypted Message
-        
-        
+
+
                     $this->db->trans_start();
-        
+
                     $this->db->delete('responses', array('id' => $response_id));
-        
+
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
         } else {
             /*
-        
+
              * Mesages sent via internet , hence process it as internet   process flow
-             * 
+             *
              *            */
-        
-        
-        
+
+
+
             $new_msg = explode("#", $response_id);
             $encrypted_msg = $new_msg[0];
             $phone_no = $new_msg[1];
             $user_source = $phone_no;
-        
-        
+
+
             // End Process Here ....
             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
             $this->config->load('config', TRUE);
             // Retrieve a config item named site_name contained within the blog_settings array
             $user_destination = $this->config->item('shortcode', 'config');
-        
-        
+
+
             // echo json_encode($user_destination);
             // exit;
-        
-        
+
+
             $count_special = substr_count($encrypted_msg, "*");
             if ($count_special < 2) {
                 //New Encrypted Message
@@ -6046,42 +6215,42 @@ function sender() {
                 // exit;
                 // echo json_encode($msg);
                 // exit;
-        
+
                 $mobile = substr($user_source, -9);
                 $len = strlen($mobile);
-        
+
                 if ($len = 9) {
-        
+
                     $source = "0" . $mobile;
                 }
-                
-        
-        
+
+
+
                 $get_facility = $this->db->query("Select * from tbl_users where phone_no='$source' and access_level='Facility'");
-        
+
                 $check_user_exist = $get_facility->num_rows();
                 if ($check_user_exist > 0) {
-                    /* Process the  sent message 
+                    /* Process the  sent message
                       Check if the specified number exists in the  system,
                       If it's not found, then send a failed message back to the  user
                       Else process and move the  client to our facility.
                      */
-        
+
                     foreach ($get_facility->result() as $value) {
                         # code...
                         $new_mfl_code = $value->facility_id;
-        
-        
+
+
                         $exploded_msg = explode("*", $new_msg);
                         $message_code = @$exploded_msg[0];
                         $ccc_number = @$exploded_msg[1];
                         $consent_date = @$exploded_msg[2];
                         $preferred_time = @$exploded_msg[3];
                         $client_phone_no = @$exploded_msg[4];
-        
+
                         $preferred_time = substr($preferred_time, 0, 2);
-        
-        
+
+
                         $count_msg = count($exploded_msg);
                         //  echo json_encode($exploded_msg);
                         //  exit;
@@ -6090,20 +6259,20 @@ function sender() {
                             $get_time_id = $this->db->query("Select * from tbl_time where name LIKE '%$preferred_time%' LIMIT 1");
                             $check_time_existence = $get_time_id->num_rows();
                             if ($check_time_existence > 0) {
-        
+
                                 $shortcode = $user_destination;
                                 $created_at = date('Y-m-d H:i:s');
-        
+
                                 foreach ($get_time_id->result() as $value) {
                                     $time_name = $value->name;
                                     $time_id = $value->id;
-        
+
                                     $date = str_replace('/', '-', $consent_date);
                                     $consent_date = date('Y-m-d', strtotime($date));
-        
-        
-        
-        
+
+
+
+
                                     //Check if the  client exists in the  system
                                     $geT_client = $this->db->get_where('tbl_client', array('clinic_number' => $ccc_number));
                                     $check_client_existence = $geT_client->num_rows();
@@ -6111,7 +6280,7 @@ function sender() {
                                         $check_client_consent = $this->db->get_where('tbl_client', array('clinic_number' => $ccc_number, 'smsenable' => 'Yes'));
                                         if ($check_client_consent->num_rows() > 0) {
                                             //Client Already consented....
-        
+
                                             $this->db->trans_start();
                                             $data_insert = array(
                                                 'destination' => $user_source,
@@ -6125,11 +6294,11 @@ function sender() {
                                             $this->db->insert('usr_outgoing', $data_insert);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-        
-        
-        
+
+
+
                                                 //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                 $this->config->load('config', TRUE);
                                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -6137,42 +6306,42 @@ function sender() {
                                                 $destination = $user_source;
                                                 $outgoing_msg = "Consent Not updated , Client CCC No : $ccc_number consent was already updated in the system.";
                                                 $usr_otgoing_id = "User";
-        
+
                                                 // $send_text = $this->data->send_message($source, $destination, $outgoing_msg, $usr_otgoing_id);
                                                 // if ($send_text) {
-                                                    
+
                                                 // } else {
-                                                    
+
                                                 // }
                                                 return $outgoing_msg;
                                             }
                                         } else {
-        
+
                                             $shortcode = $user_destination;
                                             $created_at = date('Y-m-d H:i:s');
                                             //Client Has not Consented....
                                             //Get client details
                                             foreach ($geT_client->result() as $value) {
                                                 # code...
-        
+
                                                 $client_id = $value->id;
-        
+
                                                 $this->db->trans_start();
                                                 $data_update = array(
                                                     'consent_date' => $consent_date,
                                                     'smsenable' => 'Yes',
                                                     'phone_no' => $client_phone_no,
                                                     'txt_time' => $time_id);
-        
+
                                                 $this->db->where('id', $client_id);
                                                 $this->db->update('client', $data_update);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-        
-        
-        
+
+
+
                                                     $this->db->trans_start();
                                                     $data_insert = array(
                                                         'destination' => $user_source,
@@ -6188,23 +6357,23 @@ function sender() {
                                                     if ($this->db->trans_status() === FALSE) {
                                                         //echo 'Error => <br> ';
                                                     } else {
-        
+
                                                         $phone_no = $user_source;
-        
+
                                                         //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
                                                         // Retrieve a config item named site_name contained within the blog_settings array
                                                         $source = $this->config->item('shortcode', 'config');
                                                         $destination = $user_source;
                                                         $msg = "Client CCC No : $ccc_number Consent Date was successfully updated in the  system.";
-        
+
                                                         $usr_otgoing_id = "User";
-        
+
                                                         // $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
                                                         // if ($send_text) {
-                                                            
+
                                                         // } else {
-                                                            
+
                                                         // }
                                                         return $msg;
                                                     }
@@ -6212,12 +6381,12 @@ function sender() {
                                             }
                                         }
                                     } else {
-        
+
                                         $shortcode = $user_destination;
                                         $created_at = date('Y-m-d H:i:s');
-        
-        
-        
+
+
+
                                         $this->db->trans_start();
                                         $data_insert = array(
                                             'destination' => $user_source,
@@ -6231,11 +6400,11 @@ function sender() {
                                         $this->db->insert('usr_outgoing', $data_insert);
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-        
-        
-        
+
+
+
                                             //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                             $this->config->load('config', TRUE);
                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -6243,12 +6412,12 @@ function sender() {
                                             $destination = $user_source;
                                             $outgoing_msg = "Consent Not updated , Client CCC No : $ccc_number was not found in the  system.";
                                             $usr_otgoing_id = "User";
-        
+
                                             // $send_text = $this->data->send_message($short_code, $user_phone_no, $outgoing_msg, $usr_otgoing_id);
                                             // if ($send_text) {
-                                                
+
                                             // } else {
-                                                
+
                                             // }
                                             return $outgoing_msg;
                                         }
@@ -6258,8 +6427,8 @@ function sender() {
                                 $shortcode = $user_destination;
                                 $created_at = date('Y-m-d H:i:s');
                                 //Time ID was not found in the system
-        
-        
+
+
                                 $this->db->trans_start();
                                 $data_insert = array(
                                     'destination' => $user_source,
@@ -6273,12 +6442,12 @@ function sender() {
                                 $this->db->insert('usr_outgoing', $data_insert);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-        
-        
-        
-        
+
+
+
+
                                     //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
@@ -6286,12 +6455,12 @@ function sender() {
                                     $destination = $user_source;
                                     $outgoing_msg = "Consent Not updated , The specified Time  : $preferred_time was not found in the  system.";
                                     $usr_otgoing_id = "User";
-        
+
                                     // $send_text = $this->data->send_message($short_code, $destination, $outgoing_msg, $usr_otgoing_id);
                                     // if ($send_text) {
-                                        
+
                                     // } else {
-                                        
+
                                     // }
                                     return $outgoing_msg;
                                 }
@@ -6300,8 +6469,8 @@ function sender() {
                             //$destination = $user_source;
                             $shortcode = $user_destination;
                             $created_at = date('Y-m-d H:i:s');
-        
-        
+
+
                             $date_created = date("Y-m-d H:i:s");
                             $this->db->trans_start();
                             $data_insert = array(
@@ -6317,12 +6486,12 @@ function sender() {
                             $this->db->insert('usr_outgoing', $data_insert);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-                                
-        
-        
-        
+
+
+
+
                                 //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                 $this->config->load('config', TRUE);
                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -6330,18 +6499,18 @@ function sender() {
                                 $destination = $user_source;
                                 $msg = " You need to update your application to the latest version, kindly contact support for guidance. Ushauri : Getting Better one text at a time. ";
                                 $usr_otgoing_id = "User";
-        
+
                                 // $send_text = $this->data->send_message($short_code, $destination, $msg, $usr_otgoing_id);
                                 // if ($send_text) {
-                                    
+
                                 // } else {
-                                    
+
                                 // }
                                 return $msg;
-        
-        
-        
-        
+
+
+
+
                                 $this->db->trans_start();
                                 $update_response = array(
                                     'user_type' => 'User',
@@ -6350,12 +6519,12 @@ function sender() {
                                 );
                                 $this->db->where('id', $response_id);
                                 $this->db->update('responses', $update_response);
-        
+
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
@@ -6377,10 +6546,10 @@ function sender() {
                     $this->db->insert('usr_outgoing', $data_insert);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-        
-        
+
+
                         //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -6388,12 +6557,12 @@ function sender() {
                         $destination = $user_source;
                         $msg = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you ";
                         $usr_otgoing_id = "User";
-        
+
                         // $send_text = $this->data->send_message($short_code, $destination, $msg, $usr_otgoing_id);
                         // if ($send_text) {
-                            
+
                         // } else {
-                            
+
                         // }
                         return $msg;
                     }
@@ -6415,8 +6584,8 @@ function sender() {
 
 
         if (is_numeric($response_id)) {
-            //get current date time 
-      
+            //get current date time
+
             $today = date("Y-m-d H:i:s");
             $query = $this->db->query("Select * from tbl_responses where 1 and id='$response_id' ")->result();
 
@@ -6536,14 +6705,14 @@ function sender() {
 
                                 if ($target_client == $all or $target_client == $adults or $target_client == $adolescents or $target_client == $peads) {
                                     if ($target_group == $all_clients or $target_group == $all_active_appointments) {
-                                        
+
                                     } else {
                                         $outgoing_msg .= " Invalid selection for Target Group please try again with 1 => All Clients  2 => All Active Appointments   ";
 
                                         $this->db->trans_start();
 
                                         $message = "Error encountered = > " . $outgoing_msg;
-                                        //Conditions were not met , queue out going message 
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         $data_outgoing = array(
                                             'destination' => $user_source,
@@ -6562,7 +6731,7 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
@@ -6589,9 +6758,9 @@ function sender() {
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -6729,7 +6898,7 @@ function sender() {
 
 
                                         $message = "Broadcast $broadcast_name  Added Successfully!! ";
-                                        //Conditions were not met , queue out going message 
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         $data_outgoing = array(
                                             'destination' => $user_source,
@@ -6752,7 +6921,7 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
@@ -6779,9 +6948,9 @@ function sender() {
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     } else {
@@ -6790,7 +6959,7 @@ function sender() {
                                         $this->db->trans_start();
 
                                         $message = "Error encountered = > " . $outgoing_msg;
-                                        //Conditions were not met , queue out going message 
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         $data_outgoing = array(
                                             'destination' => $user_source,
@@ -6809,7 +6978,7 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
@@ -6836,9 +7005,9 @@ function sender() {
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -6850,7 +7019,7 @@ function sender() {
                                     $this->db->trans_start();
 
                                     $message = "Error encountered = > " . $outgoing_msg;
-                                    //Conditions were not met , queue out going message 
+                                    //Conditions were not met , queue out going message
                                     $created_at = date('Y-m-d H:i:s');
                                     $data_outgoing = array(
                                         'destination' => $user_source,
@@ -6869,7 +7038,7 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -6896,9 +7065,9 @@ function sender() {
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
@@ -6912,7 +7081,7 @@ function sender() {
 
                                 $message = "Error encountered = > The message does not meet the standardised structure... Please try again";
                                 echo 'Message => ' . $message . '<br>';
-                                //Conditions were not met , queue out going message 
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_source,
@@ -6932,7 +7101,7 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -6958,9 +7127,9 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -7017,9 +7186,9 @@ function sender() {
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
@@ -7254,7 +7423,7 @@ function sender() {
 
 
                                     $message = "Broadcast $broadcast_name  Added Successfully!! ";
-                                    //Conditions were not met , queue out going message 
+                                    //Conditions were not met , queue out going message
                                     $created_at = date('Y-m-d H:i:s');
                                     $data_outgoing = array(
                                         'destination' => $user_source,
@@ -7277,7 +7446,7 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -7298,7 +7467,7 @@ function sender() {
                                     $this->db->trans_start();
 
                                     $message = "Error encountered = > " . $outgoing_msg;
-                                    //Conditions were not met , queue out going message 
+                                    //Conditions were not met , queue out going message
                                     $created_at = date('Y-m-d H:i:s');
                                     $data_outgoing = array(
                                         'destination' => $user_source,
@@ -7317,7 +7486,7 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -7334,14 +7503,14 @@ function sender() {
                                     }
                                 }
                                 if ($target_group == $all_clients or $target_group == $all_active_appointments) {
-                                    
+
                                 } else {
                                     $outgoing_msg .= " Invalid selection for Target Group please try again with 1 => All Clients  2 => All Active Appointments   ";
 
                                     $this->db->trans_start();
 
                                     $message = "Error encountered = > " . $outgoing_msg;
-                                    //Conditions were not met , queue out going message 
+                                    //Conditions were not met , queue out going message
                                     $created_at = date('Y-m-d H:i:s');
                                     $data_outgoing = array(
                                         'destination' => $user_source,
@@ -7360,7 +7529,7 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -7384,7 +7553,7 @@ function sender() {
                                 $this->db->trans_start();
 
                                 $message = "Error encountered = > " . $outgoing_msg;
-                                //Conditions were not met , queue out going message 
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_source,
@@ -7403,7 +7572,7 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -7427,7 +7596,7 @@ function sender() {
 
 
                             $message = "Error encountered = > The message does not meet the standardised structure... Please try again";
-                            //Conditions were not met , queue out going message 
+                            //Conditions were not met , queue out going message
                             $created_at = date('Y-m-d H:i:s');
                             $data_outgoing = array(
                                 'destination' => $user_source,
@@ -7447,7 +7616,7 @@ function sender() {
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
 
 
@@ -7547,26 +7716,26 @@ function sender() {
     }
 
     function process_stop($response_id) {
-        //get current date time 
+        //get current date time
         $today = date("Y-m-d H:i:s");
         //Get the content for STOP , by filtering based on the message type ID 6 which caters for the  STOP massages and for the  different languages in the system .
         $get_stop_msg_type = $this->db->query("  SELECT * FROM tbl_content WHERE message_type_id='6' AND identifier='16' and logic_flow='1' ");
         $check_existence = $get_stop_msg_type->num_rows();
 
-        //Check if there's something returned from the  system 
+        //Check if there's something returned from the  system
         if ($check_existence >= 1) {
 
             //If returned get the  result row of the  above $get_stop_msg_type query
             $get_stop_msg = $get_stop_msg_type->result();
             foreach ($get_stop_msg as $value) {
-                //Loop through the  specific message and get the  content from the  query e.g STOP 
+                //Loop through the  specific message and get the  content from the  query e.g STOP
                 $stop_msg = $value->content;
                 //Get returl from the  incoming table based on the  STOP message and that was found from the table content and it has nt been processed yet
                 $query = $this->db->query("Select * from tbl_responses where msg LIKE '%$stop_msg%' and processed ='No' and id='$response_id'");
                 $check_row = $query->num_rows();
-                //Check if there is a return on the above query                                                                                                                                 
+                //Check if there is a return on the above query
                 if ($check_row >= 1) {
-                    //If result is found , get the  resutls 
+                    //If result is found , get the  resutls
                     // // // echo 'Found.....';
                     $get_row = $query->result();
                     foreach ($get_row as $value) {
@@ -7586,13 +7755,13 @@ function sender() {
                         }
 
 
-                        //User the  cleaned source to get client ID from the  system 
+                        //User the  cleaned source to get client ID from the  system
                         $get_client_id = $this->db->query("select * from tbl_client where phone_no='$source' and smsenable='Yes'")->result();
                         foreach ($get_client_id as $value) {
                             $client_id = $value->id;
                             $language_id = $value->language_id;
                             $phone_no = $value->phone_no;
-                            //Use the  found client ID to update the  client detials and turn off the  message alerts 
+                            //Use the  found client ID to update the  client detials and turn off the  message alerts
                             $this->db->trans_start();
 
 
@@ -7605,7 +7774,7 @@ function sender() {
                             $this->db->update('client', $data_update);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
                                 //If the  above transaction was successful, then insert the  above transaction details in the
                                 //Table Stop Alerts
@@ -7624,9 +7793,9 @@ function sender() {
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    //ON successfull insertion of the stop alerts, 
+                                    //ON successfull insertion of the stop alerts,
                                     //Update the  incoming record from Not Processed to Processed
                                     $this->db->trans_start();
 
@@ -7640,16 +7809,16 @@ function sender() {
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
                                         //Do Nothing ...
-                                        $get_outgoing_msg = $this->db->query(" SELECT 
-  * 
+                                        $get_outgoing_msg = $this->db->query(" SELECT
+  *
 FROM
-  tbl_content 
-WHERE message_type_id = '6' 
-  AND identifier = '16' 
-  AND logic_flow = '2' 
+  tbl_content
+WHERE message_type_id = '6'
+  AND identifier = '16'
+  AND logic_flow = '2'
   AND language_id = '$language_id' ")->result();
                                         foreach ($get_outgoing_msg as $value) {
 
@@ -7683,9 +7852,9 @@ WHERE message_type_id = '6'
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -7698,7 +7867,7 @@ WHERE message_type_id = '6'
                 }
             }
         } else {
-            //Do Nothing ... 
+            //Do Nothing ...
         }
     }
 
@@ -7788,7 +7957,7 @@ WHERE message_type_id = '6'
 
 
 
-                                        //Conditions were not met , queue out going message 
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         $data_outgoing = array(
                                             'destination' => $user_source,
@@ -7811,7 +7980,7 @@ WHERE message_type_id = '6'
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
@@ -7842,9 +8011,9 @@ WHERE message_type_id = '6'
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     } else {
@@ -7879,7 +8048,7 @@ WHERE message_type_id = '6'
 
 
 
-                                            //Conditions were not met , queue out going message 
+                                            //Conditions were not met , queue out going message
                                             $created_at = date('Y-m-d H:i:s');
                                             $data_outgoing = array(
                                                 'destination' => $user_source,
@@ -7898,7 +8067,7 @@ WHERE message_type_id = '6'
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
 
 
@@ -7924,7 +8093,7 @@ WHERE message_type_id = '6'
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
 
@@ -7946,7 +8115,7 @@ WHERE message_type_id = '6'
 
                                                             echo 'User msg => ' . $user_msg . '<br>';
 
-                                                            //Conditions were not met , queue out going message 
+                                                            //Conditions were not met , queue out going message
                                                             $created_at = date('Y-m-d H:i:s');
                                                             $data_outgoing = array(
                                                                 'destination' => $user_source,
@@ -7966,7 +8135,7 @@ WHERE message_type_id = '6'
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -7981,7 +8150,7 @@ WHERE message_type_id = '6'
                                                             }
                                                         }
                                                     } else {
-                                                        
+
                                                     }
                                                 }
                                             }
@@ -7997,7 +8166,7 @@ WHERE message_type_id = '6'
                                         . "Ushauri : Getting Better one text at a time.";
 
 
-                                //Conditions were not met , queue out going message 
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_source,
@@ -8020,7 +8189,7 @@ WHERE message_type_id = '6'
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -8051,9 +8220,9 @@ WHERE message_type_id = '6'
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -8067,7 +8236,7 @@ WHERE message_type_id = '6'
                                     . "Ushauri : Getting Better one text at a time.";
 
 
-                            //Conditions were not met , queue out going message 
+                            //Conditions were not met , queue out going message
                             $created_at = date('Y-m-d H:i:s');
                             $data_outgoing = array(
                                 'destination' => $user_source,
@@ -8090,7 +8259,7 @@ WHERE message_type_id = '6'
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
 
 
@@ -8121,9 +8290,9 @@ WHERE message_type_id = '6'
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
@@ -8156,9 +8325,9 @@ WHERE message_type_id = '6'
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             } else {
@@ -8172,9 +8341,9 @@ WHERE message_type_id = '6'
 
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
@@ -8182,7 +8351,7 @@ WHERE message_type_id = '6'
 
     function process_transit_appointment($response_id) {
 
-        
+
 
 
         if (is_numeric($response_id)) {
@@ -8190,11 +8359,11 @@ WHERE message_type_id = '6'
             $this->config->load('config', TRUE);
             $user_destination = $this->config->item('shortcode', 'config');
             //value found is numeric
-        
-        
-        
+
+
+
             $query = $this->db->query("SELECT * FROM tbl_responses WHERE msg LIKE '%TRANSITCLIENT%' AND processed='No' AND id='$response_id'")->result();
-        
+
             foreach ($query as $value) {
                 $user_source = $value->source;
                 $user_phone_no = $source;
@@ -8203,17 +8372,17 @@ WHERE message_type_id = '6'
                 $encrypted_msg = $value->msg;
                 $mobile = substr($user_phone_no, -9);
                 $len = strlen($mobile);
-        
-        
+
+
                 $response_id = $value->id;
                 //echo $response_id;
-        
+
                 $count_special = substr_count($encrypted_msg, "*");
                 if ($count_special < 2) {
-        
+
                     //New Encrypted Message
                     echo " New Encrypted Message => " . $count_special;
-        
+
                     $explode_msg = explode("*", $encrypted_msg);
                     $identifier = $explode_msg[0];
                     $message = $explode_msg[1];
@@ -8221,32 +8390,32 @@ WHERE message_type_id = '6'
                     echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
                     $new_msg = $identifier . "*" . $descrypted_msg;
                     echo 'New Message => ' . $new_msg;
-        
-        
+
+
                     $msg = $new_msg;
-        
+
                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                     $this->config->load('config', TRUE);
                     // Retrieve a config item named site_name contained within the blog_settings array
                     $user_destination = $this->config->item('shortcode', 'config');
-                    
-        
+
+
                     if ($len = 9) {
-        
+
                         $user_phone_no = "0" . $mobile;
                     }
                     //echo '<br>  Our Message => ' . $msg . '<br>';
                     //echo 'Response id => ' . $response_id . ' and Phone Noe : ' . $user_source . '.</br>';
-        
+
                     $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_phone_no' and access_level='Facility' LIMIT 1 ");
                     $user_exists = $get_facility->num_rows();
                     if ($user_exists > 0) {
                         echo 'User Found...';
                         //User exists
                         //$get_user_details = $get_facility->result();
-        
+
                         foreach ($get_facility as $value) {
-        
+
                             $facility_id = $value->facility_id;
                             $partner_id = $value->partner_id;
                             $user_id = $value->id;
@@ -8257,28 +8426,28 @@ WHERE message_type_id = '6'
                                 $upn = @$exploded_msg[1]; //UPN/CCC NO 2
                                 $national_id = @$exploded_msg[3]; //NATIONAL/PASSPORT NO 2
                                 $appointment_type_id = @$exploded_msg[2]; //Appointment Type ID  3
-                                
-                            
+
+
                             $count_msg = count($exploded_msg);
                             echo 'Count ....' . count($exploded_msg) . '<br>'; // Output of 2
-        
+
                             //$shortcode = $user_destination;
-                            
+
                             if ($count_msg == 4) {
-                                
+
                                 $get_client_id = $this->db->get_where("client", array('clinic_number' => $upn));
                                 if ($get_client_id->num_rows() > 0) {
                                     foreach ($get_client_id->result() as $value) {
                                         $client_id = $value->id;
-        
+
                                         $mfl_code = $value->mfl_code;
                                         $clinic_id = $value->clinic_id;
-        
+
                                         echo 'MFL COde => ' . $mfl_code . 'Clinic ID ' . $clinic_id . 'Clinic Number /CCC Number : ' . $upn;
                                         $attendance_dae = date('Y-m-d H:i:s');
-        
-        
-        
+
+
+
                                         $this->db->trans_start();
                                         $data_array = array(
                                             'client_id' => $client_id,
@@ -8294,16 +8463,16 @@ WHERE message_type_id = '6'
                                             //Update Failed....
                                         } else {
                                             //Update was succesfull...
-        
-        
+
+
                                             $message = "Transit Client ID : $upn appointment was successfully updated ";
-        
+
                                             echo $message . '<br>';
                                             $this->db->trans_start();
-        
-        
-        
-                                            //Conditions were not met , queue out going message 
+
+
+
+                                            //Conditions were not met , queue out going message
                                             $created_at = date('Y-m-d H:i:s');
                                             $data_outgoing = array(
                                                 'destination' => $user_phone_no,
@@ -8318,14 +8487,14 @@ WHERE message_type_id = '6'
                                                 'created_by' => $user_id
                                             );
                                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
+
+
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-        
-        
+
+
                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                 $this->config->load('config', TRUE);
                                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -8334,9 +8503,9 @@ WHERE message_type_id = '6'
                                                 $msg = $message;
                                                 $usr_otgoing_id = "User";
                                                 $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-        
-        
-        
+
+
+
                                                 $this->db->trans_start();
                                                 $response_update = array(
                                                     'processed' => 'Yes',
@@ -8344,36 +8513,36 @@ WHERE message_type_id = '6'
                                                 );
                                                 $this->db->where('id', $response_id);
                                                 $this->db->update('responses', $response_update);
-        
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-        
-        
-        
-        
+
+
+
+
                                                     $get_home_facility_phone_no = $this->db->get_where('users', array('facility_id' => $mfl_code, 'clinic_id' => $clinic_id));
                                                     if ($get_home_facility_phone_no->num_rows() > 0) {
-                                                        
+
                                                     } else {
-                                                        
+
                                                     }
                                                     foreach ($get_home_facility_phone_no->result() as $value) {
                                                         $facility_phone_no = $value->phone_no;
-        
+
                                                         echo 'Facility phone no' . $facility_phone_no . '<br>';
-        
+
                                                         $user_name = $value->f_name . ' ' . $value->m_name;
-        
-        
+
+
                                                         $this->db->trans_start();
-        
+
                                                         $user_msg = "Hi $user_name , Clients : $upn appointment has been updated by user : $user_source kindly follow up for more details. ";
-        
+
                                                         echo 'User msg => ' . $user_msg . '<br>';
-        
-                                                        //Conditions were not met , queue out going message 
+
+                                                        //Conditions were not met , queue out going message
                                                         $created_at = date('Y-m-d H:i:s');
                                                         $data_outgoing = array(
                                                             'destination' => $user_phone_no,
@@ -8388,14 +8557,14 @@ WHERE message_type_id = '6'
                                                             'created_by' => $user_id
                                                         );
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
+
+
+
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-        
+
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
                                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -8411,15 +8580,15 @@ WHERE message_type_id = '6'
                                         }
                                     }
                                 } else {
-        
-        
+
+
                                     $this->db->trans_start();
-        
+
                                     $message = "Error encountered = > Clinic No $upn was not found in the  system... "
                                             . "Ushauri : Getting Better one text at a time.";
-        
-        
-                                    //Conditions were not met , queue out going message 
+
+
+                                    //Conditions were not met , queue out going message
                                     $created_at = date('Y-m-d H:i:s');
                                     $data_outgoing = array(
                                         'destination' => $user_phone_no,
@@ -8434,21 +8603,21 @@ WHERE message_type_id = '6'
                                         'created_by' => $user_id
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-        
-        
-        
-        
-        
+
+
+
+
+
                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                         $this->config->load('config', TRUE);
                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -8457,11 +8626,11 @@ WHERE message_type_id = '6'
                                         $msg = $message;
                                         $usr_otgoing_id = "User";
                                         $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-        
-        
-        
-        
-        
+
+
+
+
+
                                         $this->db->trans_start();
                                         $response_update = array(
                                             'processed' => 'Yes',
@@ -8469,26 +8638,26 @@ WHERE message_type_id = '6'
                                         );
                                         $this->db->where('id', $response_id);
                                         $this->db->update('responses', $response_update);
-        
+
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
                             } else {
                                 //Failed, please try again ....
                                 // echo 'Old application';
-        
+
                                 $this->db->trans_start();
-        
+
                                 $message = "Error encountered = > You need to update your application to the  latest version, kindly contact support for guidance. "
                                         . "Ushauri : Getting Better one text at a time.";
-        
-        
-                                //Conditions were not met , queue out going message 
+
+
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_phone_no,
@@ -8503,21 +8672,21 @@ WHERE message_type_id = '6'
                                     'created_by' => $user_id
                                 );
                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-        
-        
-        
-        
-        
+
+
+
+
+
                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
@@ -8526,11 +8695,11 @@ WHERE message_type_id = '6'
                                     $msg = $message;
                                     $usr_otgoing_id = "User";
                                     $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-        
-        
-        
-        
-        
+
+
+
+
+
                                     $this->db->trans_start();
                                     $response_update = array(
                                         'processed' => 'Yes',
@@ -8538,12 +8707,12 @@ WHERE message_type_id = '6'
                                     );
                                     $this->db->where('id', $response_id);
                                     $this->db->update('responses', $response_update);
-        
+
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -8551,7 +8720,7 @@ WHERE message_type_id = '6'
                     } else {
                         echo 'User not found ..';
                         $msg = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you";
-        
+
                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -8560,11 +8729,11 @@ WHERE message_type_id = '6'
                         $msg = $msg;
                         $usr_otgoing_id = "User";
                         $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-        
-        
-        
-        
-        
+
+
+
+
+
                         $this->db->trans_start();
                         $response_update = array(
                             'processed' => 'Yes',
@@ -8572,43 +8741,43 @@ WHERE message_type_id = '6'
                         );
                         $this->db->where('id', $response_id);
                         $this->db->update('responses', $response_update);
-        
+
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 } else {
                     //Old Non Encrypted Message
                     echo " Old Non Encrypted Message => " . $count_special;
-        
-        
+
+
                     $this->db->trans_start();
-        
+
                     $this->db->delete('responses', array('id' => $response_id));
-        
+
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
         } else {
             //value found is letter , process as internet message ...
             $our_msg = explode("#", $response_id);
-        
+
             $encrypted_msg = $our_msg[0];
             $user_source = $our_msg[1];
-        
+
             $destination = $user_source;
-        
-        
-        
-        
+
+
+
+
             $explode_msg = explode("*", $encrypted_msg);
             $identifier = $explode_msg[0];
             $message = $explode_msg[1];
@@ -8616,33 +8785,33 @@ WHERE message_type_id = '6'
             //echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
             $new_msg = $identifier . "*" . $descrypted_msg;
             //echo 'New Message => ' . $new_msg;
-        
-        
+
+
             $msg = $new_msg;
-        
+
             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
             $this->config->load('config', TRUE);
             // Retrieve a config item named site_name contained within the blog_settings array
             $source = $this->config->item('shortcode', 'config');
             $mobile = substr($user_source, -9);
             $len = strlen($mobile);
-        
+
             if ($len = 9) {
-        
+
                 $user_source = "0" . $mobile;
             }
             //echo '<br>  Our Message => ' . $msg . '<br>';
             //echo 'Response id => ' . $response_id . ' and Phone Noe : ' . $user_source . '.</br>';
-        
+
             $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' LIMIT 1 ");
             $user_exists = $get_facility->num_rows();
             if ($user_exists > 0) {
                 //echo 'User Found...';
                 //User exists
                 $get_user_details = $get_facility->result();
-        
+
                 foreach ($get_user_details as $value) {
-        
+
                     $facility_id = $value->facility_id;
                     $partner_id = $value->partner_id;
                     $user_id = $value->id;
@@ -8650,27 +8819,27 @@ WHERE message_type_id = '6'
                     $exploded_msg = explode("*", $msg);
                     $count_msg = count($exploded_msg);
                     //echo 'Count ....' . count($exploded_msg) . '<br>'; // Output of 2
-        
-        
+
+
                     if ($count_msg == 4) {
                         $key_code = @$exploded_msg[0]; //CODE = TRANSIT CLIENT 1
                         $upn = @$exploded_msg[1]; //UPN/CCC NO 2
                         $national_id = @$exploded_msg[3]; //NATIONAL/PASSPORT NO 2
                         $appointment_type_id = @$exploded_msg[2]; //Appointment Type ID  3
-        
+
                         $get_client_id = $this->db->get_where("client", array('clinic_number' => $upn));
                         if ($get_client_id->num_rows() > 0) {
                             foreach ($get_client_id->result() as $value) {
                                 $client_id = $value->id;
-        
+
                                 $mfl_code = $value->mfl_code;
                                 $clinic_id = $value->clinic_id;
-        
+
                                 //echo 'MFL COde => ' . $mfl_code . 'Clinic ID ' . $clinic_id . 'Clinic Number /CCC Number : ' . $upn;
                                 $attendance_dae = date('Y-m-d H:i:s');
-        
-        
-        
+
+
+
                                 $this->db->trans_start();
                                 $data_array = array(
                                     'client_id' => $client_id,
@@ -8686,16 +8855,16 @@ WHERE message_type_id = '6'
                                     //Update Failed....
                                 } else {
                                     //Update was succesfull...
-        
-        
+
+
                                     $message = "Transit Client ID : $upn appointment was successfully updated ";
-        
+
                                     //echo $message . '<br>';
                                     $this->db->trans_start();
-        
-        
-        
-                                    //Conditions were not met , queue out going message 
+
+
+
+                                    //Conditions were not met , queue out going message
                                     $created_at = date('Y-m-d H:i:s');
                                     $data_outgoing = array(
                                         'destination' => $user_source,
@@ -8710,14 +8879,14 @@ WHERE message_type_id = '6'
                                         'created_by' => $user_id
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
+
+
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-        
-        
+
+
                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                         $this->config->load('config', TRUE);
                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -8726,9 +8895,9 @@ WHERE message_type_id = '6'
                                         $msg = $message;
                                         $usr_otgoing_id = "User";
                                         //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-        
-        
-        
+
+
+
                                         $this->db->trans_start();
                                         $response_update = array(
                                             'processed' => 'Yes',
@@ -8736,37 +8905,37 @@ WHERE message_type_id = '6'
                                         );
                                         $this->db->where('id', $response_id);
                                         $this->db->update('responses', $response_update);
-        
+
                                         $this->db->trans_complete();
                                         return $msg;
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-        
-        
-        
-        
+
+
+
+
                                             $get_home_facility_phone_no = $this->db->get_where('users', array('facility_id' => $mfl_code, 'clinic_id' => $clinic_id));
                                             if ($get_home_facility_phone_no->num_rows() > 0) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                             foreach ($get_home_facility_phone_no->result() as $value) {
                                                 $facility_phone_no = $value->phone_no;
-        
+
                                                 echo 'Facility phone no' . $facility_phone_no . '<br>';
-        
+
                                                 $user_name = $value->f_name . ' ' . $value->m_name;
-        
-        
+
+
                                                 $this->db->trans_start();
-        
+
                                                 $user_msg = "Hi $user_name , Clients : $upn appointment has been updated by user : $user_source kindly follow up for more details. ";
-        
+
                                                 echo 'User msg => ' . $user_msg . '<br>';
-        
-                                                //Conditions were not met , queue out going message 
+
+                                                //Conditions were not met , queue out going message
                                                 $created_at = date('Y-m-d H:i:s');
                                                 $data_outgoing = array(
                                                     'destination' => $user_source,
@@ -8781,14 +8950,14 @@ WHERE message_type_id = '6'
                                                     'created_by' => $user_id
                                                 );
                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
+
+
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-        
+
                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                     $this->config->load('config', TRUE);
                                                     // Retrieve a config item named site_name contained within the blog_settings array
@@ -8805,15 +8974,15 @@ WHERE message_type_id = '6'
                                 }
                             }
                         } else {
-        
-        
+
+
                             $this->db->trans_start();
-        
+
                             $message = "Error encountered = > Clinic No $upn was not found in the  system... "
                                     . "Ushauri : Getting Better one text at a time.";
-        
-        
-                            //Conditions were not met , queue out going message 
+
+
+                            //Conditions were not met , queue out going message
                             $created_at = date('Y-m-d H:i:s');
                             $data_outgoing = array(
                                 'destination' => $user_source,
@@ -8828,21 +8997,21 @@ WHERE message_type_id = '6'
                                 'created_by' => $user_id
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-        
-        
-        
-        
-        
+
+
+
+
+
                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                 $this->config->load('config', TRUE);
                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -8852,11 +9021,11 @@ WHERE message_type_id = '6'
                                 $usr_otgoing_id = "User";
                                 //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
                                 return $msg;
-        
-        
-        
-        
-        
+
+
+
+
+
                                 $this->db->trans_start();
                                 $response_update = array(
                                     'processed' => 'Yes',
@@ -8864,26 +9033,26 @@ WHERE message_type_id = '6'
                                 );
                                 $this->db->where('id', $response_id);
                                 $this->db->update('responses', $response_update);
-        
+
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
                     } else {
                         //Failed, please try again ....
                         // echo 'Old application';
-        
+
                         $this->db->trans_start();
-        
+
                         $message = "Error encountered = > You need to update your application to the  latest version, kindly contact support for guidance. "
                                 . "Ushauri : Getting Better one text at a time.";
-        
-        
-                        //Conditions were not met , queue out going message 
+
+
+                        //Conditions were not met , queue out going message
                         $created_at = date('Y-m-d H:i:s');
                         $data_outgoing = array(
                             'destination' => $user_source,
@@ -8898,21 +9067,21 @@ WHERE message_type_id = '6'
                             'created_by' => $user_id
                         );
                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-        
-        
-        
-        
-        
+
+
+
+
+
                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                             $this->config->load('config', TRUE);
                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -8922,11 +9091,11 @@ WHERE message_type_id = '6'
                             $usr_otgoing_id = "User";
                             //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
                             return $msg;
-        
-        
-        
-        
-        
+
+
+
+
+
                             $this->db->trans_start();
                             $response_update = array(
                                 'processed' => 'Yes',
@@ -8934,12 +9103,12 @@ WHERE message_type_id = '6'
                             );
                             $this->db->where('id', $response_id);
                             $this->db->update('responses', $response_update);
-        
+
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-                                
+
                             }
                         }
                     }
@@ -8947,7 +9116,7 @@ WHERE message_type_id = '6'
             } else {
                 echo 'User not found ..';
                 $msg = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you";
-        
+
                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                 $this->config->load('config', TRUE);
                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -8957,11 +9126,11 @@ WHERE message_type_id = '6'
                 $usr_otgoing_id = "User";
                 //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
                 return $msg;
-        
-        
-        
-        
-        
+
+
+
+
+
                 $this->db->trans_start();
                 $response_update = array(
                     'processed' => 'Yes',
@@ -8969,12 +9138,12 @@ WHERE message_type_id = '6'
                 );
                 $this->db->where('id', $response_id);
                 $this->db->update('responses', $response_update);
-        
+
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
@@ -8985,24 +9154,24 @@ WHERE message_type_id = '6'
 
             if (is_numeric($response_id)) {
                 //value found is numeric
-            
-            
+
+
                 $query = $this->db->query("Select * from tbl_incoming where  processed='No' and id='$response_id'  ")->result();
-            
+
                 foreach ($query as $value) {
                     $user_source = $value->source;
                     $user_destination = $value->destination;
                     $encrypted_msg = $value->msg;
-            
-            
+
+
                     $response_id = $value->id;
-            
+
                     $count_special = substr_count($encrypted_msg, "*");
                     if ($count_special < 2) {
-            
+
                         //New Encrypted Message
                         echo " New Encrypted Message => " . $count_special;
-            
+
                         $explode_msg = explode("*", $encrypted_msg);
                         $identifier = $explode_msg[0];
                         $message = $explode_msg[1];
@@ -9010,33 +9179,33 @@ WHERE message_type_id = '6'
                         echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
                         $new_msg = $identifier . "*" . $descrypted_msg;
                         echo 'New Message => ' . $new_msg;
-            
-            
+
+
                         $msg = $new_msg;
-            
+
                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
                         $source = $this->config->item('shortcode', 'config');
                         $mobile = substr($user_source, -9);
                         $len = strlen($mobile);
-            
+
                         if ($len = 9) {
-            
+
                             $user_source = "0" . $mobile;
                         }
                         echo 'Message => ' . $msg . '<br>';
                         echo 'Response id => ' . $response_id . ' and Phone Noe : ' . $user_source . '.</br>';
-            
+
                         $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' limit 1 ");
                         $user_exists = $get_facility->num_rows();
                         if ($user_exists > 0) {
                             echo 'User Found...<br>';
                             //User exists
                             $get_user_details = $get_facility->result();
-            
+
                             foreach ($get_user_details as $value) {
-            
+
                                 $facility_id = $value->facility_id;
                                 $partner_id = $value->partner_id;
                                 $user_id = $value->id;
@@ -9045,8 +9214,8 @@ WHERE message_type_id = '6'
                                 $exploded_msg = explode("*", $msg);
                                 $count_msg = count($exploded_msg);
                                 echo 'Count ....' . count($exploded_msg) . '<br>'; // Output of 2
-            
-            
+
+
                                 if ($count_msg == 3) {
                                     $move_code = @$exploded_msg[0]; //CODE = MOVECLINIC 1
                                     $upn = @$exploded_msg[1]; //UPN/CCC NO 2
@@ -9060,20 +9229,20 @@ WHERE message_type_id = '6'
                                         foreach ($get_client_id->result() as $value) {
                                             $client_id = $value->id;
                                             $old_clinic_id = $value->clinic_id;
-            
-            
+
+
                                             if ($old_clinic_id === $clinic_id) {
                                                 $get_clinic = $this->db->get_where('clinic', array('id' => $clinic_id), $limit)->result();
                                                 foreach ($get_clinic as $value) {
                                                     $clinic_name = $value->name;
                                                     $message = "Client ID : $upn already exists in the  Clinic : $clinic_name and cannot be moved . ";
-            
+
                                                     echo $message . '<br>';
                                                     $this->db->trans_start();
-            
-            
-            
-                                                    //Conditions were not met , queue out going message 
+
+
+
+                                                    //Conditions were not met , queue out going message
                                                     $created_at = date('Y-m-d H:i:s');
                                                     $data_outgoing = array(
                                                         'destination' => $user_source,
@@ -9088,21 +9257,21 @@ WHERE message_type_id = '6'
                                                         'created_by' => $user_id
                                                     );
                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
                                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -9111,11 +9280,11 @@ WHERE message_type_id = '6'
                                                         $msg = $message;
                                                         $usr_otgoing_id = "User";
                                                         $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                                         $this->db->trans_start();
                                                         $response_update = array(
                                                             'processed' => 'Yes',
@@ -9123,31 +9292,31 @@ WHERE message_type_id = '6'
                                                         );
                                                         $this->db->where('id', $response_id);
                                                         $this->db->update('responses', $response_update);
-            
+
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-                                                            
+
                                                         }
                                                     }
                                                 }
                                             } else {
-            
-            
-            
-            
+
+
+
+
                                                 $clinic_id_dict = "";
-            
-            
+
+
                                                 $clinic_id_dict = "1:2:3"; //1 => Active 2 => Disabled 3 => Dead
                                                 $exploded_status_dict = explode(":", $clinic_id_dict);
-            
+
                                                 $psc = @$exploded_status_dict[0];
                                                 $pmtct = @$exploded_status_dict[1];
                                                 $emtct = @$exploded_status_dict[2];
                                                 $tb = @$exploded_status_dict[3];
-            
+
                                                 $this->db->trans_start();
                                                 $data_update = array(
                                                     'clinic_id' => $clinic_id
@@ -9159,16 +9328,16 @@ WHERE message_type_id = '6'
                                                     //Update Failed....
                                                 } else {
                                                     //Update was succesfull...
-            
-            
+
+
                                                     $message = "Client ID : $upn was successfully moved to new Clinic : ";
-            
+
                                                     echo $message . '<br>';
                                                     $this->db->trans_start();
-            
-            
-            
-                                                    //Conditions were not met , queue out going message 
+
+
+
+                                                    //Conditions were not met , queue out going message
                                                     $created_at = date('Y-m-d H:i:s');
                                                     $data_outgoing = array(
                                                         'destination' => $user_source,
@@ -9183,21 +9352,21 @@ WHERE message_type_id = '6'
                                                         'created_by' => $user_id
                                                     );
                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
                                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -9206,11 +9375,11 @@ WHERE message_type_id = '6'
                                                         $msg = $message;
                                                         $usr_otgoing_id = "User";
                                                         $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                                         $this->db->trans_start();
                                                         $response_update = array(
                                                             'processed' => 'Yes',
@@ -9218,32 +9387,32 @@ WHERE message_type_id = '6'
                                                         );
                                                         $this->db->where('id', $response_id);
                                                         $this->db->update('responses', $response_update);
-            
+
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-                                                            
+
                                                         }
                                                     }
                                                 }
                                             }
                                         }
                                     } else {
-            
-            
-            
+
+
+
                                         //Failed, please try again ....
                                         // echo 'Old application';
-            
+
                                         $this->db->trans_start();
-            
+
                                         $message = " Move Client Clinic failed , Clinic No $upn was not found in the  system "
                                                 . "Ushauri : Getting Better one text at a time.";
-            
-            
+
+
                                         echo '' . $message;
-                                        //Conditions were not met , queue out going message 
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         $data_outgoing = array(
                                             'destination' => $user_source,
@@ -9258,21 +9427,21 @@ WHERE message_type_id = '6'
                                             'created_by' => $user_id
                                         );
                                         $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                             $this->config->load('config', TRUE);
                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -9281,11 +9450,11 @@ WHERE message_type_id = '6'
                                             $msg = $message;
                                             $usr_otgoing_id = "User";
                                             $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                             $this->db->trans_start();
                                             $response_update = array(
                                                 'processed' => 'Yes',
@@ -9293,26 +9462,26 @@ WHERE message_type_id = '6'
                                             );
                                             $this->db->where('id', $response_id);
                                             $this->db->update('responses', $response_update);
-            
+
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
                                 } else {
                                     //Failed, please try again ....
                                     // echo 'Old application';
-            
+
                                     $this->db->trans_start();
-            
+
                                     $message = "Error encountered = > You need to update your application to the  latest version, kindly contact support for guidance. "
                                             . "Ushauri : Getting Better one text at a time.";
                                     echo '' . $message;
-            
-                                    //Conditions were not met , queue out going message 
+
+                                    //Conditions were not met , queue out going message
                                     $created_at = date('Y-m-d H:i:s');
                                     $data_outgoing = array(
                                         'destination' => $user_source,
@@ -9327,21 +9496,21 @@ WHERE message_type_id = '6'
                                         'created_by' => $user_id
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                         $this->config->load('config', TRUE);
                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -9350,11 +9519,11 @@ WHERE message_type_id = '6'
                                         $msg = $message;
                                         $usr_otgoing_id = "User";
                                         $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                         $this->db->trans_start();
                                         $response_update = array(
                                             'processed' => 'Yes',
@@ -9362,12 +9531,12 @@ WHERE message_type_id = '6'
                                         );
                                         $this->db->where('id', $response_id);
                                         $this->db->update('responses', $response_update);
-            
+
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
@@ -9375,16 +9544,16 @@ WHERE message_type_id = '6'
                         } else {
                             //Failed, please try again ....
                             // echo 'Old application';
-            
+
                             $this->db->trans_start();
-            
+
                             $message = "Hi , your phone number is not in the  system, kindly contact your partner focal prson so that it can be added."
                                     . "Thank you ! "
                                     . " "
                                     . "Ushauri : Getting Better one text at a time.";
-            
-            
-                            //Conditions were not met , queue out going message 
+
+
+                            //Conditions were not met , queue out going message
                             $created_at = date('Y-m-d H:i:s');
                             $data_outgoing = array(
                                 'destination' => $user_source,
@@ -9399,21 +9568,21 @@ WHERE message_type_id = '6'
                                 'created_by' => "587"
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                 $this->config->load('config', TRUE);
                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -9422,11 +9591,11 @@ WHERE message_type_id = '6'
                                 $msg = $message;
                                 $usr_otgoing_id = "User";
                                 $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                 $this->db->trans_start();
                                 $response_update = array(
                                     'processed' => 'Yes',
@@ -9434,43 +9603,43 @@ WHERE message_type_id = '6'
                                 );
                                 $this->db->where('id', $response_id);
                                 $this->db->update('responses', $response_update);
-            
+
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
                     } else {
                         //Old Non Encrypted Message
                         echo " Old Non Encrypted Message => " . $count_special;
-            
-            
+
+
                         $this->db->trans_start();
-            
+
                         $this->db->delete('responses', array('id' => $response_id));
-            
+
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
             } else {
                 //value found is letter , process as internet message ...
                 $our_msg = explode("#", $response_id);
-            
+
                 $encrypted_msg = $our_msg[0];
                 $user_source = $our_msg[1];
-            
+
                 $destination = $user_source;
-            
-            
-            
+
+
+
                 $explode_msg = explode("*", $encrypted_msg);
                 $identifier = $explode_msg[0];
                 $message = $explode_msg[1];
@@ -9478,37 +9647,37 @@ WHERE message_type_id = '6'
                 //echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
                 $new_msg = $identifier . "*" . $descrypted_msg;
                 //echo 'New Message => ' . $new_msg;
-            
-            
+
+
                 $msg = $new_msg;
-            
+
                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                 $this->config->load('config', TRUE);
                 // Retrieve a config item named site_name contained within the blog_settings array
                 $user_destination = $this->config->item('shortcode', 'config');
-            
+
                 //echo json_encode($user_destination);
                 //exit;
-            
+
                 $mobile = substr($user_source, -9);
                 $len = strlen($mobile);
-            
+
                 if ($len = 9) {
-            
+
                     $user_source = "0" . $mobile;
                 }
                 //echo 'Message => ' . $msg . '<br>';
                 //echo 'Response id => ' . $response_id . ' and Phone Noe : ' . $user_source . '.</br>';
-            
+
                 $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' limit 1 ");
                 $user_exists = $get_facility->num_rows();
                 if ($user_exists > 0) {
                     //echo 'User Found...<br>';
                     //User exists
                     $get_user_details = $get_facility->result();
-            
+
                     foreach ($get_user_details as $value) {
-            
+
                         $facility_id = $value->facility_id;
                         $partner_id = $value->partner_id;
                         $user_id = $value->id;
@@ -9517,8 +9686,8 @@ WHERE message_type_id = '6'
                         $exploded_msg = explode("*", $msg);
                         $count_msg = count($exploded_msg);
                         //echo 'Count ....' . count($exploded_msg) . '<br>'; // Output of 2
-            
-            
+
+
                         if ($count_msg == 3) {
                             $move_code = @$exploded_msg[0]; //CODE = MOVECLINIC 1
                             $upn = @$exploded_msg[1]; //UPN/CCC NO 2
@@ -9529,27 +9698,27 @@ WHERE message_type_id = '6'
                             $no_clients = $get_client_id->num_rows();
                             //echo "no of clients found .... => " . $no_clients;
                             if ($get_client_id->num_rows() > 0) {
-            
+
                                 //assigning variables here so they can be easily accesed
                                 $shortcode = $user_destination;
                                 $created_at = date('Y-m-d H:i:s');
                                 foreach ($get_client_id->result() as $value) {
                                     $client_id = $value->id;
                                     $old_clinic_id = $value->clinic_id;
-            
-            
+
+
                                     if ($old_clinic_id === $clinic_id) {
                                         $get_clinic = $this->db->get_where('clinic', array('id' => $clinic_id), $limit)->result();
                                         foreach ($get_clinic as $value) {
                                             $clinic_name = $value->name;
                                             $message = "Client ID : $upn already exists in the  Clinic : $clinic_name and cannot be moved . ";
-            
+
                                             //echo $message . '<br>';
                                             $this->db->trans_start();
-            
-            
-            
-                                            //Conditions were not met , queue out going message 
+
+
+
+                                            //Conditions were not met , queue out going message
                                             $created_at = date('Y-m-d H:i:s');
                                             $data_outgoing = array(
                                                 'destination' => $user_source,
@@ -9564,21 +9733,21 @@ WHERE message_type_id = '6'
                                                 'created_by' => $user_id
                                             );
                                             $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                 $this->config->load('config', TRUE);
                                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -9587,11 +9756,11 @@ WHERE message_type_id = '6'
                                                 $msg = $message;
                                                 $usr_otgoing_id = "User";
                                                 //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                                 $this->db->trans_start();
                                                 $response_update = array(
                                                     'processed' => 'Yes',
@@ -9599,34 +9768,34 @@ WHERE message_type_id = '6'
                                                 );
                                                 $this->db->where('id', $response_id);
                                                 $this->db->update('responses', $response_update);
-            
+
                                                 $this->db->trans_complete();
-                                                
+
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     return $msg;
-                                                    
+
                                                 }
                                             }
                                         }
                                     } else {
-            
-            
+
+
                                         $shortcode = $user_destination;
                                         $created_at = date('Y-m-d H:i:s');
-            
+
                                         $clinic_id_dict = "";
-            
-            
+
+
                                         $clinic_id_dict = "1:2:3"; //1 => Active 2 => Disabled 3 => Dead
                                         $exploded_status_dict = explode(":", $clinic_id_dict);
-            
+
                                         $psc = @$exploded_status_dict[0];
                                         $pmtct = @$exploded_status_dict[1];
                                         $emtct = @$exploded_status_dict[2];
                                         $tb = @$exploded_status_dict[3];
-            
+
                                         $this->db->trans_start();
                                         $data_update = array(
                                             'clinic_id' => $clinic_id
@@ -9638,16 +9807,16 @@ WHERE message_type_id = '6'
                                             //Update Failed....
                                         } else {
                                             //Update was succesfull...
-            
-            
+
+
                                             $message = "Client ID : $upn was successfully moved to new Clinic : ";
-            
+
                                             //echo $message . '<br>';
                                             $this->db->trans_start();
-            
-            
-            
-                                            //Conditions were not met , queue out going message 
+
+
+
+                                            //Conditions were not met , queue out going message
                                             $created_at = date('Y-m-d H:i:s');
                                             $data_outgoing = array(
                                                 'destination' => $user_source,
@@ -9662,21 +9831,21 @@ WHERE message_type_id = '6'
                                                 'created_by' => $user_id
                                             );
                                             $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                 $this->config->load('config', TRUE);
                                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -9685,11 +9854,11 @@ WHERE message_type_id = '6'
                                                 $msg = $message;
                                                 $usr_otgoing_id = "User";
                                                 //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                                 $this->db->trans_start();
                                                 $response_update = array(
                                                     'processed' => 'Yes',
@@ -9697,35 +9866,35 @@ WHERE message_type_id = '6'
                                                 );
                                                 $this->db->where('id', $response_id);
                                                 $this->db->update('responses', $response_update);
-            
+
                                                 $this->db->trans_complete();
-                                                
+
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     return $msg;
-                                                    
+
                                                 }
                                             }
                                         }
                                     }
                                 }
                             } else {
-            
-            
-            
+
+
+
                                 //Failed, please try again ....
                                 // echo 'Old application';
                                 $shortcode = $user_destination;
                                 $created_at = date('Y-m-d H:i:s');
                                 $this->db->trans_start();
-            
+
                                 $message = " Move Client Clinic failed , Clinic No $upn was not found in the  system "
                                         . "Ushauri : Getting Better one text at a time.";
-            
-            
+
+
                                 //echo '' . $message;
-                                //Conditions were not met , queue out going message 
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_source,
@@ -9740,21 +9909,21 @@ WHERE message_type_id = '6'
                                     'created_by' => $user_id
                                 );
                                 $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
@@ -9763,11 +9932,11 @@ WHERE message_type_id = '6'
                                     $msg = $message;
                                     $usr_otgoing_id = "User";
                                     //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                     $this->db->trans_start();
                                     $response_update = array(
                                         'processed' => 'Yes',
@@ -9775,17 +9944,17 @@ WHERE message_type_id = '6'
                                     );
                                     $this->db->where('id', $response_id);
                                     $this->db->update('responses', $response_update);
-            
+
                                     $this->db->trans_complete();
-                                    
+
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-            
-                                    
+
+
                                         return $msg;
                                     }
-                                    
+
                                 }
                             }
                         } else {
@@ -9794,12 +9963,12 @@ WHERE message_type_id = '6'
                             $shortcode = $user_destination;
                             //$created_at = date('Y-m-d H:i:s');
                             $this->db->trans_start();
-            
+
                             $message = "Error encountered = > You need to update your application to the  latest version, kindly contact support for guidance. "
                                     . "Ushauri : Getting Better one text at a time.";
                             //echo '' . $message;
-            
-                            //Conditions were not met , queue out going message 
+
+                            //Conditions were not met , queue out going message
                             $created_at = date('Y-m-d H:i:s');
                             $data_outgoing = array(
                                 'destination' => $user_source,
@@ -9814,21 +9983,21 @@ WHERE message_type_id = '6'
                                 'created_by' => $user_id
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                 $this->config->load('config', TRUE);
                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -9837,11 +10006,11 @@ WHERE message_type_id = '6'
                                 $msg = $message;
                                 $usr_otgoing_id = "User";
                                 //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                                 $this->db->trans_start();
                                 $response_update = array(
                                     'processed' => 'Yes',
@@ -9849,14 +10018,14 @@ WHERE message_type_id = '6'
                                 );
                                 $this->db->where('id', $response_id);
                                 $this->db->update('responses', $response_update);
-            
+
                                 $this->db->trans_complete();
-                                
+
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
                                     return $msg;
-                                    
+
                                 }
                             }
                         }
@@ -9867,14 +10036,14 @@ WHERE message_type_id = '6'
                     $shortcode = $user_destination;
                     //$created_at = date('Y-m-d H:i:s');
                     $this->db->trans_start();
-            
+
                     $message = "Hi , your phone number is not in the  system, kindly contact your partner focal prson so that it can be added."
                             . "Thank you ! "
                             . " "
                             . "Ushauri : Getting Better one text at a time.";
-            
-            
-                    //Conditions were not met , queue out going message 
+
+
+                    //Conditions were not met , queue out going message
                     $created_at = date('Y-m-d H:i:s');
                     $data_outgoing = array(
                         'destination' => $user_source,
@@ -9889,21 +10058,21 @@ WHERE message_type_id = '6'
                         'created_by' => "587"
                     );
                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-            
-            
-            
-            
-            
+
+
+
+
+
                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -9912,11 +10081,11 @@ WHERE message_type_id = '6'
                         $msg = $message;
                         $usr_otgoing_id = "User";
                         //$send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
-            
-            
-            
-            
+
+
+
+
+
                         $this->db->trans_start();
                         $response_update = array(
                             'processed' => 'Yes',
@@ -9924,14 +10093,14 @@ WHERE message_type_id = '6'
                         );
                         $this->db->where('id', $response_id);
                         $this->db->update('responses', $response_update);
-            
+
                         $this->db->trans_complete();
-                        
+
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
                             return $msg;
-                            
+
                         }
                     }
                 }
@@ -9944,7 +10113,7 @@ WHERE message_type_id = '6'
 
         $this->config->load('config', TRUE);
         $short_code = $this->config->item('shortcode', 'config');
-      
+
         if (is_numeric($response_id)) {
             //value found is numeric
 
@@ -10016,19 +10185,19 @@ WHERE message_type_id = '6'
                                     //echo 'Count ....' . count($exploded_msg) . '<br>'; // Output of 20
 
                                       if ($count_msg == 23) {
-                                        //Success Go Ahead 
-        
+                                        //Success Go Ahead
+
                                         $reg = @$exploded_msg[0]; //CODE = REG => REGISTRATION 1
                                         $upn = @$exploded_msg[1]; //UPN/CCC NO 2
                                         $serial_no = @$exploded_msg[2]; //SERIAL NO 3
-        
+
                                         $f_name = @$exploded_msg[3]; //FIRST NAME 4
                                         $m_name = @$exploded_msg[4]; //MIDDLE NAME 5
                                         $l_name = @$exploded_msg[5]; //LAST NAME 6
                                         $dob = @$exploded_msg[6]; //DATE OF BIRTH 7
                                         $national_id = @$exploded_msg[7]; //NATIONAL ID OR PASSOPRT NO 8
                                         $gender = @$exploded_msg[8]; //GENDER 9
-                                        $marital = @$exploded_msg[9]; //MARITAL STATUS 10 
+                                        $marital = @$exploded_msg[9]; //MARITAL STATUS 10
                                         $condition = @$exploded_msg[10]; //CONDITION 11
                                         $enrollment_date = @$exploded_msg[11]; //ENROLLMENT DATE 12
                                         $art_start_date = @$exploded_msg[12]; //ART START DATE 13
@@ -10040,52 +10209,52 @@ WHERE message_type_id = '6'
                                         $motivation_enable = @$exploded_msg[18]; //MOTIVATIONAL ALERTS ENABLE 18
                                         $messaging_time = @$exploded_msg[19]; //MESSAGING TIME 17
                                         $client_status = @$exploded_msg[20]; //CLIENT STATUS 19
-                                        $transaction_type = @$exploded_msg[21]; //TRANSACTION TYPE 20 
+                                        $transaction_type = @$exploded_msg[21]; //TRANSACTION TYPE 20
                                         $grouping = @$exploded_msg[22]; //GROUPING
-        
+
                                         $client_id = '';
                                         $enrollment_date2 = $enrollment_date;
-        
-        
+
+
                                         $trans_type_dict = "1:2:3"; //1= > NEW 2 => UPDATE 3=> TRANSFER
-        
+
                                         $exploded_trans_type_dict = explode(":", $trans_type_dict);
-        
+
                                         $new_trans = $exploded_trans_type_dict[0];
                                         $update_trans = $exploded_trans_type_dict[1];
                                         $transfer_trans = $exploded_trans_type_dict[2];
-        
-        
-        
+
+
+
                                         $sms_enable_dictionary = "1:2"; //1= > YES 2 => NO
                                         $status_dictionary = "1:2:3"; //1 => Active 2 => Disabled 3 => Dead
                                         $exploded_sms_dict = explode(":", $sms_enable_dictionary);
                                         $exploded_status_dict = explode(":", $status_dictionary);
-        
+
                                         $yes = $exploded_sms_dict[0];
                                         $no = $exploded_sms_dict[1];
-        
+
                                         $active = $exploded_status_dict[0];
                                         $disabled = $exploded_status_dict[1];
                                         $dead = $exploded_status_dict[2];
                                         $outgoing_msg = '';
-        
-        
+
+
                                         /* Transaction Types .....
-                                         * 
+                                         *
                                          * Transaction #1 =>  Add new client
                                          * Transaction #2 => Update Client
-                                         * Transaction #3 => Transfer Client 
+                                         * Transaction #3 => Transfer Client
                                          */
-        
+
                                         if ($transaction_type == $new_trans or $transaction_type == $transfer_trans) {
-        
+
                                             if ($gender < 0) {
                                                 $gender = "0";
                                             } else {
                                                 $check_gender = $this->db->get_where('gender', array('id' => $gender))->num_rows();
                                             }
-        
+
                                             if ($marital < 0) {
                                                 $marital = "0";
                                             } else {
@@ -10099,7 +10268,7 @@ WHERE message_type_id = '6'
                                             if ($grouping < 0) {
                                                 $grouping = "0";
                                             } else {
-                                               $check_grouping = $this->db->get_where('groups', array('id' => $grouping))->num_rows(); 
+                                               $check_grouping = $this->db->get_where('groups', array('id' => $grouping))->num_rows();
                                             }
                                             // $check_grouping = $this->db->get_where('groups', array('id' => $grouping))->num_rows();
                                             if ($language < 0) {
@@ -10108,30 +10277,30 @@ WHERE message_type_id = '6'
                                             } else {
                                                 $check_language = $this->db->get_where('language', array('id' => $language))->num_rows();
                                             }
-        
-        
+
+
                                             if ($check_gender > 0 and $check_marital_status > 0 and $check_condition > 0 and $check_language > 0) {
-        
-        
+
+
                                                 if ($sms_enable == $yes) {
                                                     $sms_lrt = "Yes";
                                                 } elseif ($sms_enable == $no or $sms_enable === "-1") {
-        
+
                                                     $sms_lrt = "No";
                                                 } else {
                                                     $outgoing_msg .= " Invalid selection for SMS Alert please try again with 1= > YES 2 => NO   ";
                                                 }
-        
+
                                                 if ($motivation_enable == $yes) {
                                                     $motivation_enable = "Yes";
                                                 } elseif ($motivation_enable == $no or $motivation_enable === "-1") {
-        
+
                                                     $motivation_enable = "No";
                                                 } else {
                                                     $outgoing_msg .= " Invalid selection for SMS Alert please try again with 1= > YES 2 => NO   ";
                                                 }
-        
-        
+
+
                                                 if ($client_status == $active) {
                                                     $client_stts = "Active";
                                                 } elseif ($client_status == $disabled) {
@@ -10139,17 +10308,17 @@ WHERE message_type_id = '6'
                                                 } elseif ($client_status == $dead) {
                                                     $client_stts = "Dead";
                                                 } else {
-        
+
                                                     $outgoing_msg .= " Invalid selection for Client Status please try again with 1 => Active 2 => Disabled 3 => Dead  ";
                                                 }
-        
-        
-        
+
+
+
                                                 if (!empty($sms_lrt) and ! empty($client_stts)) {
                                                     $condition1 = '';
                                                     $condition2 = '';
                                                     $condition3 = '';
-        
+
                                                     if (empty($enrollment_date)) {
                                                         $outgoing_msg .= " Enrollment date cannot be empty  ";
                                                     } else {
@@ -10157,18 +10326,18 @@ WHERE message_type_id = '6'
                                                             $enrollment_date = str_replace('/', '-', $enrollment_date);
                                                             $enrollment_date = date("Y-m-d", strtotime($enrollment_date));
                                                         }
-        
+
                                                         if (!empty($dob)) {
                                                             $check_p_year = str_replace('/', '-', $dob);
                                                             $unix_dob = strtotime(date("Y-m-d", strtotime($check_p_year)));
                                                         }
-        
+
                                                         if (!empty($enrollment_date)) {
                                                             $check_enrollment_date = str_replace('/', '-', $enrollment_date);
                                                             $unix_enrollment_date = strtotime(date("Y-m-d", strtotime($check_enrollment_date)));
-        
+
                                                             $date_diff = $unix_enrollment_date - $unix_dob;
-        
+
                                                             if ($date_diff > 1) {
                                                                 $condition1 .= TRUE;
                                                             } else {
@@ -10177,22 +10346,22 @@ WHERE message_type_id = '6'
                                                             }
                                                         }
                                                     }
-        
+
                                                     if (empty($art_start_date)) {
                                                         $outgoing_msg .= " ART Start Date cannot be empty  ";
                                                     } else {
-        
+
                                                         $art_start_date = str_replace('/', '-', $art_start_date);
                                                         $art_start_date = date("Y-m-d", strtotime($art_start_date));
-        
+
                                                         $check_p_year = str_replace('/', '-', $dob);
                                                         $unix_dob = strtotime(date("Y-m-d", strtotime($check_p_year)));
-        
+
                                                         $check_art_date = str_replace('/', '-', $art_start_date);
                                                         $unix_art_date = strtotime(date("Y-m-d", strtotime($check_art_date)));
-        
+
                                                         $date_diff = $unix_art_date - $unix_dob;
-        
+
                                                         if ($date_diff > 1) {
                                                             $condition2 .= TRUE;
                                                         } else {
@@ -10200,27 +10369,27 @@ WHERE message_type_id = '6'
                                                             $outgoing_msg .= $msg;
                                                         }
                                                     }
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
                                                     if (empty($art_start_date) and empty($enrollment_date)) {
-                                                        
+
                                                     } else {
-        
+
                                                         $check_art_date = str_replace('/', '-', $art_start_date);
                                                         $check_art_date = date("Y-m-d", strtotime($check_art_date));
                                                         $unix_art_date = strtotime($check_art_date);
-        
+
                                                         $check_enrollment_date = str_replace('/', '-', $enrollment_date);
                                                         $check_enrollment_date = date("Y-m-d", strtotime($check_enrollment_date));
                                                         $unix_enrollment_date = strtotime($check_enrollment_date);
-        
+
                                                         $date_diff = $unix_enrollment_date - $unix_art_date;
-        
+
                                                         if ($date_diff > 1) {
                                                             $msg = " ART Date cannot be less than Enrollment Date ";
                                                             $outgoing_msg .= $msg;
@@ -10228,26 +10397,26 @@ WHERE message_type_id = '6'
                                                             $condition3 .= TRUE;
                                                         }
                                                     }
-        
-        
+
+
                                                     if ($condition1 and $condition2 and $condition3) {
-        
+
                                                         $dob = str_replace('/', '-', $dob);
                                                         $dob = date("Y-m-d", strtotime($dob));
-        
+
                                                         $current_date = date("Y-m-d");
                                                         $current_date = date_create($current_date);
                                                         $new_dob = date_create($dob);
                                                         $date_diff = date_diff($new_dob, $current_date);
                                                         $diff = $date_diff->format("%R%a days");
-        
+
                                                         $diff = substr($diff, 0);
                                                         $diff = (int) $diff;
-        
-        
-        
-        
-        
+
+
+
+
+
                                                         $category = "";
                                                         if ($diff >= 3650 and $diff <= 6935) {
                                                             //Adolescent
@@ -10259,30 +10428,30 @@ WHERE message_type_id = '6'
                                                             //Paeds
                                                             $category .= 3;
                                                         }
-        
-        
-        
+
+
+
                                                         if ($transaction_type == $new_trans) {
                                                             //REGISTER NEW CLIENT GOES IN HERE ...
-        
-        
-        
-        
-        
+
+
+
+
+
                                                             $clinic_number = $upn;
                                                             $check_client_existence = $this->db->get_where('client', array('clinic_number' => $clinic_number))->num_rows();
                                                             if ($check_client_existence > 0) {
                                                                 //  echo 'Clinic number already exists ... <br> ';
                                                                 $created_at = date('Y-m-d H:i:s');
-        
+
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                 $this->config->load('config', TRUE);
                                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                                 $source = $this->config->item('shortcode', 'config');
-        
-        
-        
-        
+
+
+
+
                                                                 $this->db->trans_start();
                                                                 $message = "Client No : $upn already exists in the  system and cannot be registered again, you can either Update client's records or transfer in the  client.  ";
                                                                 $data_outgoing = array(
@@ -10298,16 +10467,16 @@ WHERE message_type_id = '6'
                                                                     'created_by' => $user_id
                                                                 );
                                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
                                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                     $this->config->load('config', TRUE);
@@ -10315,28 +10484,28 @@ WHERE message_type_id = '6'
                                                                     $source = $this->config->item('shortcode', 'config');
                                                                     $destination = $user_source;
                                                                     $msg = $message;
-        
+
                                                                     $usr_otgoing_id = "User";
-        
+
                                                                     $status_msg = $message;
-        
+
                                                                     $log_msg = "our short code is => " . $source . " user source => " . $user_source . " msg => " . $msg . "<br>";
                                                                     log_message('info', $log_msg);
-                                                                    
+
                                                                     $usr_otgoing_id = "User";
                                                                     $send_text = $this->data->send_message($source, $user_source, $msg, $usr_otgoing_id);
                                                                 }
                                                             } else {
-        
-        
+
+
                                                                 //Registration Process Begins ......
-        
-        
-        
-        
+
+
+
+
                                                                 $dob = str_replace('/', '-', $dob);
                                                                 $dob = date("Y-m-d", strtotime($dob));
-        
+
                                                                 $current_date = date("Y-m-d");
                                                                 $current_date = date_create($current_date);
                                                                 $new_dob = date_create($dob);
@@ -10344,7 +10513,7 @@ WHERE message_type_id = '6'
                                                                 $diff = $date_diff->format("%R%a days");
                                                                 $diff = substr($diff, 0);
                                                                 $diff = (int) $diff;
-        
+
                                                                 $category = "";
                                                                 if ($diff >= 3650 and $diff <= 6935) {
                                                                     //Adolescent
@@ -10356,14 +10525,14 @@ WHERE message_type_id = '6'
                                                                     //Paeds
                                                                     $category .= 3;
                                                                 }
-        
-        
-        
+
+
+
                                                                 $this->db->trans_start();
-        
-        
+
+
                                                                 $created_at = date('Y-m-d H:i:s');
-        
+
                                                                 $data_insert = array(
                                                                     'clinic_number' => $upn,
                                                                     'facility_id' => $facility_id,
@@ -10399,30 +10568,30 @@ WHERE message_type_id = '6'
                                                                 $this->db->insert('client', $data_insert);
                                                                 $client_id .= $this->db->insert_id();
                                                                 log_message("INFO", $client_id);
-        
+
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-        
-        
-        
+
+
+
                                                                     $this->welcome_msg($client_id);
-        
-        
+
+
                                                                     $this->db->trans_start();
                                                                     $response_update = array(
                                                                         'processed' => 'Yes'
                                                                     );
                                                                     $this->db->where('id', $response_id);
                                                                     $this->db->update('responses', $response_update);
-        
+
                                                                     $this->db->trans_complete();
                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                        
+
                                                                     } else {
-        
-        
+
+
                                                                         $this->db->trans_start();
                                                                         $message = "Client ID : $upn was succesfully added in the  system ";
                                                                         $data_outgoing = array(
@@ -10438,48 +10607,48 @@ WHERE message_type_id = '6'
                                                                             'created_by' => $user_id
                                                                         );
                                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
                                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                             $this->config->load('config', TRUE);
                                                                             // Retrieve a config item named site_name contained within the blog_settings array
                                                                             $source = $this->config->item('shortcode', 'config');
-        
+
                                                                             $destination = $user_source;
                                                                             $status_msg = $message;
-        
+
                                                                             $usr_otgoing_id = "User";
                                                                             $log_msg = "our short code is => " . $source . " user source => " . $user_source . " msg => " . $msg . "<br>";
                                                                             log_message('info', $log_msg);
                                                                             $usr_otgoing_id = "User";
                                                                             $send_text = $this->data->send_message($source, $user_source, $message, $usr_otgoing_id);
-                                                                            
+
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                         }
-        
-        
-        
+
+
+
                                                         if ($transaction_type == $transfer_trans) {
                                                             //TRANSFER CLIENT GOES IN HERE ...
-                                                            /* Explode clients UPN Number to get his/her enrollment facility 
+                                                            /* Explode clients UPN Number to get his/her enrollment facility
                                                              * Useing the mfl code you can be bale to determine the  client's previous clinic
                                                              *  and through the  enrollment officer you can determine his current clinic
                                                              */
-        
-        
-        
+
+
+
                                                             $previous_facility = substr($upn, 0, 5);
                                                             $query_client = $this->db->get_where('client', array('clinic_number' => $upn));
                                                             $client_existence = $query_client->num_rows();
@@ -10488,14 +10657,14 @@ WHERE message_type_id = '6'
                                                                 $get_client_detials = $query_client->result();
                                                                 foreach ($get_client_detials as $value) {
                                                                     $trans_3_client_id = $value->id;
-        
-        
-        
-        
-        
+
+
+
+
+
                                                                     $dob = str_replace('/', '-', $dob);
                                                                     $dob = date("Y-m-d", strtotime($dob));
-        
+
                                                                     $current_date = date("Y-m-d");
                                                                     $current_date = date_create($current_date);
                                                                     $new_dob = date_create($dob);
@@ -10503,7 +10672,7 @@ WHERE message_type_id = '6'
                                                                     $diff = $date_diff->format("%R%a days");
                                                                     $diff = substr($diff, 0);
                                                                     $diff = (int) $diff;
-        
+
                                                                     $category = "";
                                                                     if ($diff >= 3650 and $diff <= 6935) {
                                                                         //Adolescent
@@ -10515,29 +10684,29 @@ WHERE message_type_id = '6'
                                                                         //Paeds
                                                                         $category .= 3;
                                                                     }
-        
-        
-        
+
+
+
                                                                     $this->db->trans_start();
-        
-        
+
+
                                                                     $created_at = date('Y-m-d H:i:s');
-        
+
                                                                     $this->db->query("UPDATE IGNORE  tbl_client set clinic_number = '$upn' , facility_id ='$facility_id', mfl_code='$facility_id',f_name='$f_name',m_name='$m_name',l_name='$l_name',dob='$dob' ,  "
                                                                             . " gender ='$gender' , marital='$marital' , client_status='$condition' , enrollment_date ='$enrollment_date' , group_id = '$category' , phone_no ='$primary_phone_no' , "
                                                                             . " alt_phone_no = '$alt_phone_no' , buddy_phone_no = '$trtmnt_buddy_phone_no' , language_id = '$language' , smsenable ='$sms_enable' , partner_id = '$partner_id' , status = '$client_stts' , "
                                                                             . " art_date = '$art_start_date'  , entry_point = 'Mobile' , updated_by = '$user_id' , prev_clinic = '$previous_facility' , client_type = 'Transfer' , "
                                                                             . " txt_time = '$messaging_time' , motivational_enable = '$motivation_enable' , wellness_enable = '$motivation_enable' , national_id = '$national_id' , file_no ='$serial_no' , clinic_id = '$clinic_id' "
                                                                             . " where id = '$trans_3_client_id' ");
-        
-        
+
+
                                                                     $this->db->trans_complete();
                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                        
+
                                                                     } else {
-        
-        
-        
+
+
+
                                                                         $this->db->trans_start();
                                                                         $message = "Client ID : $upn was succesfully transfered to your facility  in the system ";
                                                                         $data_outgoing = array(
@@ -10553,22 +10722,22 @@ WHERE message_type_id = '6'
                                                                             'created_by' => $user_id
                                                                         );
                                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
-        
+
+
+
+
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-        
+
                                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                             $this->config->load('config', TRUE);
                                                                             // Retrieve a config item named site_name contained within the blog_settings array
                                                                             $source = $this->config->item('shortcode', 'config');
                                                                             $destination = $user_source;
                                                                             $status_msg = $message;
-        
+
                                                                             $usr_otgoing_id = "User";
                                                                             $log_msg = "our short code is => " . $source . " user source => " . $user_source . " msg => " . $msg . "<br>";
                                                                             log_message('info', $log_msg);
@@ -10579,12 +10748,12 @@ WHERE message_type_id = '6'
                                                                 }
                                                             } else {
                                                                 //Client does not exist lets insert him/her as new record......
-        
-        
-        
+
+
+
                                                                 $dob = str_replace('/', '-', $dob);
                                                                 $dob = date("Y-m-d", strtotime($dob));
-        
+
                                                                 $current_date = date("Y-m-d");
                                                                 $current_date = date_create($current_date);
                                                                 $new_dob = date_create($dob);
@@ -10593,7 +10762,7 @@ WHERE message_type_id = '6'
                                                                 //// // // echo 'Days difference => ' . $diff . '<br>';
                                                                 $diff = substr($diff, 0);
                                                                 $diff = (int) $diff;
-        
+
                                                                 $category = "";
                                                                 if ($diff >= 3650 and $diff <= 6935) {
                                                                     //Adolescent
@@ -10605,14 +10774,14 @@ WHERE message_type_id = '6'
                                                                     //Paeds
                                                                     $category .= 3;
                                                                 }
-        
-        
-        
+
+
+
                                                                 $this->db->trans_start();
-        
-        
+
+
                                                                 $created_at = date('Y-m-d H:i:s');
-        
+
                                                                 $data_insert = array(
                                                                     'clinic_number' => $upn,
                                                                     'facility_id' => $facility_id,
@@ -10646,21 +10815,21 @@ WHERE message_type_id = '6'
                                                                     'file_no' => $serial_no,
                                                                     'clinic_id' => $clinic_id
                                                                 );
-        
+
                                                                 $this->db->insert('client', $data_insert);
                                                                 $client_id .= $this->db->insert_id();
                                                                 log_message("INFO", "our client id => " . $client_id);
-        
+
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-        
-        
+
+
                                                                     $this->welcome_msg($client_id);
-        
-        
-        
+
+
+
                                                                     $this->db->trans_start();
                                                                     $message = "Client ID : $upn was succesfully transfered to your facility  in the system ";
                                                                     $data_outgoing = array(
@@ -10676,13 +10845,13 @@ WHERE message_type_id = '6'
                                                                         'created_by' => $user_id
                                                                     );
                                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                                     $this->db->trans_complete();
                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                        
+
                                                                     } else {
-        
-        
+
+
                                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                         $this->config->load('config', TRUE);
                                                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -10699,11 +10868,11 @@ WHERE message_type_id = '6'
                                                             }
                                                         }
                                                     } else {
-        
-        
+
+
                                                         $this->db->trans_start();
-        
-                                                        //Conditions were not met , queue out going message 
+
+                                                        //Conditions were not met , queue out going message
                                                         $created_at = date('Y-m-d H:i:s');
                                                         // // // echo 'Out going message => ' . $outgoing_msg . '</br> ';
                                                         $message = "Error encountered = > " . $outgoing_msg;
@@ -10720,17 +10889,17 @@ WHERE message_type_id = '6'
                                                             'created_by' => $user_id
                                                         );
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
+
+
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-        
-        
-        
-        
-        
+
+
+
+
+
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
                                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -10740,7 +10909,7 @@ WHERE message_type_id = '6'
                                                             $usr_otgoing_id = "User";
                                                             $log_msg = "our short code is => " . $source . " user source => " . $user_source . " msg => " . $msg . "<br>";
                                                             log_message('info', $log_msg);
-        
+
                                                             log_message('debug', $source, $user_source, $msg, $usr_otgoing_id);
                                                             $usr_otgoing_id = "User";
                                                             $send_text = $this->data->send_message($source, $user_source, $message, $usr_otgoing_id);
@@ -10748,27 +10917,27 @@ WHERE message_type_id = '6'
                                                     }
                                                 }
                                             } else if ($check_gender <= 0 or $check_marital_status <= 0 or $check_condition <= 0) {
-        
-        
+
+
                                                 $outgoing_msg .= '';
                                                 if ($check_gender <= 0) {
                                                     $outgoing_msg .= 'Invalid selection for client Gender ';
                                                 }
                                                 if ($check_marital_status <= 0) {
-        
+
                                                     $outgoing_msg .= 'Invalid selection for Marital Status ';
                                                 }
                                                 if ($check_condition <= 0) {
                                                     $outgoing_msg .= 'Invalid selection for Client Condition ';
                                                 }
-        
-        
+
+
                                                 $this->db->trans_start();
-        
-        
+
+
                                                 $message = "Error encountered = > " . $outgoing_msg;
-        
-                                                //Conditions were not met , queue out going message 
+
+                                                //Conditions were not met , queue out going message
                                                 $created_at = date('Y-m-d H:i:s');
                                                 $data_outgoing = array(
                                                     'destination' => $user_source,
@@ -10783,15 +10952,15 @@ WHERE message_type_id = '6'
                                                     'created_by' => $user_id
                                                 );
                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
+
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-        
-        
-        
+
+
+
                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                     $this->config->load('config', TRUE);
                                                     // Retrieve a config item named site_name contained within the blog_settings array
@@ -10801,21 +10970,21 @@ WHERE message_type_id = '6'
                                                     $usr_otgoing_id = "User";
                                                     $log_msg = "our short code is => " . $source . " user source => " . $user_source . " msg => " . $msg . "<br>";
                                                     log_message('info', $log_msg);
-        
+
                                                     log_message('debug', $source, $user_source, $msg, $usr_otgoing_id);
                                                     $usr_otgoing_id = "User";
                                                     $send_text = $this->data->send_message($source, $user_source, $message, $usr_otgoing_id);
                                                 }
                                             }
                                         }
-        
-        
-        
-        
-        
+
+
+
+
+
                                         if ($transaction_type == $update_trans) {
                                             //UPDATE CLIENT DETAILS GOES NI HERE ...
-        
+
                                             $clinic_number = $upn;
                                             $client_query = $this->db->get_where('client', array('clinic_number' => $clinic_number));
                                             $check_client_existence = $client_query->num_rows();
@@ -10825,8 +10994,8 @@ WHERE message_type_id = '6'
                                                 $this->config->load('config', TRUE);
                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                 $source = $this->config->item('shortcode', 'config');
-        
-        
+
+
                                                 //$user_destination = $phone_no;
                                                 $this->db->trans_start();
                                                 $message = "Update Client Error = > Client No : $upn does not exist in the  system ";
@@ -10843,10 +11012,10 @@ WHERE message_type_id = '6'
                                                     'created_by' => $user_id
                                                 );
                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                     $this->config->load('config', TRUE);
@@ -10861,26 +11030,26 @@ WHERE message_type_id = '6'
                                                     $send_text = $this->data->send_message($source, $user_source, $message, $usr_otgoing_id);
                                                 }
                                             } else {
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                                                 $enrollment_date = str_replace('/', '-', $enrollment_date);
                                                 $enrollment_date = date("Y-m-d", strtotime($enrollment_date));
-        
-        
-        
-        
+
+
+
+
                                                 $art_start_date = str_replace('/', '-', $art_start_date);
                                                 $art_start_date = date("Y-m-d", strtotime($art_start_date));
-        
-        
-        
+
+
+
                                                 $dob = str_replace('/', '-', $dob);
                                                 $dob = date("Y-m-d", strtotime($dob));
-        
+
                                                 $current_date = date("Y-m-d");
                                                 $current_date = date_create($current_date);
                                                 $new_dob = date_create($dob);
@@ -10888,7 +11057,7 @@ WHERE message_type_id = '6'
                                                 $diff = $date_diff->format("%R%a days");
                                                 $diff = substr($diff, 0);
                                                 $diff = (int) $diff;
-        
+
                                                 $category = "";
                                                 if ($diff >= 3650 and $diff <= 6935) {
                                                     //Adolescent
@@ -10900,134 +11069,134 @@ WHERE message_type_id = '6'
                                                     //Paeds
                                                     $category .= 3;
                                                 }
-        
+
                                                 foreach ($client_query->result() as $value) {
-        
-        
+
+
                                                     $trans_2_client_id = $value->id;
-        
-        
+
+
                                                     $this->db->trans_start();
-        
-        
+
+
                                                     $created_at = date('Y-m-d H:i:s');
-        
+
                                                     $query = "UPDATE IGNORE tbl_client SET ";
-        
-        
+
+
                                                     if ($serial_no < 0) {
-                                                        
+
                                                     } else {
-        
+
                                                         $query .= " file_no = '$serial_no' ";
                                                     }
                                                     if ($f_name < 0) {
-                                                        
+
                                                     } else {
-        
+
                                                         $query .= ", f_name = '$f_name' ";
                                                     }
                                                     if ($m_name < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= " ,m_name = '$m_name' ";
                                                     }
                                                     if ($l_name < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", l_name = '$l_name' ";
                                                     }
                                                     if ($dob < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= " ,dob = '$dob' ";
                                                     }
                                                     if ($national_id < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= " ,national_id = '$national_id' ";
                                                     }
                                                     if ($gender < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= " ,gender = '$gender' ";
                                                     }
                                                     if ($marital < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", marital = '$marital' ";
                                                     }
                                                     if ($condition < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", client_status = '$condition' ";
                                                     }
-        
+
                                                     if ($enrollment_date < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= " ,enrollment_date = '$enrollment_date' ";
                                                     }
                                                     if ($art_start_date < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", art_date = '$art_start_date' ";
                                                     }
                                                     if ($primary_phone_no < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", phone_no = '$primary_phone_no' ";
                                                     }
                                                     if ($alt_phone_no < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", alt_phone_no = '$alt_phone_no' ";
                                                     }
                                                     if ($trtmnt_buddy_phone_no < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", buddy_phone_no = '$trtmnt_buddy_phone_no' ";
                                                     }
                                                     if ($sms_enable < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", smsenable = '$sms_enable' ";
                                                     }
                                                     if ($language < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", language_id = '$language' ";
                                                     }
                                                     if ($messaging_time < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", txt_time = '$messaging_time' ";
                                                     }
                                                     if ($motivation_enable < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= ", motivational_enable = '$motivation_enable' ";
                                                     }
                                                     if ($client_status < 0) {
-                                                        
+
                                                     } else {
                                                         $query .= " ,client_status = '$client_status' ";
                                                     }
-                                                
-        
-        
+
+
+
                                                     $query .= " WHERE id = '$trans_2_client_id' ";
-        
+
                                                     $this->db->query($query);
-        
+
                                                     $client_id .= $this->db->insert_id();
-        
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-        
-        
+
+
                                                         $this->db->trans_start();
                                                         $message = "Client ID : $upn was succesfully updated in the  system ";
                                                         $data_outgoing = array(
@@ -11043,14 +11212,14 @@ WHERE message_type_id = '6'
                                                             'created_by' => $user_id
                                                         );
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
+
+
+
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-        
+
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
                                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -11071,14 +11240,14 @@ WHERE message_type_id = '6'
                                         //$shortcode = $user_destination;
                                         //Failed, please try again ....
                                         // echo 'Old application';
-        
+
                                         $this->db->trans_start();
-        
+
                                         $message = "Error encountered = > You need to update your application to the  latest version, kindly contact support for guidance. "
                                                 . "Ushauri : Getting Better one text at a time.";
-        
-        
-                                        //Conditions were not met , queue out going message 
+
+
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         $data_outgoing = array(
                                             'destination' => $user_source,
@@ -11093,14 +11262,14 @@ WHERE message_type_id = '6'
                                             'created_by' => $user_id
                                         );
                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
+
+
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-        
-        
+
+
                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                             $this->config->load('config', TRUE);
                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -11121,7 +11290,7 @@ WHERE message_type_id = '6'
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
                                     // // // // echo 'Record inserted successfullly ....';
                                 }
@@ -11164,7 +11333,7 @@ WHERE message_type_id = '6'
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -11194,9 +11363,9 @@ WHERE message_type_id = '6'
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -11211,9 +11380,9 @@ WHERE message_type_id = '6'
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-                                
+
                             }
                         }
                     } catch (Exception $exc) {
@@ -11229,9 +11398,9 @@ WHERE message_type_id = '6'
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
@@ -11251,7 +11420,7 @@ WHERE message_type_id = '6'
             $user_source = $our_msg[1];
             // echo json_encode($user_source);
             // exit;
-            
+
 
             $destination = $user_source;
             $today = date("Y-m-d H:i:s");
@@ -11292,7 +11461,7 @@ WHERE message_type_id = '6'
                     //$user_destination = $this->config->item('shortcode', 'config');
                     // echo json_encode($short_code);
                     // exit;
-                    
+
                     $mobile = substr($user_source, -9);
                     $len = strlen($mobile);
 
@@ -11315,7 +11484,7 @@ WHERE message_type_id = '6'
                             $clinic_id = $value->clinic_id;
                             $exploded_msg = explode("*", $msg);
                             //echo json_encode($exploded_msg) . '<br>';
-                            
+
                             $count_msg = count($exploded_msg);
                             // echo json_encode($count_msg);
                             // exit;
@@ -11323,7 +11492,7 @@ WHERE message_type_id = '6'
 
 
                             if ($count_msg == 23) {
-                                //Success Go Ahead 
+                                //Success Go Ahead
 
                                 $reg = @$exploded_msg[0]; //CODE = REG => REGISTRATION 1
                                 $upn = @$exploded_msg[1]; //UPN/CCC NO 2
@@ -11335,7 +11504,7 @@ WHERE message_type_id = '6'
                                 $dob = @$exploded_msg[6]; //DATE OF BIRTH 7
                                 $national_id = @$exploded_msg[7]; //NATIONAL ID OR PASSOPRT NO 8
                                 $gender = @$exploded_msg[8]; //GENDER 9
-                                $marital = @$exploded_msg[9]; //MARITAL STATUS 10 
+                                $marital = @$exploded_msg[9]; //MARITAL STATUS 10
                                 $condition = @$exploded_msg[10]; //CONDITION 11
                                 $enrollment_date = @$exploded_msg[11]; //ENROLLMENT DATE 12
                                 $art_start_date = @$exploded_msg[12]; //ART START DATE 13
@@ -11347,7 +11516,7 @@ WHERE message_type_id = '6'
                                 $motivation_enable = @$exploded_msg[18]; //MOTIVATIONAL ALERTS ENABLE 18
                                 $messaging_time = @$exploded_msg[19]; //MESSAGING TIME 17
                                 $client_status = @$exploded_msg[20]; //CLIENT STATUS 19
-                                $transaction_type = @$exploded_msg[21]; //TRANSACTION TYPE 20 
+                                $transaction_type = @$exploded_msg[21]; //TRANSACTION TYPE 20
                                 $grouping = @$exploded_msg[22]; //GROUPING
 
                                 $client_id = '';
@@ -11379,10 +11548,10 @@ WHERE message_type_id = '6'
 
 
                                 /* Transaction Types .....
-                                 * 
+                                 *
                                  * Transaction #1 =>  Add new client
                                  * Transaction #2 => Update Client
-                                 * Transaction #3 => Transfer Client 
+                                 * Transaction #3 => Transfer Client
                                  */
 
                                 if ($transaction_type == $new_trans or $transaction_type == $transfer_trans) {
@@ -11406,7 +11575,7 @@ WHERE message_type_id = '6'
                                     if ($grouping < 0) {
                                         $grouping = "0";
                                     } else {
-                                       $check_grouping = $this->db->get_where('groups', array('id' => $grouping))->num_rows(); 
+                                       $check_grouping = $this->db->get_where('groups', array('id' => $grouping))->num_rows();
                                     }
                                     // $check_grouping = $this->db->get_where('groups', array('id' => $grouping))->num_rows();
                                     if ($language < 0) {
@@ -11515,7 +11684,7 @@ WHERE message_type_id = '6'
 
 
                                             if (empty($art_start_date) and empty($enrollment_date)) {
-                                                
+
                                             } else {
 
                                                 $check_art_date = str_replace('/', '-', $art_start_date);
@@ -11614,7 +11783,7 @@ WHERE message_type_id = '6'
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
@@ -11707,7 +11876,7 @@ WHERE message_type_id = '6'
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
 
 
@@ -11724,7 +11893,7 @@ WHERE message_type_id = '6'
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -11752,7 +11921,7 @@ WHERE message_type_id = '6'
 
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
                                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                     $this->config->load('config', TRUE);
@@ -11768,7 +11937,7 @@ WHERE message_type_id = '6'
                                                                     return $message;
                                                                     // echo json_encode($message);
                                                                     // exit;
-                                                                    
+
                                                                 }
                                                             }
                                                         }
@@ -11779,7 +11948,7 @@ WHERE message_type_id = '6'
 
                                                 if ($transaction_type == $transfer_trans) {
                                                     //TRANSFER CLIENT GOES IN HERE ...
-                                                    /* Explode clients UPN Number to get his/her enrollment facility 
+                                                    /* Explode clients UPN Number to get his/her enrollment facility
                                                      * Useing the mfl code you can be bale to determine the  client's previous clinic
                                                      *  and through the  enrollment officer you can determine his current clinic
                                                      */
@@ -11839,7 +12008,7 @@ WHERE message_type_id = '6'
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -11865,7 +12034,7 @@ WHERE message_type_id = '6'
 
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
 
                                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -11958,7 +12127,7 @@ WHERE message_type_id = '6'
 
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
 
 
@@ -11984,7 +12153,7 @@ WHERE message_type_id = '6'
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -12007,7 +12176,7 @@ WHERE message_type_id = '6'
 
                                                 $this->db->trans_start();
 
-                                                //Conditions were not met , queue out going message 
+                                                //Conditions were not met , queue out going message
                                                 $created_at = date('Y-m-d H:i:s');
                                                 // // // echo 'Out going message => ' . $outgoing_msg . '</br> ';
                                                 $message = "Error encountered = > " . $outgoing_msg;
@@ -12028,7 +12197,7 @@ WHERE message_type_id = '6'
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
 
@@ -12071,7 +12240,7 @@ WHERE message_type_id = '6'
 
                                         $message = "Error encountered = > " . $outgoing_msg;
 
-                                        //Conditions were not met , queue out going message 
+                                        //Conditions were not met , queue out going message
                                         $created_at = date('Y-m-d H:i:s');
                                         $data_outgoing = array(
                                             'destination' => $user_source,
@@ -12090,7 +12259,7 @@ WHERE message_type_id = '6'
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
@@ -12148,7 +12317,7 @@ WHERE message_type_id = '6'
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                             $this->config->load('config', TRUE);
@@ -12217,104 +12386,104 @@ WHERE message_type_id = '6'
 
 
                                             if ($serial_no < 0) {
-                                                
+
                                             } else {
 
                                                 $query .= " file_no = '$serial_no' ";
                                             }
                                             if ($f_name < 0) {
-                                                
+
                                             } else {
 
                                                 $query .= ", f_name = '$f_name' ";
                                             }
                                             if ($m_name < 0) {
-                                                
+
                                             } else {
                                                 $query .= " ,m_name = '$m_name' ";
                                             }
                                             if ($l_name < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", l_name = '$l_name' ";
                                             }
                                             if ($dob < 0) {
-                                                
+
                                             } else {
                                                 $query .= " ,dob = '$dob' ";
                                             }
                                             if ($national_id < 0) {
-                                                
+
                                             } else {
                                                 $query .= " ,national_id = '$national_id' ";
                                             }
                                             if ($gender < 0) {
-                                                
+
                                             } else {
                                                 $query .= " ,gender = '$gender' ";
                                             }
                                             if ($marital < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", marital = '$marital' ";
                                             }
                                             if ($condition < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", client_status = '$condition' ";
                                             }
 
                                             if ($enrollment_date < 0) {
-                                                
+
                                             } else {
                                                 $query .= " ,enrollment_date = '$enrollment_date' ";
                                             }
                                             if ($art_start_date < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", art_date = '$art_start_date' ";
                                             }
                                             if ($primary_phone_no < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", phone_no = '$primary_phone_no' ";
                                             }
                                             if ($alt_phone_no < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", alt_phone_no = '$alt_phone_no' ";
                                             }
                                             if ($trtmnt_buddy_phone_no < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", buddy_phone_no = '$trtmnt_buddy_phone_no' ";
                                             }
                                             if ($sms_enable < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", smsenable = '$sms_enable' ";
                                             }
                                             if ($language < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", language_id = '$language' ";
                                             }
                                             if ($messaging_time < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", txt_time = '$messaging_time' ";
                                             }
                                             if ($motivation_enable < 0) {
-                                                
+
                                             } else {
                                                 $query .= ", motivational_enable = '$motivation_enable' ";
                                             }
                                             if ($client_status < 0) {
-                                                
+
                                             } else {
                                                 $query .= " ,client_status = '$client_status' ";
                                             }
-                                        
+
 
 
                                             $query .= " WHERE id = '$trans_2_client_id' ";
@@ -12325,7 +12494,7 @@ WHERE message_type_id = '6'
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
 
 
@@ -12349,7 +12518,7 @@ WHERE message_type_id = '6'
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -12378,7 +12547,7 @@ WHERE message_type_id = '6'
                                         . "Ushauri : Getting Better one text at a time.";
 
 
-                                //Conditions were not met , queue out going message 
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_source,
@@ -12397,7 +12566,7 @@ WHERE message_type_id = '6'
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -12420,9 +12589,9 @@ WHERE message_type_id = '6'
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     } else {
 
@@ -12463,7 +12632,7 @@ WHERE message_type_id = '6'
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
 
 
@@ -12480,7 +12649,7 @@ WHERE message_type_id = '6'
                         }
                     }
                 } else {
-                    
+
                 }
             } catch (Exception $exc) {
                 $message = $exc->getTraceAsString();
@@ -12495,9 +12664,9 @@ WHERE message_type_id = '6'
 
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
 
@@ -12525,12 +12694,12 @@ WHERE message_type_id = '6'
     function process_appointment($response_id=null) {
 
         log_message("INFO", "Process appointment has been called for $response_id ");
-        
-        
+
+
         //
         if (is_numeric($response_id)) {
             $query = $this->db->query(" select * from tbl_responses   where ID ='$response_id'")->result();
-            //Get new response from tbl_response based on the response id passed 
+            //Get new response from tbl_response based on the response id passed
             foreach ($query as $value) {
                 $user_source = $value->source;
                 $user_destination = $value->destination;
@@ -12620,7 +12789,7 @@ WHERE message_type_id = '6'
                                 }elseif($viral_load == $appointment_type){
                                     //viral load will be assigned here
                                     $appntmnt_type = "Viral Load";
-    
+
                                 }
 
                                 #Explode Appointment Kept Dictionary
@@ -12641,7 +12810,7 @@ WHERE message_type_id = '6'
                                 $app_date = str_replace('/', '-', $app_date);
                                 $app_date = date("Y-m-d", strtotime($app_date));
                                 if ($app_date == "1970-01-01") {
-                                    //Invalid Appointment Date 
+                                    //Invalid Appointment Date
                                     $created_at = date('Y-m-d H:i:s');
                                     $message = "Invalid Appointment Date , DD/MM/YYYY is the  appropriate date format .  ";
                                     $this->db->trans_start();
@@ -12661,7 +12830,7 @@ WHERE message_type_id = '6'
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
 
 
@@ -12675,7 +12844,7 @@ WHERE message_type_id = '6'
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
                                             // End Process Here ....
                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -12690,7 +12859,7 @@ WHERE message_type_id = '6'
                                     }
                                 } else {
                                     //Appointment date is correct proceed to appointment processing
-                                    //Get Client Details from the  Client Number 
+                                    //Get Client Details from the  Client Number
 
 
                                     $clinic_number = $upn;
@@ -12743,13 +12912,13 @@ WHERE message_type_id = '6'
 
                                             /*
                                              * Check if similar appointment has already been booked in the  system ....
-                                             * Mark the  response as processed and send feedback back to the  client that the  appointment has laready been booked in the  system. 
+                                             * Mark the  response as processed and send feedback back to the  client that the  appointment has laready been booked in the  system.
                                              *  */
                                             $check_if_appointment_exists = $this->db->query(" select * from tbl_appointment where date(`appntmnt_date`) = '$app_date'  and client_id='$client_id' and active_app='1' ")->num_rows();
                                             if ($check_if_appointment_exists > 0) {
                                                 /*
-                                                 * Appointment already exists and should not create another one again .... 
-                                                 * Mark the  response as processed and send the  user a message that the  specified appointment has already been booked. 
+                                                 * Appointment already exists and should not create another one again ....
+                                                 * Mark the  response as processed and send the  user a message that the  specified appointment has already been booked.
                                                  */
 
 
@@ -12772,7 +12941,7 @@ WHERE message_type_id = '6'
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
 
@@ -12786,7 +12955,7 @@ WHERE message_type_id = '6'
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
                                                         // End Process Here ....
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -12800,8 +12969,8 @@ WHERE message_type_id = '6'
                                                     }
                                                 }
                                             } else {
-                                                /* Appointment does not exist , please proceed and create another appointment in the  system 
-                                                 * 
+                                                /* Appointment does not exist , please proceed and create another appointment in the  system
+                                                 *
                                                  *  */
 
 
@@ -12822,7 +12991,7 @@ WHERE message_type_id = '6'
                                                             /*
                                                              * Archive previous appointments by marking it as appointment kept
                                                              *  and Create a new appointment in the  system
-                                                             * 
+                                                             *
                                                              */
 
                                                             $id = $appointment_value->id;
@@ -12914,7 +13083,7 @@ WHERE message_type_id = '6'
                                                                 $last_appointment_id = $this->db->insert_id();
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
 
                                                                     if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
@@ -12928,19 +13097,19 @@ WHERE message_type_id = '6'
                                                                         $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     } else {
-                                                                        
+
                                                                     }
                                                                     $this->db->trans_start();
 
 
 
 
-                                                                    //Conditions were not met , queue out going message 
+                                                                    //Conditions were not met , queue out going message
                                                                     $created_at = date('Y-m-d H:i:s');
                                                                     $message = "Client $clinic_number appointment was succesfully updated in the  system  ";
                                                                     $data_outgoing = array(
@@ -12960,7 +13129,7 @@ WHERE message_type_id = '6'
 
                                                                     $this->db->trans_complete();
                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                        
+
                                                                     } else {
 
 
@@ -12973,7 +13142,7 @@ WHERE message_type_id = '6'
 
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
 
 
@@ -13032,7 +13201,7 @@ WHERE message_type_id = '6'
                                                         $last_appointment_id = $this->db->insert_id();
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
 
                                                             if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
@@ -13046,12 +13215,12 @@ WHERE message_type_id = '6'
                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-                                                                    
+
                                                                 }
                                                             } else {
-                                                                
+
                                                             }
 
 
@@ -13075,7 +13244,7 @@ WHERE message_type_id = '6'
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
                                                                 $this->db->trans_start();
@@ -13087,7 +13256,7 @@ WHERE message_type_id = '6'
 
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
 
 
@@ -13114,10 +13283,10 @@ WHERE message_type_id = '6'
 
                                                     $check_scheduled_appointment = $this->db->query("Select * from tbl_appointment where client_id='$client_id' and DATE(appntmnt_date) > CURRENT_DATE  and active_app='1'");
                                                     if ($check_scheduled_appointment->num_rows() > 0) {
-                                                        /* A scheduled appointment already esxists for this client 
+                                                        /* A scheduled appointment already esxists for this client
                                                           hence need to mark this future appointment as kept and schedule a new appointment
-                                                         * in the system 
-                                                         *        
+                                                         * in the system
+                                                         *
                                                          * 1. Update future appointment as kept and it is no longer an active appointment in the system
                                                          * 2. Mark the  future appointment as unscheduled and the  date when the  client came early as today
                                                          * 3. create a new future appointment in the  system                                           */
@@ -13140,7 +13309,7 @@ WHERE message_type_id = '6'
                                                             $this->db->update('appointment', $data_update);
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -13178,7 +13347,7 @@ WHERE message_type_id = '6'
                                                                 $last_appointment_id = $this->db->insert_id();
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
                                                                     if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
                                                                         $this->db->trans_start();
@@ -13191,12 +13360,12 @@ WHERE message_type_id = '6'
                                                                         $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     } else {
-                                                                        
+
                                                                     }
 
 
@@ -13220,7 +13389,7 @@ WHERE message_type_id = '6'
 
                                                                     $this->db->trans_complete();
                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                        
+
                                                                     } else {
 
                                                                         $this->db->trans_start();
@@ -13232,7 +13401,7 @@ WHERE message_type_id = '6'
 
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
 
 
@@ -13292,7 +13461,7 @@ WHERE message_type_id = '6'
                                                         $last_appointment_id = $this->db->insert_id();
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
 
                                                             if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
@@ -13306,12 +13475,12 @@ WHERE message_type_id = '6'
                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-                                                                    
+
                                                                 }
                                                             } else {
-                                                                
+
                                                             }
 
 
@@ -13335,7 +13504,7 @@ WHERE message_type_id = '6'
 
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
                                                                 $this->db->trans_start();
@@ -13347,7 +13516,7 @@ WHERE message_type_id = '6'
 
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
 
 
@@ -13395,7 +13564,7 @@ WHERE message_type_id = '6'
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
                                             $this->db->trans_start();
 
@@ -13407,7 +13576,7 @@ WHERE message_type_id = '6'
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
 
 
@@ -13431,7 +13600,7 @@ WHERE message_type_id = '6'
                                 $message = "Error encountered = > You need to update your application to the  latest version, kindly contact support for guidance. "
                                         . "Ushauri : Getting Better one text at a time.";
 
-                                //Conditions were not met , queue out going message 
+                                //Conditions were not met , queue out going message
                                 $created_at = date('Y-m-d H:i:s');
                                 $data_outgoing = array(
                                     'destination' => $user_source,
@@ -13451,7 +13620,7 @@ WHERE message_type_id = '6'
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -13475,9 +13644,9 @@ WHERE message_type_id = '6'
 
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -13511,7 +13680,7 @@ WHERE message_type_id = '6'
                         $this->db->insert('usr_outgoing', $data_outgoing);
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
                             $this->db->trans_start();
 
@@ -13523,7 +13692,7 @@ WHERE message_type_id = '6'
 
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
 
                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
@@ -13552,78 +13721,78 @@ WHERE message_type_id = '6'
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
         }else if (!is_numeric($response_id)) {
-           
-        
-        
+
+
+
             /*
-        
+
              * Process message with internet option ....
              *              */
-        
-        
-        
+
+
+
             $new_msg = explode("#", $response_id);
             $encrypted_msg = $new_msg[0];
             $phone_no = $new_msg[1];
             $user_source = $phone_no;
-        
-        
+
+
             // End Process Here ....
             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
             $this->config->load('config', TRUE);
             // Retrieve a config item named site_name contained within the blog_settings array
             $user_destination = $this->config->item('shortcode', 'config');
             $count_special = substr_count($encrypted_msg, "*");
-        
-        
+
+
             if ($count_special < 2) {
                 /* New Encrypted Message
                  */
-        
-        
-        
+
+
+
                 $explode_msg = explode("*", $encrypted_msg);
                 $identifier = $explode_msg[0];
                 $message = $explode_msg[1];
                 $descrypted_msg = $this->decrypt($message);
                 $new_msg = $identifier . "*" . $descrypted_msg;
-                
-        
-        
+
+
+
                 $msg = $new_msg;
-        
-        
+
+
                 $mobile = substr($user_source, -9);
                 $len = strlen($mobile);
-        
+
                 if ($len = 9) {
-        
+
                     $user_source = "0" . $mobile;
                 }
                 //Check if User is authoriesed
                 $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility'");
                 $user_exists = $get_facility->num_rows();
-        
-        
+
+
                 if ($user_exists >= 1) {
                     //User exists
-                    
+
                     $get_user_details = $get_facility->result();
-        
+
                     foreach ($get_user_details as $value) {
-        
-        
+
+
                         $facility_id = $value->facility_id;
                         $partner_id = $value->partner_id;
                         $user_id = $value->id;
-        
+
                         $exploded_msg = explode("*", $msg);
                         $app = @$exploded_msg[0];
                         $upn = @$exploded_msg[1];
@@ -13631,29 +13800,29 @@ WHERE message_type_id = '6'
                         $appointment_type = @$exploded_msg[3];
                         $appointment_other = @$exploded_msg[4];
                         $appointment_kept = @$exploded_msg[5];
-                        
+
                         $old_appointment_id = @$exploded_msg[6];
-                        
+
                         $appointment_type_dict = "1:2:3:4:5:6";
                         $appointment_kept_dict = "1:2";
-        
+
                         log_message("info", "Our Old appointment ID for internet option is => $old_appointment_id");
-        
-        
+
+
                         $count_msg = count($exploded_msg);
-        
-        
+
+
                         if ($count_msg == 7) {
 
                             #Explode Appointment Type Dictionary
                             $exploded_app_type = explode(":", $appointment_type_dict);
-        
+
                             $re_fill_code = $exploded_app_type[0];
                             $clinical_review_code = $exploded_app_type[1];
                             $enhance_adherence_code = $exploded_app_type[2];
                             $lab_investigation_code = $exploded_app_type[3];
                             $viral_load = $exploded_app_type[4];
-        
+
                             if ($re_fill_code == $appointment_type) {
                                 //Re Fill will assigned from here...
                                 $appntmnt_type = "Re-Fill";
@@ -13670,26 +13839,26 @@ WHERE message_type_id = '6'
                                 //viral load will be assigned from here ...
                                 $appntmnt_type = "Viral Load";
                             }
-                            
-        
+
+
                             #Explode Appointment Kept Dictionary
                             $exploded_app_kept = explode(":", $appointment_kept_dict);
-        
+
                             $app_kept_yes = $exploded_app_kept[0];
                             $app_kept_no = $exploded_app_kept[1];
-        
+
                             if ($app_kept_yes == $appointment_kept) {
                                 //Re Fill will assigned from here...
                                 $appntmnt_kept = "Yes";
                             } elseif ($app_kept_no == $appointment_kept) {
                                 //Clinical Review will be assigned from here ...
                                 $appntmnt_kept = "No";
-                            }                               
-        
+                            }
+
                             $app_date = str_replace('/', '-', $app_date);
                             $app_date = date("Y-m-d", strtotime($app_date));
                             if ($app_date == "1970-01-01") {
-                                //Invalid Appointment Date 
+                                //Invalid Appointment Date
                                 $created_at = date('Y-m-d H:i:s');
                                 $message = "Invalid Appointment Date , DD/MM/YYYY is the  appropriate date format .  ";
                                 $this->db->trans_start();
@@ -13705,14 +13874,14 @@ WHERE message_type_id = '6'
                                     'created_by' => $user_id
                                 );
                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
+
+
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-        
-        
+
+
                                     // End Process Here ....
                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                     $this->config->load('config', TRUE);
@@ -13726,21 +13895,21 @@ WHERE message_type_id = '6'
                                 }
                             } else {
                                 //Appointment date is correct proceed to appointment processing
-                                //Get Client Details from the  Client Number 
-                              
-        
+                                //Get Client Details from the  Client Number
+
+
                                 $clinic_number = $upn;
                                 $app_status = "Booked";
                                 $language_id = '';
                                 $group_id = '';
-        
-        
+
+
                                 $client_data = $this->db->query("Select * from tbl_client where clinic_number='$clinic_number' ");
-        
+
                                 $check_client_existence = $client_data->num_rows();
                                 if ($check_client_existence > 0) {
-                                    
-                              
+
+
                                     //Client Was Found ...
                                     foreach ($client_data->result() as $client_value) {
                                         if($client_value->status != 'Active'){
@@ -13750,8 +13919,8 @@ WHERE message_type_id = '6'
                                                     $this->config->load('config', TRUE);
                                                     // Retrieve a config item named site_name contained within the blog_settings array
                                                     $source = $this->config->item('shortcode', 'config');
-                        
-                        
+
+
                                                     $destination = '0' . $mobile;
                                                     $this->db->trans_start();
                                                     $message = "The Client status is marked as '$client_value->status' in the system, the appointment cannot be updated";
@@ -13766,14 +13935,14 @@ WHERE message_type_id = '6'
                                                         'created_at' => $created_at
                                                     );
                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-                        
-                        
+
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-                        
-                        
+
+
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
                                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -13784,15 +13953,15 @@ WHERE message_type_id = '6'
                                                         log_message('info', $log_msg);
                                                         return $message;
                                                     }
-                                            
+
                                         }else{
 
                                             $check_that_not_a_missed_or_defaulter = $this->db->query("SELECT id, appntmnt_date FROM tbl_appointment WHERE client_id = '$client_value->id' order by id DESC limit 1");
-                                            
+
                                                 $is_defaulters = $check_that_not_a_missed_or_defaulter->result();
                                                 if(sizeof($is_defaulters) > 0){
-                                                    
-   
+
+
                                                     foreach ($is_defaulters as $is_defaulters_value) {
                                                         $current_date = strtotime(date("Y-m-d"));
                                                         $defaulted_appointment_date    = strtotime($is_defaulters_value->appntmnt_date);
@@ -13802,8 +13971,8 @@ WHERE message_type_id = '6'
                                                             $this->config->load('config', TRUE);
                                                             // Retrieve a config item named site_name contained within the blog_settings array
                                                             $source = $this->config->item('shortcode', 'config');
-                                
-                                
+
+
                                                             $destination = '0' . $mobile;
                                                             $this->db->trans_start();
                                                             if($defaulted_appointment_date == $current_date){
@@ -13823,14 +13992,14 @@ WHERE message_type_id = '6'
                                                                 'created_at' => $created_at
                                                             );
                                                             $this->db->insert('usr_outgoing', $data_outgoing);
-                                
-                                
+
+
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
-                                
-                                
+
+
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                 $this->config->load('config', TRUE);
                                                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -13840,39 +14009,39 @@ WHERE message_type_id = '6'
                                                                 $log_msg = "our short code is => " . $source . " user source => " . $user_source . " msg => " . $msg . "<br>";
                                                                 log_message('info', $log_msg);
                                                                 return $message;
-                                                            } 
+                                                            }
                                                         }else{
 
-                                                
+
                                                             $client_id = $client_value->id;
-                        
+
                                                             $group_id = $client_value->group_id;
                                                             $language_id = $client_value->language_id;
-                            
+
                                                             $client_name = " " . $client_value->f_name . " ";
-                            
+
                                                             $client_name = ucwords(strtolower($client_name)) . " ";
                                                             //Get Previous Appointment  if it exists
-                            
+
                                                             /*
                                                             * Check if similar appointment has already been booked in the  system ....
-                                                            * Mark the  response as processed and send feedback back to the  client that the  appointment has laready been booked in the  system. 
+                                                            * Mark the  response as processed and send feedback back to the  client that the  appointment has laready been booked in the  system.
                                                             *  */
                                                             $check_if_client_scheduled_today = $this->db->query("SELECT * FROM tbl_appointment WHERE date(`appntmnt_date`) = CURRENT_DATE AND client_id='$client_id' ")->num_rows();
-                                                            if($check_if_client_scheduled_today > 0){   
+                                                            if($check_if_client_scheduled_today > 0){
                                                                 //THIS IS SCHEDULED
-                                                                
-            
+
+
                                                                 $check_if_appointment_exists = $this->db->query(" select * from tbl_appointment where date(`appntmnt_date`) > CURRENT_DATE and client_id='$client_id' and active_app='1' ")->num_rows();
                                                                 //$check_if_appointment_exists = $this->db->query(" select * from tbl_appointment where date(`appntmnt_date`) > CURRENT_DATE and client_id='$client_id' and active_app='1' ")->num_rows();
                                                                 //$check_if_appointment_exists = $this->db->query("Select * from tbl_appointment where client_id='$client_id' and DATE(appntmnt_date) > CURRENT_DATE and active_app='1'")->num_rows(); //app_type_1 = '$appointment_type'
                                                                 if ($check_if_appointment_exists > 0) {
                                                                     /*
-                                                                    * Appointment already exists and should not create another one again .... 
-                                                                    * Mark the  response as processed and send the  user a message that the  specified appointment has already been booked. 
+                                                                    * Appointment already exists and should not create another one again ....
+                                                                    * Mark the  response as processed and send the  user a message that the  specified appointment has already been booked.
                                                                     */
-                                
-                                
+
+
                                                                     $created_at = date('Y-m-d H:i:s');
                                                                     $message = "Appointment for clinic number $clinic_number on $app_date was already booked in the  system and cannnot be booked again.  .  ";
                                                                     $this->db->trans_start();
@@ -13888,14 +14057,14 @@ WHERE message_type_id = '6'
                                                                         'created_by' => $user_id
                                                                     );
                                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-                                
-                                
+
+
                                                                     $this->db->trans_complete();
                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                        
+
                                                                     } else {
-                                
-                                
+
+
                                                                         // End Process Here ....
                                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                         $this->config->load('config', TRUE);
@@ -13909,23 +14078,23 @@ WHERE message_type_id = '6'
                                                                         return $message;
                                                                     }
                                                                 } else {
-                                                                    /* Appointment does not exist , please proceed and create another appointment in the  system 
-                                                                    * 
+                                                                    /* Appointment does not exist , please proceed and create another appointment in the  system
+                                                                    *
                                                                     *  */
-                                                                    
+
                                                                     $today = date('Y-m-d H:i:s');
-                                                                    
+
                                                                     if ($old_appointment_id > 0 or $old_appointment_id > '0' or $old_appointment_id > "0") {
                                                                         //Old Appointment needs to be updated ....
-                                
-                                
-                                                                    
+
+
+
                                                                         log_message('info', "Old Appointment needs to be updated .... $old_appointment_id");
-                                
-                                
+
+
                                                                         $get_client_appointment = $this->db->query("Select * from tbl_appointment where  id='$old_appointment_id' ");
                                                                         $get_client_row = $get_client_appointment->num_rows();
-                                
+
                                                                         if ($get_client_row > 0 or $get_client_row > "0") {
                                                                             //Old Appointment has been found ...
                                                                             $get_client_appointment_result = $get_client_appointment->result();
@@ -13933,9 +14102,9 @@ WHERE message_type_id = '6'
                                                                                 /*
                                                                                 * Archive previous appointments by marking it as appointment kept
                                                                                 *  and Create a new appointment in the  system
-                                                                                * 
+                                                                                *
                                                                                 */
-                                
+
                                                                                 $id = $appointment_value->id;
                                                                                 $client_id = $appointment_value->client_id;
                                                                                 $appntmnt_date = $appointment_value->appntmnt_date;
@@ -13948,24 +14117,24 @@ WHERE message_type_id = '6'
                                                                                 $app_status = $appointment_value->app_status;
                                                                                 $app_msg = $appointment_value->app_msg;
                                                                                 $appntmnt_kept = $appointment_value->appointment_kept;
-                                
-                                
-                                
+
+
+
                                                                                 $target_group = "All";
                                                                                 $message_type_id = 1;
                                                                                 $logic_flow = 1;
                                                                                 $get_outgoing_msg = $this->get_outgoing_msg($target_group, $message_type_id, $logic_flow, $language_id);
-                                
-                                
+
+
                                                                                 $app_status = "Booked";
-                                
-                                
+
+
                                                                                 $new_msg = str_replace("XXX", $client_name, $get_outgoing_msg);
                                                                                 $appointment_date = date("d-m-Y", strtotime($app_date));
                                                                                 $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-                                
+
                                                                                 log_message('info', 'Appointment kept is equal to yes ');
-                                
+
                                                                                 $this->db->trans_start();
                                                                                 $appointment_update = array(
                                                                                     'active_app' => '0',
@@ -13976,31 +14145,31 @@ WHERE message_type_id = '6'
                                                                                     'visit_type' => 'Scheduled',
                                                                                     'app_msg' => $cleaned_msg
                                                                                 );
-                                
+
                                                                                 $this->db->where('id', $id);
                                                                                 $this->db->update('appointment', $appointment_update);
-                                
-                                
-                                
+
+
+
                                                                                 $this->db->trans_complete();
                                                                                 if ($this->db->trans_status() === FALSE) {
-                                
+
                                                                                     log_message('info', 'Appointment not updated .... ');
                                                                                 } else {
                                                                                     log_message('info', 'Appointment updated .... ');
-                                
-                                
-                                
-                                
+
+
+
+
                                                                                     $target_group = "All";
                                                                                     $message_type_id = 1;
                                                                                     $logic_flow = 1;
                                                                                     $get_outgoing_msg = $this->get_outgoing_msg($target_group, $message_type_id, $logic_flow, $language_id);
-                                
-                                
+
+
                                                                                     $app_status = "Booked";
-                                
-                                
+
+
                                                                                     $new_msg = str_replace("XXX", $client_name, $get_outgoing_msg);
                                                                                     $appointment_date = date("d-m-Y", strtotime($app_date));
                                                                                     $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
@@ -14020,14 +14189,14 @@ WHERE message_type_id = '6'
                                                                                         'visit_type' => 'Scheduled',
                                                                                         'active_app' => '1'
                                                                                     );
-                                
+
                                                                                     $this->db->insert('appointment', $appointment_insert);
                                                                                     $last_appointment_id = $this->db->insert_id();
                                                                                     $this->db->trans_complete();
                                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                                        
+
                                                                                     } else {
-                                
+
                                                                                         if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
                                                                                             $this->db->trans_start();
                                                                                             $appointment_other_insert = array(
@@ -14039,19 +14208,19 @@ WHERE message_type_id = '6'
                                                                                             $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                                             $this->db->trans_complete();
                                                                                             if ($this->db->trans_status() === FALSE) {
-                                                                                                
+
                                                                                             } else {
-                                                                                                
+
                                                                                             }
                                                                                         } else {
-                                                                                            
+
                                                                                         }
                                                                                         $this->db->trans_start();
-                                
-                                
-                                
-                                
-                                                                                        //Conditions were not met , queue out going message 
+
+
+
+
+                                                                                        //Conditions were not met , queue out going message
                                                                                         $created_at = date('Y-m-d H:i:s');
                                                                                         $message = "Client $clinic_number appointment was succesfully updated in the  system  ";
                                                                                         $data_outgoing = array(
@@ -14067,14 +14236,14 @@ WHERE message_type_id = '6'
                                                                                             'created_by' => $user_id
                                                                                         );
                                                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-                                
-                                
+
+
                                                                                         $this->db->trans_complete();
                                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                                            
+
                                                                                         } else {
-                                
-                                
+
+
                                                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                                             $this->config->load('config', TRUE);
                                                                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -14090,28 +14259,28 @@ WHERE message_type_id = '6'
                                                                                 }
                                                                             }
                                                                         } else {
-                                
-                                
+
+
                                                                             //New Appointment
                                                                             // // // echo  'New Appointment';
                                                                             //Insert Into Table Apptointment ang get outgoing message
-                                
-                                
-                                
+
+
+
                                                                             log_message('info', 'New Appointment  to be scheduled in the system ');
-                                
-                                
-                                
-                                
+
+
+
+
                                                                             $target_group = "All";
                                                                             $message_type_id = 1;
                                                                             $logic_flow = 1;
                                                                             $get_outgoing_msg = $this->get_outgoing_msg($target_group, $message_type_id, $logic_flow, $language_id);
-                                
-                                
+
+
                                                                             $app_status = "Booked";
-                                
-                                
+
+
                                                                             $new_msg = str_replace("XXX", $client_name, $get_outgoing_msg);
                                                                             $appointment_date = date("d-m-Y", strtotime($app_date));
                                                                             $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
@@ -14131,14 +14300,14 @@ WHERE message_type_id = '6'
                                                                                 'entry_point' => 'Mobile',
                                                                                 'visit_type' => 'Scheduled'
                                                                             );
-                                
+
                                                                             $this->db->insert('appointment', $appointment_insert);
                                                                             $last_appointment_id = $this->db->insert_id();
                                                                             $this->db->trans_complete();
                                                                             if ($this->db->trans_status() === FALSE) {
-                                                                                
+
                                                                             } else {
-                                
+
                                                                                 if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
                                                                                     $this->db->trans_start();
                                                                                     $appointment_other_insert = array(
@@ -14150,17 +14319,17 @@ WHERE message_type_id = '6'
                                                                                     $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                                     $this->db->trans_complete();
                                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                                        
+
                                                                                     } else {
-                                                                                        
+
                                                                                     }
                                                                                 } else {
-                                                                                    
+
                                                                                 }
-                                
-                                
+
+
                                                                                 $this->db->trans_start();
-                                
+
                                                                                 $created_at = date('Y-m-d H:i:s');
                                                                                 $message = "Client $clinic_number appointment was succesfully updated in the  system  ";
                                                                                 $data_outgoing = array(
@@ -14175,13 +14344,13 @@ WHERE message_type_id = '6'
                                                                                     'created_at' => $created_at
                                                                                 );
                                                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-                                
-                                
+
+
                                                                                 $this->db->trans_complete();
                                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                                    
+
                                                                                 } else {
-                                
+
                                                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                                     $this->config->load('config', TRUE);
                                                                                     // Retrieve a config item named site_name contained within the blog_settings array
@@ -14202,8 +14371,8 @@ WHERE message_type_id = '6'
                                                                         $this->config->load('config', TRUE);
                                                                         // Retrieve a config item named site_name contained within the blog_settings array
                                                                         $source = $this->config->item('shortcode', 'config');
-                                            
-                                            
+
+
                                                                         $destination = '0' . $mobile;
                                                                         $this->db->trans_start();
                                                                         $message = "The client '$clinic_number' has an appointment today. Kindly confirm them from the Appointment diary to create the new TCA";
@@ -14218,14 +14387,14 @@ WHERE message_type_id = '6'
                                                                             'created_at' => $created_at
                                                                         );
                                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-                                            
-                                            
+
+
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                                            
-                                            
+
+
                                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                             $this->config->load('config', TRUE);
                                                                             // Retrieve a config item named site_name contained within the blog_settings array
@@ -14236,24 +14405,24 @@ WHERE message_type_id = '6'
                                                                             log_message('info', $log_msg);
                                                                             return $message;
                                                                         }
-                                                                    
+
                                                                     }
-                                                                }   
-            
+                                                                }
+
                                                             }else{
                                                                 //THIS IS AN UNSCHEDULED
-                                
+
                                                                     //New Appointment to schedueled in the  system .... or an unscheduled appointment has been made y the  client
                                                                     //Insert Into Table Apptointment ang get outgoing message
-                            
+
                                                                     log_message('info', ' New Appointment to schedueled in the  system or unscheduled appointment....... ');
-                            
+
                                                                 $check_for_same_app_same_client_same_day = $this->db->query("SELECT * FROM tbl_appointment WHERE client_id = '$client_id' AND DATE(appntmnt_date) = '$app_date'");
-            
+
                                                                 if($check_for_same_app_same_client_same_day->num_rows() > 0){
-                                                                    
+
                                                                     $this->db->trans_start();
-                                
+
                                                                     $created_at = date('Y-m-d H:i:s');
                                                                     $message = "Client $clinic_number already has an appointment on $app_date, the appointment cannot be booked again.";
                                                                     $data_outgoing = array(
@@ -14268,11 +14437,11 @@ WHERE message_type_id = '6'
                                                                         'created_at' => $created_at
                                                                     );
                                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
+
+
                                                                     $this->db->trans_complete();
                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                        
+
                                                                     } else {
                                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                         $this->config->load('config', TRUE);
@@ -14284,25 +14453,25 @@ WHERE message_type_id = '6'
                                                                         log_message('info', $log_msg);
                                                                         return $message;
                                                                     }
-            
+
                                                                 }else{
                                                                     $check_scheduled_appointment = $this->db->query("Select * from tbl_appointment where client_id='$client_id' and DATE(appntmnt_date) > CURRENT_DATE and active_app='1'");
                                                                     if ($check_scheduled_appointment->num_rows() > 0) {
-                                                                        /* A shceduled appointment already esxists for this client 
+                                                                        /* A shceduled appointment already esxists for this client
                                                                         hence need to mark this future appointment as kept and schedule a new appointment
-                                                                        * in the system 
-                                                                        *        
+                                                                        * in the system
+                                                                        *
                                                                         * 1. Update future appointment as kept and it is no longer an active appointment in the system
                                                                         * 2. Mark the  future appointment as unscheduled and the  date when the  client came early as today
                                                                         * 3. create a new future appointment in the  system                                           */
-                            
+
                                                                         $today = date('Y-m-d H:i:s');
                                                                         foreach ($check_scheduled_appointment->result() as $scheduled_app_value) {
-            
+
                                                                             if($scheduled_app_value->appntmnt_date == $app_date){
-            
+
                                                                                 $this->db->trans_start();
-                                
+
                                                                                 $created_at = date('Y-m-d H:i:s');
                                                                                 $message = "Client $clinic_number already has an appointment on $app_date, the appointment cannot be booked again.";
                                                                                 $data_outgoing = array(
@@ -14317,11 +14486,11 @@ WHERE message_type_id = '6'
                                                                                     'created_at' => $created_at
                                                                                 );
                                                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-                                
-            
+
+
                                                                                 $this->db->trans_complete();
                                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                                    
+
                                                                                 } else {
                                                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                                     $this->config->load('config', TRUE);
@@ -14333,11 +14502,11 @@ WHERE message_type_id = '6'
                                                                                     log_message('info', $log_msg);
                                                                                     return $message;
                                                                                 }
-            
+
                                                                             }else{
                                                                                 $client_id = $scheduled_app_value->client_id;
                                                                                 $appointment_id = $scheduled_app_value->id;
-                                
+
                                                                                 $this->db->trans_start();
                                                                                 $data_update = array(
                                                                                     'appointment_kept' => 'Yes',
@@ -14351,23 +14520,23 @@ WHERE message_type_id = '6'
                                                                                 $this->db->update('appointment', $data_update);
                                                                                 $this->db->trans_complete();
                                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                                    
+
                                                                                 } else {
-                                
-                                
-                                
-                                
-                                
-                                
+
+
+
+
+
+
                                                                                     $target_group = "All";
                                                                                     $message_type_id = 1;
                                                                                     $logic_flow = 1;
                                                                                     $get_outgoing_msg = $this->get_outgoing_msg($target_group, $message_type_id, $logic_flow, $language_id);
-                                
-                                
+
+
                                                                                     $app_status = "Booked";
-                                
-                                
+
+
                                                                                     $new_msg = str_replace("XXX", $client_name, $get_outgoing_msg);
                                                                                     $appointment_date = date("d-m-Y", strtotime($app_date));
                                                                                     $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
@@ -14387,12 +14556,12 @@ WHERE message_type_id = '6'
                                                                                         'entry_point' => 'Mobile',
                                                                                         'visit_type' => 'Scheduled'
                                                                                     );
-                                
+
                                                                                     $this->db->insert('appointment', $appointment_insert);
                                                                                     $last_appointment_id = $this->db->insert_id();
                                                                                     $this->db->trans_complete();
                                                                                     if ($this->db->trans_status() === FALSE) {
-                                                                                        
+
                                                                                     } else {
                                                                                         if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
                                                                                             $this->db->trans_start();
@@ -14405,18 +14574,18 @@ WHERE message_type_id = '6'
                                                                                             $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                                             $this->db->trans_complete();
                                                                                             if ($this->db->trans_status() === FALSE) {
-                                                                                                
+
                                                                                             } else {
-                                                                                                
+
                                                                                             }
                                                                                         } else {
-                                                                                            
+
                                                                                         }
-                                
-                                
-                                
+
+
+
                                                                                         $this->db->trans_start();
-                                
+
                                                                                         $created_at = date('Y-m-d H:i:s');
                                                                                         $message = "Client $clinic_number appointment was succesfully updated in the  system  ";
                                                                                         $data_outgoing = array(
@@ -14431,11 +14600,11 @@ WHERE message_type_id = '6'
                                                                                             'created_at' => $created_at
                                                                                         );
                                                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-                                
-                                
+
+
                                                                                         $this->db->trans_complete();
                                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                                            
+
                                                                                         } else {
                                                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                                             $this->config->load('config', TRUE);
@@ -14448,7 +14617,7 @@ WHERE message_type_id = '6'
                                                                                             return $message;
                                                                                         }
                                                                                     }
-                                                                                }                               
+                                                                                }
                                                                             }
                                                                         }
                                                                     } else {
@@ -14456,17 +14625,17 @@ WHERE message_type_id = '6'
                                                                         A scheduled appointment does not exist and hence need to schedule it as a new future appointment
                                                                         * in the  system .
                                                                         *                                                  */
-                            
-                            
+
+
                                                                         $target_group = "All";
                                                                         $message_type_id = 1;
                                                                         $logic_flow = 1;
                                                                         $get_outgoing_msg = $this->get_outgoing_msg($target_group, $message_type_id, $logic_flow, $language_id);
-                            
-                            
+
+
                                                                         $app_status = "Booked";
-                            
-                            
+
+
                                                                         $new_msg = str_replace("XXX", $client_name, $get_outgoing_msg);
                                                                         $appointment_date = date("d-m-Y", strtotime($app_date));
                                                                         $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
@@ -14486,14 +14655,14 @@ WHERE message_type_id = '6'
                                                                             'entry_point' => 'Mobile',
                                                                             'visit_type' => 'Scheduled'
                                                                         );
-                            
+
                                                                         $this->db->insert('appointment', $appointment_insert);
                                                                         $last_appointment_id = $this->db->insert_id();
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                            
+
                                                                             if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
                                                                                 $this->db->trans_start();
                                                                                 $appointment_other_insert = array(
@@ -14505,17 +14674,17 @@ WHERE message_type_id = '6'
                                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                                 $this->db->trans_complete();
                                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                                    
+
                                                                                 } else {
-                                                                                    
+
                                                                                 }
                                                                             } else {
-                                                                                
-                                                                            }       
-                            
-                            
+
+                                                                            }
+
+
                                                                             $this->db->trans_start();
-                            
+
                                                                             $created_at = date('Y-m-d H:i:s');
                                                                             $message = "Client $clinic_number appointment was succesfully updated in the  system  ";
                                                                             $data_outgoing = array(
@@ -14530,11 +14699,11 @@ WHERE message_type_id = '6'
                                                                                 'created_at' => $created_at
                                                                             );
                                                                             $this->db->insert('usr_outgoing', $data_outgoing);
-                            
-            
+
+
                                                                             $this->db->trans_complete();
                                                                             if ($this->db->trans_status() === FALSE) {
-                                                                                
+
                                                                             } else {
                                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                                 $this->config->load('config', TRUE);
@@ -14549,43 +14718,43 @@ WHERE message_type_id = '6'
                                                                         }
                                                                     }
                                                                 }
-                                                                
-                                                            }   
+
+                                                            }
                                                         }
                                                     }
                                                 } else {
                                                                 $client_id = $client_value->id;
-                        
+
                                                             $group_id = $client_value->group_id;
                                                             $language_id = $client_value->language_id;
-                            
+
                                                             $client_name = " " . $client_value->f_name . " ";
-                            
+
                                                             $client_name = ucwords(strtolower($client_name)) . " ";
                                                             //Get Previous Appointment  if it exists
-                            
-                            
-                            
+
+
+
                                                         //New Appointment
                                                         // // // echo  'New Appointment';
                                                         //Insert Into Table Apptointment ang get outgoing message
-            
-            
-            
+
+
+
                                                         log_message('info', 'New Appointment  to be scheduled in the system ');
-            
-            
-            
-            
+
+
+
+
                                                         $target_group = "All";
                                                         $message_type_id = 1;
                                                         $logic_flow = 1;
                                                         $get_outgoing_msg = $this->get_outgoing_msg($target_group, $message_type_id, $logic_flow, $language_id);
-            
-            
+
+
                                                         $app_status = "Booked";
-            
-            
+
+
                                                         $new_msg = str_replace("XXX", $client_name, $get_outgoing_msg);
                                                         $appointment_date = date("d-m-Y", strtotime($app_date));
                                                         $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
@@ -14605,14 +14774,14 @@ WHERE message_type_id = '6'
                                                             'entry_point' => 'Mobile',
                                                             'visit_type' => 'Scheduled'
                                                         );
-            
+
                                                         $this->db->insert('appointment', $appointment_insert);
                                                         $last_appointment_id = $this->db->insert_id();
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-            
+
                                                             if ($appointment_type === 6 or $appointment_type == 6 or $appointment_type === "6" or $appointment_type == "6") {
                                                                 $this->db->trans_start();
                                                                 $appointment_other_insert = array(
@@ -14624,17 +14793,17 @@ WHERE message_type_id = '6'
                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-                                                                    
+
                                                                 }
                                                             } else {
-                                                                
+
                                                             }
-            
-            
+
+
                                                             $this->db->trans_start();
-            
+
                                                             $created_at = date('Y-m-d H:i:s');
                                                             $message = "Client $clinic_number appointment was succesfully updated in the  system  ";
                                                             $data_outgoing = array(
@@ -14649,13 +14818,13 @@ WHERE message_type_id = '6'
                                                                 'created_at' => $created_at
                                                             );
                                                             $this->db->insert('usr_outgoing', $data_outgoing);
-            
-            
+
+
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
-            
+
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                 $this->config->load('config', TRUE);
                                                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -14668,21 +14837,21 @@ WHERE message_type_id = '6'
                                                                 return $message;
                                                             }
                                                         }
-                                                    
+
                                                 }
-                                                                                
-                                        
+
+
                                         }
                                     }
                                 } else {
-        
+
                                     $created_at = date('Y-m-d H:i:s');
                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
                                     $source = $this->config->item('shortcode', 'config');
-        
-        
+
+
                                     $destination = '0' . $mobile;
                                     $this->db->trans_start();
                                     $message = " Appointment was not scheduled in the  system , Clinic No $upn was not found in the system or is not active in the  system  ...";
@@ -14697,14 +14866,14 @@ WHERE message_type_id = '6'
                                         'created_at' => $created_at
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
+
+
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-        
-        
+
+
                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                         $this->config->load('config', TRUE);
                                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -14719,13 +14888,13 @@ WHERE message_type_id = '6'
                             }
                         } else {
                             //Failed, please try again ....
-        
+
                             $this->db->trans_start();
-        
+
                             $message = "Error encountered = > You need to update your application to the  latest version, kindly contact support for guidance. "
                                     . "Ushauri : Getting Better one text at a time.";
-        
-                            //Conditions were not met , queue out going message 
+
+                            //Conditions were not met , queue out going message
                             $created_at = date('Y-m-d H:i:s');
                             $data_outgoing = array(
                                 'destination' => $user_source,
@@ -14740,15 +14909,15 @@ WHERE message_type_id = '6'
                                 'created_by' => $user_id
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
-        
-        
+
+
+
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
-        
-        
+
+
                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                 $this->config->load('config', TRUE);
                                 // Retrieve a config item named site_name contained within the blog_settings array
@@ -14762,17 +14931,17 @@ WHERE message_type_id = '6'
                         }
                     }
                 } else {
-        
-        
-        
-        
+
+
+
+
                     $created_at = date('Y-m-d H:i:s');
                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                     $this->config->load('config', TRUE);
                     // Retrieve a config item named site_name contained within the blog_settings array
                     $source = $this->config->item('shortcode', 'config');
-        
-        
+
+
                     $destination = '0' . $mobile;
                     $this->db->trans_start();
                     $message = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you";
@@ -14790,9 +14959,9 @@ WHERE message_type_id = '6'
                     $this->db->insert('usr_outgoing', $data_outgoing);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-        
+
                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -14805,7 +14974,7 @@ WHERE message_type_id = '6'
                     }
                 }
             } else {
-                
+
             }
         }
         }
@@ -14903,9 +15072,9 @@ WHERE message_type_id = '6'
 
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
-            
+
         } else {
-            
+
         }
     }
 
@@ -14929,9 +15098,9 @@ WHERE message_type_id = '6'
         $data = $this->dbutil->csv_from_result($result, $delimiter, $newline);
         write_file(FCPATH . '/documents/sys_reports/appointments.csv', $data);
         if (!write_file(FCPATH . '/documents/sys_reports/appointments.csv', $data)) {
-            
+
         } else {
-            
+
         }
         force_download($filename, $data);
         return $result;
@@ -14965,7 +15134,7 @@ WHERE message_type_id = '6'
             $current_grouping = (int) $current_grouping;
             $category = (int) $category;
             if (strcmp($category, $current_grouping) === 0) {
-                
+
             } else {
 
                 $this->db->trans_start();
@@ -14979,9 +15148,9 @@ WHERE message_type_id = '6'
 
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
@@ -14990,11 +15159,11 @@ WHERE message_type_id = '6'
     function welcome_msg($client_id = null) {
         //$client_id = $_POST['client_id'];
 
-      
+
             echo "Welcome message has been called...<br>";
             $get_clients = $this->db->query("SELECT * FROM tbl_client WHERE id='$client_id' and smsenable='Yes' ")->result();
             foreach ($get_clients as $value) {
-               
+
                 $phone_no = $value->phone_no;
                 $client_id = $value->id;
                 $language_id = $value->language_id;
@@ -15003,7 +15172,7 @@ WHERE message_type_id = '6'
                 $enrollment_date = $value->enrollment_date;
                 $check_welcome_existence = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id='3' and status='Not Sent' and  clnt_usr_id='$client_id' LIMIT 1");
                 $num_rows = $check_welcome_existence->num_rows();
-                 
+
                 if ($num_rows > 0) {
                     //Welcome added
                     $log_message = "welcome added";
@@ -15024,7 +15193,7 @@ WHERE message_type_id = '6'
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
                             // echo $source, $destination, $msg, $outgoing_id;
                             $send_msg = $this->data->send_message($source, $destination, $msg, $outgoing_id);
@@ -15050,7 +15219,7 @@ WHERE message_type_id = '6'
 
                         $cleaned_msg = str_replace("XXX", $client_name, $message_1);
                         $created_at = date('Y-m-d H:i:s');
-                        
+
                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
@@ -15081,7 +15250,7 @@ WHERE message_type_id = '6'
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
                             echo "it has failed";
-                            
+
                         } else {
                             $source = $source;
                             $destination = $client_destination;
@@ -15132,7 +15301,7 @@ WHERE message_type_id = '6'
                         $clnt_outgoing_id_2 = $this->db->insert_id();
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
                             $source = $source;
                             $destination = $client_destination;
@@ -15172,7 +15341,7 @@ WHERE message_type_id = '6'
                     $diff = $date_diff->format("%R%a days");
                     $diff = substr($diff, 1, 2);
                     if ($diff > 30) {
-                        
+
                     } elseif ($diff <= 30) {
 
 
@@ -15213,7 +15382,7 @@ WHERE message_type_id = '6'
                             $clnt_outgoing_id_3 = $this->db->insert_id();
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
                                 $source = $source;
                                 $destination = $client_destination;
@@ -15245,11 +15414,11 @@ WHERE message_type_id = '6'
     function check_welcome_sent() {
         //sleep(10);
         $get_clients = $this->db->query("SELECT
-	* 
+	*
 FROM
-	tbl_client 
+	tbl_client
 WHERE
-	id NOT IN ( SELECT clnt_usr_id FROM tbl_clnt_outgoing WHERE message_type_id = '3' ) 
+	id NOT IN ( SELECT clnt_usr_id FROM tbl_clnt_outgoing WHERE message_type_id = '3' )
     AND tbl_client.smsenable = 'Yes' AND tbl_client.`status` = 'Active' AND phone_no IS NOT NULL group by tbl_client.id")->result();
     var_dump($get_clients);
         foreach ($get_clients as $value) {
@@ -15308,7 +15477,7 @@ WHERE
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
                         $source = $source;
                         $destination = $client_destination;
@@ -15347,7 +15516,7 @@ WHERE
                     $clnt_outgoing_id = $this->db->insert_id();
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
                         $source = $source;
                         $destination = $client_destination;
@@ -15376,7 +15545,7 @@ WHERE
                 // // // // echo 'Date Difference => ' . $diff;
                 $diff = substr($diff, 1, 2);
                 if ($diff >= 30) {
-                    
+
                 } elseif ($diff <= 30) {
 
 
@@ -15423,7 +15592,7 @@ WHERE
                         $clnt_outgoing_id = $this->db->insert_id();
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
                             $source = $source;
                             $destination = $client_destination;
@@ -15451,8 +15620,8 @@ WHERE
          * If they are found....ignnore , no changes will be done
          * If a new role exists in the  role module and not in the  user permission table, add it to the  user permission table
          * If a role exists in the  role module and not in the user permission, then add the  role to the  user permission table
-         * 
-         * Tables to be used : 
+         *
+         * Tables to be used :
          * #1 => tbl_roles
          * #2 => tbl_role_module
          * #3 => tbl_user_permission
@@ -15462,7 +15631,7 @@ WHERE
 
         $this->db->trans_start();
 
-        //Get roles from the  system 
+        //Get roles from the  system
         $get_roles = $this->db->get_where('role', array('status' => 'Active'))->result();
         foreach ($get_roles as $role_value) {
             $role_name = $role_value->name;
@@ -15515,7 +15684,7 @@ WHERE
 
 
         /*
-         * 
+         *
          * Option Two
          * Check if there are any modules in the  user permission that are not supposed to be there ....
          * This modules should be marked as in active
@@ -15534,7 +15703,7 @@ WHERE
                 if ($check_role > 0) {
                     //Ignore do nothing
                 } else {
-                    //Mark the  specific role as in active 
+                    //Mark the  specific role as in active
                     $this->db->trans_start();
                     $data_user_permission_update = array(
                         'status' => 'In Active',
@@ -15544,7 +15713,7 @@ WHERE
                     $this->db->update('user_permission', $data_user_permission_update);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
                         //Trnasaction Success
 
@@ -15597,9 +15766,9 @@ WHERE
 
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE) {
-                
+
             } else {
-                
+
             }
         }
     }
@@ -15628,7 +15797,7 @@ WHERE
             $date = str_replace('/', '-', $dob);
             $new_date = date('Y-m-d', strtotime($date));
             if ($new_date == "1970-01-01") {
-                
+
             } else {
                 $data_update = array(
                     'dob' => $new_date
@@ -15815,7 +15984,7 @@ WHERE
         if ($_SERVER['REQUEST_METHOD'] === 'GET' and $phone_no === NULL) {
             /*
 
-             *   Request is scheduler triggered  
+             *   Request is scheduler triggered
              *           */
 
 
@@ -15832,7 +16001,7 @@ WHERE
               ' ',
               tbl_client.l_name
             ) AS client_name,
-						tbl_appointment.appointment_kept, 
+						tbl_appointment.appointment_kept,
             tbl_client.phone_no as client_phone_no,
             tbl_appointment_types.`name` AS appointment_type,
             DATE_FORMAT(tbl_appointment.`appntmnt_date`,'%d/%m/%Y') as appntmnt_date,
@@ -15841,28 +16010,28 @@ WHERE
 	    tbl_users.phone_no as user_phone_no,
 	    tbl_users.id ,tbl_users.clinic_id
           FROM
-            tbl_client 
-            INNER JOIN tbl_appointment 
-              ON tbl_appointment.`client_id` = tbl_client.`id` 
-            INNER JOIN tbl_appointment_types 
-              ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1` 
-            INNER JOIN tbl_users 
-              ON tbl_client.`mfl_code` = tbl_users.`facility_id` 
+            tbl_client
+            INNER JOIN tbl_appointment
+              ON tbl_appointment.`client_id` = tbl_client.`id`
+            INNER JOIN tbl_appointment_types
+              ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1`
+            INNER JOIN tbl_users
+              ON tbl_client.`mfl_code` = tbl_users.`facility_id`
               INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id
-              INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id` 
+              INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id`
           WHERE
 					DATE(
               tbl_appointment.`appntmnt_date`
-            ) = CURDATE() 								
-						
-            AND tbl_appointment.`active_app` = '1' 
+            ) = CURDATE()
+
+            AND tbl_appointment.`active_app` = '1'
             AND `tbl_appointment`.`appointment_kept` IS NULL
-            AND tbl_users.`access_level` = 'Facility'  and tbl_client.status='Active' 
+            AND tbl_users.`access_level` = 'Facility'  and tbl_client.status='Active'
 						AND
-            tbl_users.access_level = 'Facility' 
-            AND rcv_app_list = 'Yes' 
+            tbl_users.access_level = 'Facility'
+            AND rcv_app_list = 'Yes'
             AND tbl_role.`name` NOT LIKE '%Tracer%'  and tbl_users.status='Active'
-            AND tbl_client.clinic_id = tbl_users.`clinic_id`  
+            AND tbl_client.clinic_id = tbl_users.`clinic_id`
         GROUP BY tbl_appointment.`id` order by tbl_appointment.id    ");
 
 
@@ -15936,7 +16105,7 @@ WHERE
 
                     $check_existence = $this->db->get_where('usr_outgoing', array('msg' => $encrypted_msg, 'destination' => $destination_no, 'status' => 'Sent'))->num_rows();
                     if ($check_existence > 0) {
-                        
+
                     } else {
                         //echo $check_existence . '<br>';
                         $useroutgoing = "User";
@@ -15960,9 +16129,9 @@ WHERE
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
 
 
@@ -15982,7 +16151,7 @@ WHERE
                             $this->db->update('usr_outgoing', $data_update);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             }
                         } else {
                             $this->db->trans_start();
@@ -15993,7 +16162,7 @@ WHERE
                             $this->db->update('usr_outgoing', $data_update);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             }
                         }
                     }
@@ -16009,9 +16178,9 @@ WHERE
                 $send_text = $this->data->send_message($short_code, $destination, $message);
 
                 if ($send_text) {
-                    
+
                 } else {
-                    
+
                 }
             }
 
@@ -16054,22 +16223,22 @@ WHERE
         tbl_users.phone_no as user_phone_no,
         tbl_users.id ,tbl_users.clinic_id
           FROM
-            tbl_client 
-            INNER JOIN tbl_appointment 
-              ON tbl_appointment.`client_id` = tbl_client.`id` 
-            INNER JOIN tbl_appointment_types 
-              ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1` 
-            INNER JOIN tbl_users 
-              ON tbl_client.`mfl_code` = tbl_users.`facility_id` 
+            tbl_client
+            INNER JOIN tbl_appointment
+              ON tbl_appointment.`client_id` = tbl_client.`id`
+            INNER JOIN tbl_appointment_types
+              ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1`
+            INNER JOIN tbl_users
+              ON tbl_client.`mfl_code` = tbl_users.`facility_id`
               INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id
-              INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id` 
+              INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id`
           WHERE DATE(
               tbl_appointment.`appntmnt_date`
-            ) = CURDATE() 
-            AND tbl_appointment.`active_app` = '1' 
+            ) = CURDATE()
+            AND tbl_appointment.`active_app` = '1'
             AND tbl_users.`access_level` = 'Facility'  and tbl_client.status='Active'  AND
-        tbl_users.access_level = 'Facility' 
-        AND rcv_app_list = 'Yes' 
+        tbl_users.access_level = 'Facility'
+        AND rcv_app_list = 'Yes'
         AND tbl_role.`name` NOT LIKE '%Tracer%'  and tbl_users.status='Active'
             AND tbl_client.clinic_id = tbl_users.`clinic_id`  AND tbl_users.phone_no ='$phone_no'
             GROUP BY tbl_appointment.`id` order by tbl_appointment.id    ");
@@ -16145,7 +16314,7 @@ WHERE
 
                     $check_existence = $this->db->query("select * from tbl_usr_outgoing where msg ='$encrypted_msg' AND destination='$destination_no' AND status = 'Sent' AND DATE(created_at) = CURRENT_DATE ")->num_rows();
                     if ($check_existence > 0) {
-                        
+
                     } else {
                         $useroutgoing = "User";
 
@@ -16168,9 +16337,9 @@ WHERE
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
 
 
@@ -16194,7 +16363,7 @@ WHERE
                                 $this->db->update('usr_outgoing', $data_update);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 }
                             } else {
                                 $this->db->trans_start();
@@ -16205,7 +16374,7 @@ WHERE
                                 $this->db->update('usr_outgoing', $data_update);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 }
                             }
                         }
@@ -16214,7 +16383,7 @@ WHERE
             } else {
 
                 if ($request_type == 'POST') {
-                    
+
                 } else if ($request_type == 'SMS') {
                     //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                     $this->config->load('config', TRUE);
@@ -16225,9 +16394,9 @@ WHERE
                     $send_text = $this->data->send_message($short_code, $destination, $message);
 
                     if ($send_text) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
@@ -16236,7 +16405,7 @@ WHERE
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $this->send_appointments_api($phone_no);
             } else {
-                
+
             }
         }
     }
@@ -16261,22 +16430,22 @@ WHERE
         tbl_users.phone_no as user_phone_no,
         tbl_users.id ,tbl_users.clinic_id
                 FROM
-                tbl_client 
-                INNER JOIN tbl_appointment 
-                    ON tbl_appointment.`client_id` = tbl_client.`id` 
-                INNER JOIN tbl_appointment_types 
-                    ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1` 
-                INNER JOIN tbl_users 
-                    ON tbl_client.`mfl_code` = tbl_users.`facility_id` 
+                tbl_client
+                INNER JOIN tbl_appointment
+                    ON tbl_appointment.`client_id` = tbl_client.`id`
+                INNER JOIN tbl_appointment_types
+                    ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1`
+                INNER JOIN tbl_users
+                    ON tbl_client.`mfl_code` = tbl_users.`facility_id`
                     INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id
-                    INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id` 
+                    INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id`
                 WHERE DATE(
               tbl_appointment.`appntmnt_date`
-            ) = CURDATE() 
-            AND tbl_appointment.`active_app` = '1' 
+            ) = CURDATE()
+            AND tbl_appointment.`active_app` = '1'
             AND tbl_users.`access_level` = 'Facility'  and tbl_client.status='Active'  AND
-            tbl_users.access_level = 'Facility' 
-            AND rcv_app_list = 'Yes' 
+            tbl_users.access_level = 'Facility'
+            AND rcv_app_list = 'Yes'
             AND tbl_role.`name` NOT LIKE '%Tracer%'  and tbl_users.status='Active'
             AND tbl_client.clinic_id = tbl_users.`clinic_id`  AND tbl_users.phone_no ='$phone_no'
         GROUP BY tbl_appointment.`id` order by tbl_appointment.id   ");
@@ -16369,7 +16538,7 @@ WHERE
         if ($_SERVER['REQUEST_METHOD'] === 'GET' and $phone_no === NULL) {
             /*
 
-             *   Request is scheduler triggered  
+             *   Request is scheduler triggered
              *           */
 
 
@@ -16412,22 +16581,22 @@ WHERE
                 tbl_users.phone_no as user_phone_no,
                 tbl_users.id ,tbl_users.clinic_id
                     FROM
-                        tbl_client 
-                        INNER JOIN tbl_appointment 
-                        ON tbl_appointment.`client_id` = tbl_client.`id` 
-                        INNER JOIN tbl_appointment_types 
-                        ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1` 
-                        INNER JOIN tbl_users 
-                        ON tbl_client.`mfl_code` = tbl_users.`facility_id` 
+                        tbl_client
+                        INNER JOIN tbl_appointment
+                        ON tbl_appointment.`client_id` = tbl_client.`id`
+                        INNER JOIN tbl_appointment_types
+                        ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1`
+                        INNER JOIN tbl_users
+                        ON tbl_client.`mfl_code` = tbl_users.`facility_id`
                         INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id
-                        INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id` 
+                        INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id`
                     WHERE DATE(
                         tbl_appointment.`appntmnt_date`
-                        ) < CURDATE() 
-                        AND tbl_appointment.`active_app` = '1' 
+                        ) < CURDATE()
+                        AND tbl_appointment.`active_app` = '1'
                         AND tbl_users.`access_level` = 'Facility'  and tbl_client.status='Active'  AND
-                tbl_users.access_level = 'Facility' 
-                AND rcv_app_list = 'Yes' 
+                tbl_users.access_level = 'Facility'
+                AND rcv_app_list = 'Yes'
                 AND tbl_role.`name` NOT LIKE '%Tracer%'  and tbl_users.status='Active'
                 AND tbl_client.clinic_id = tbl_users.`clinic_id`  AND tbl_users.phone_no ='$phone_no'
             GROUP BY tbl_appointment.`id` order by tbl_appointment.id    ");
@@ -16503,7 +16672,7 @@ WHERE
 
                     $check_existence = $this->db->query("select * from tbl_usr_outgoing where msg ='$encrypted_msg' AND destination='$destination_no' AND status = 'Sent' AND DATE(created_at) = CURRENT_DATE ")->num_rows();
                     if ($check_existence > 0) {
-                        
+
                     } else {
                         $useroutgoing = "User";
 
@@ -16526,9 +16695,9 @@ WHERE
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
 
 
@@ -16552,7 +16721,7 @@ WHERE
         //                                $this->db->update('usr_outgoing', $data_update);
         //                                $this->db->trans_complete();
         //                                if ($this->db->trans_status() === FALSE) {
-        //                                    
+        //
         //                                }
         //                            } else {
         //                                $this->db->trans_start();
@@ -16563,7 +16732,7 @@ WHERE
         //                                $this->db->update('usr_outgoing', $data_update);
         //                                $this->db->trans_complete();
         //                                if ($this->db->trans_status() === FALSE) {
-        //                                    
+        //
         //                                }
         //                            }
                         }
@@ -16572,7 +16741,7 @@ WHERE
             } else {
 
                 if ($request_type == 'POST') {
-                    
+
                 } else if ($request_type == 'SMS') {
                     //Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                     $this->config->load('config', TRUE);
@@ -16583,9 +16752,9 @@ WHERE
                     $send_text = $this->data->send_message($short_code, $destination, $message);
 
                     if ($send_text) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
@@ -16594,7 +16763,7 @@ WHERE
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $this->send_past_appointments_api($phone_no);
             } else {
-                
+
             }
         }
     }
@@ -16622,22 +16791,22 @@ WHERE
             tbl_users.phone_no as user_phone_no,
             tbl_users.id ,tbl_users.clinic_id
           FROM
-            tbl_client 
-            INNER JOIN tbl_appointment 
-              ON tbl_appointment.`client_id` = tbl_client.`id` 
-            INNER JOIN tbl_appointment_types 
-              ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1` 
-            INNER JOIN tbl_users 
-              ON tbl_client.`mfl_code` = tbl_users.`facility_id` 
+            tbl_client
+            INNER JOIN tbl_appointment
+              ON tbl_appointment.`client_id` = tbl_client.`id`
+            INNER JOIN tbl_appointment_types
+              ON tbl_appointment_types.`id` = tbl_appointment.`app_type_1`
+            INNER JOIN tbl_users
+              ON tbl_client.`mfl_code` = tbl_users.`facility_id`
               INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id
-              INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id` 
+              INNER JOIN tbl_clinic ON tbl_clinic.id = tbl_client.`clinic_id`
           WHERE DATE(
               tbl_appointment.`appntmnt_date`
-            ) < CURDATE() 
-            AND tbl_appointment.`active_app` = '1' 
+            ) < CURDATE()
+            AND tbl_appointment.`active_app` = '1'
             AND tbl_users.`access_level` = 'Facility'  and tbl_client.status='Active'  AND
-            tbl_users.access_level = 'Facility' 
-            AND rcv_app_list = 'Yes' 
+            tbl_users.access_level = 'Facility'
+            AND rcv_app_list = 'Yes'
             AND tbl_role.`name` NOT LIKE '%Tracer%'  and tbl_users.status='Active'
             AND tbl_client.clinic_id = tbl_users.`clinic_id`  AND tbl_users.phone_no ='$phone_no'
         GROUP BY tbl_appointment.`id` order by tbl_appointment.id   ");
@@ -16746,7 +16915,7 @@ WHERE
             $day_of_week = $get_day_of_week;
         }
 
-        $get_clients = $this->db->query("  SELECT 
+        $get_clients = $this->db->query("  SELECT
   tbl_groups.name AS group_name,
   tbl_groups.id AS group_id,
   tbl_language.name AS language_name,
@@ -16764,18 +16933,18 @@ WHERE
   tbl_client.id AS client_id,
   tbl_time.name AS daytime,
   wellness_enable,
-  motivational_enable 
+  motivational_enable
 FROM
-  tbl_client 
-  INNER JOIN tbl_language 
-    ON tbl_language.id = tbl_client.language_id 
-  INNER JOIN tbl_groups 
-    ON tbl_groups.id = tbl_client.group_id 
-  INNER JOIN tbl_time 
-    ON tbl_time.id = tbl_client.txt_time 
-WHERE tbl_client.status = 'Active' 
-  AND tbl_client.smsenable = 'Yes' 
-  AND tbl_client.wellness_enable = 'YES'  
+  tbl_client
+  INNER JOIN tbl_language
+    ON tbl_language.id = tbl_client.language_id
+  INNER JOIN tbl_groups
+    ON tbl_groups.id = tbl_client.group_id
+  INNER JOIN tbl_time
+    ON tbl_time.id = tbl_client.txt_time
+WHERE tbl_client.status = 'Active'
+  AND tbl_client.smsenable = 'Yes'
+  AND tbl_client.wellness_enable = 'YES'
   AND DAYOFWEEK(tbl_client.`created_at`) = $day_of_week
 GROUP BY tbl_client.clinic_number   ")->result();
 
@@ -16807,7 +16976,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
             // Chceck if Wellness check is enabled , If enabled , go through successfully.
             if ($wellness_enable == 'Yes') {
 
-                //Check if previous clnt_outgoing wellness message under client phone number exists in the  sent logs and it was successful , this helps with controlling of spamming. 
+                //Check if previous clnt_outgoing wellness message under client phone number exists in the  sent logs and it was successful , this helps with controlling of spamming.
                 $get_clnt_outgoing_arch = $this->db->query("Select * from tbl_clnt_outgoing where message_type_id='4' and destination='$phone_no' AND created_at = (SELECT MAX(`created_at`) FROM tbl_clnt_outgoing AS b WHERE b.`destination`='$phone_no') GROUP BY destination LIMIT 1");
                 $check_wellness_existense = $get_clnt_outgoing_arch->num_rows();
 
@@ -16830,24 +16999,24 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                         $last_msg_Timestamp = strtotime($created_at);
                         $last_message_date = date("Y-m-d", $last_msg_Timestamp);
-                        //If last message date and current date are the same , do not send message 
+                        //If last message date and current date are the same , do not send message
                         if ($last_message_date == $current_date) {
                             //If the  date time in the  sent are the  same , do nothing
                         } else {
-                            //From the previous out going message , Get the  next message day  
+                            //From the previous out going message , Get the  next message day
                             $MsgUnixTimestamp = strtotime($new_frequency, strtotime($created_at));
                             //Get the  Message day of the week using PHP's date function.
                             $message_day = date("N", $MsgUnixTimestamp);
 
 
-                            // From PHP function , get the  current day of the  week from the PHP function 
+                            // From PHP function , get the  current day of the  week from the PHP function
                             // Get the current day of the week using PHP's date function.
                             $current_datetime = date("Y-m-d");
                             $current_unix_timestamp = strtotime($current_datetime);
                             $current_day = date("N", $current_unix_timestamp);
 
-                            //From the client's preference for messages , get the  Hour the  client prefers to get the 
-                            // message e.g 08:00 will give 08 
+                            //From the client's preference for messages , get the  Hour the  client prefers to get the
+                            // message e.g 08:00 will give 08
 
                             $message_hour = substr($daytime, 0, 2);
                             //Get the current hour the  message should be going outside
@@ -16862,7 +17031,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                 $check_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE destination='$phone_no' AND DATE(created_at) = CURDATE()")->num_rows();
                                 if ($check_msg_existence > 0) {
-                                    
+
                                 } else {
 
 
@@ -16899,9 +17068,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
@@ -16913,12 +17082,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 } else {
 
 
-                    #SCENARIO 2 = > This works in a situation where the client is still new the system and no Adherence message has ever been sent out to him/her 
-                    //Assumption , we use the  registration date in the  System to determine the  next message that will be going out. 
-                    //Current date 
+                    #SCENARIO 2 = > This works in a situation where the client is still new the system and no Adherence message has ever been sent out to him/her
+                    //Assumption , we use the  registration date in the  System to determine the  next message that will be going out.
+                    //Current date
                     $current_date = date("Y-m-d");
 
-                    //Convert the  registration date time to registration date i.e from Y-m-d H:i:s 
+                    //Convert the  registration date time to registration date i.e from Y-m-d H:i:s
                     //To Y-m-d
 
                     $registration_timestamp = strtotime($registration_date);
@@ -16926,7 +17095,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
 
 //                    echo 'Registration Date => '.$registration_check_date.'<br>  Current Date => '.$current_date.'<br> ';
-                    //Compare registration date with the  current date. 
+                    //Compare registration date with the  current date.
                     if ($registration_check_date == $current_date) {
                         //If the  same , no message should go out , ignore sending message
                     } else {
@@ -16981,7 +17150,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $today = date("Y-m-d H:i:s");
                                 $check_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE destination='$phone_no' AND DATE(created_at) = CURDATE()")->num_rows();
                                 if ($check_msg_existence > 0) {
-                                    
+
                                 } else {
                                     $this->db->trans_start();
                                     $clnt_outgoing = array(
@@ -16999,9 +17168,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                     $this->db->trans_complete();
                                     if ($this->db->trans_status() === FALSE) {
-                                        
+
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -17028,7 +17197,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
          * Process all missed appointments Actions for Personal Call
          * Treatment Supporter Called
-         * Physical Tracing 
+         * Physical Tracing
          *          */
 
 
@@ -17038,11 +17207,11 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
         if (is_numeric($response_id)) {
             //value found is numeric
-            //Get all the unprocessed missed actions from the  user phone. 
-                        $sql = "SELECT 
-                        * 
+            //Get all the unprocessed missed actions from the  user phone.
+                        $sql = "SELECT
+                        *
                         FROM
-                        tbl_responses 
+                        tbl_responses
                         WHERE 1 AND id ='$response_id' ";
                         $query1 = $this->db->query($sql)->result();
 
@@ -17069,7 +17238,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                     $explode_msg = explode("*", $encrypted_msg);
                     $identifier = @$explode_msg[0];
                     $resp_message = @$explode_msg[1];
-                    //Decrypt the  incoming message and pre-append it back to the  orignial message template. 
+                    //Decrypt the  incoming message and pre-append it back to the  orignial message template.
 
 
                     $descrypted_msg = $this->decrypt($resp_message);
@@ -17103,13 +17272,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         $user_source = "0" . $mobile;
                     }
                     // // // echo  'New From : ' . $user_source . '</br>';
-                    //Check if User is authoriesed to perform transactions in the  system. 
+                    //Check if User is authoriesed to perform transactions in the  system.
                     $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' GROUP BY phone_no ");
                     $user_exists = $get_facility->num_rows();
 
                     if ($user_exists >= 1) {
 
-                        //If user exists, proceed with processing the decrypted message. 
+                        //If user exists, proceed with processing the decrypted message.
                         $user_details = $get_facility->result();
 
                         foreach ($user_details as $value) {
@@ -17124,8 +17293,8 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             if (strpos($code, 'C') !== false) {
 
                                 /**
-                                 * Break down the message to the  values 
-                                 * The message should contain the  following values : 
+                                 * Break down the message to the  values
+                                 * The message should contain the  following values :
                                  * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                                  */
                                 $clinic_number = @$split_message[1];
@@ -17155,9 +17324,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                 /*
 
-                                 * since final outcome dead doesnot apply to the  outcome client contacted, 
-                                 * the  outcome sent by the  mobile application should send the value without dead (7) 
-                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+                                 * since final outcome dead doesnot apply to the  outcome client contacted,
+                                 * the  outcome sent by the  mobile application should send the value without dead (7)
+                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                                  *                                  */
                                  if ($outcome == '4') {
                                     $final_outcome1 = '';
@@ -17167,7 +17336,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         $final_outcome = $final_outcome + 1;
                                     }
                                 } else {
-                                    
+
                                 }
 
                                 if ($final_outcome == '1') {
@@ -17205,7 +17374,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         /**
                                          * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                          * The  appointment type should be the  same as what is recorded in the  DBase
-                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                          */
                                         $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
 
@@ -17218,7 +17387,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             foreach ($get_current_appointment_query->result() as $value) {
                                                 $client_id = $value->client_id;
                                                 $appointment_id = $value->id;
-                                                //Get the  curent actual outcome   
+                                                //Get the  curent actual outcome
                                                 $app_status = $value->app_status;
                                                 $no_calls = $value->no_calls;
                                                 $no_msgs = $value->no_msgs;
@@ -17244,14 +17413,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
 
                                                     /**
                                                      * Update Appointment row with the  tracing type of client called .
                                                      * Based on the number of updated made .....
-                                                     * 
+                                                     *
                                                      */
                                                     $this->db->trans_start();
 
@@ -17273,7 +17442,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -17318,13 +17487,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                                             /*
 
-                                                             * Final Outcome dictionary : 
+                                                             * Final Outcome dictionary :
                                                              * 1 => Declined Care
                                                              * 2 => Returned to care
                                                              * 3 => Self Transfer
                                                              * 4 => Dead
                                                              * 5 => Other
-                                                             * 
+                                                             *
                                                              *        */
 
 
@@ -17352,13 +17521,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             if ($final_outcome == 2) {
                                                                 /*
 
-                                                                 * Return to care  
+                                                                 * Return to care
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  *                                                             */
 
                                                                 /*
                                                                  * Returned to care , close the past active appointment
-                                                                 *   and book a new future appointment for the  client 
+                                                                 *   and book a new future appointment for the  client
                                                                  */
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
@@ -17395,7 +17564,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     $last_appointment_id = $this->db->insert_id();
 
                                                                     /*
-                                                                     * If appointment type selected is other , 
+                                                                     * If appointment type selected is other ,
                                                                      * the  insert te value of appointment type selected. */
 
 
@@ -17411,12 +17580,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     } else {
-                                                                        
+
                                                                     }
                                                                 }
                                                             }
@@ -17502,7 +17671,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             $this->db->update('appointment', $update_appointment);
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -17576,7 +17745,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                 $this->db->query($sql);
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -17615,15 +17784,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                         $this->db->query($sql);
                                     } else {
-                                        
+
                                     }
                                 }
                             } else if (strpos($code, 'V') !== false) {
 
 
                                 /**
-                                 * Break down the message to the  values 
-                                 * The message should contain the  following values : 
+                                 * Break down the message to the  values
+                                 * The message should contain the  following values :
                                  * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                                  */
                                 $clinic_number = @$split_message[1];
@@ -17648,9 +17817,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                 /*
 
-                                 * since final outcome dead doesnot apply to the  outcome client contacted, 
-                                 * the  outcome sent by the  mobile application should send the value without dead (7) 
-                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+                                 * since final outcome dead doesnot apply to the  outcome client contacted,
+                                 * the  outcome sent by the  mobile application should send the value without dead (7)
+                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                                  *                                  */
                                  if ($outcome == '4') {
                                     $final_outcome1 = '';
@@ -17660,7 +17829,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         $final_outcome = $final_outcome + 1;
                                     }
                                 } else {
-                                    
+
                                 }
 
                                 if ($final_outcome == '1') {
@@ -17698,7 +17867,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         /**
                                          * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                          * The  appointment type should be the  same as what is recorded in the  DBase
-                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                          */
                                         $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
 
@@ -17711,7 +17880,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             foreach ($get_current_appointment_query->result() as $value) {
                                                 $client_id = $value->client_id;
                                                 $appointment_id = $value->id;
-                                                //Get the  curent actual outcome   
+                                                //Get the  curent actual outcome
                                                 $app_status = $value->app_status;
                                                 $no_calls = $value->no_calls;
                                                 $no_msgs = $value->no_msgs;
@@ -17737,14 +17906,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
 
 
                                                     /**
                                                      * Update Appointment row with the  tracing type of client called .
                                                      * Based on the number of updated made .....
-                                                     * 
+                                                     *
                                                      */
                                                     $this->db->trans_start();
 
@@ -17766,7 +17935,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -17811,13 +17980,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                                             /*
 
-                                                             * Final Outcome dictionary : 
+                                                             * Final Outcome dictionary :
                                                              * 1 => Declined Care
                                                              * 2 => Returned to care
                                                              * 3 => Self Transfer
                                                              * 4 => Dead
                                                              * 5 => Other
-                                                             * 
+                                                             *
                                                              *        */
 
 
@@ -17845,13 +18014,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             if ($final_outcome == 2) {
                                                                 /*
 
-                                                                 * Return to care  
+                                                                 * Return to care
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  *                                                             */
 
                                                                 /*
                                                                  * Returned to care , close the past active appointment
-                                                                 *   and book a new future appointment for the  client 
+                                                                 *   and book a new future appointment for the  client
                                                                  */
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
@@ -17888,7 +18057,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     $last_appointment_id = $this->db->insert_id();
 
                                                                     /*
-                                                                     * If appointment type selected is other , 
+                                                                     * If appointment type selected is other ,
                                                                      * the  insert te value of appointment type selected. */
 
 
@@ -17904,12 +18073,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     } else {
-                                                                        
+
                                                                     }
                                                                 }
                                                             }
@@ -17995,7 +18164,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             $this->db->update('appointment', $update_appointment);
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
 
 
@@ -18069,7 +18238,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                 $this->db->query($sql);
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -18108,7 +18277,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                         $this->db->query($sql);
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -18163,9 +18332,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
@@ -18184,14 +18353,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
             $explode_msg = explode("*", $encrypted_msg);
             $identifier = @$explode_msg[0];
             $resp_message = @$explode_msg[1];
-            //Decrypt the  incoming message and pre-append it back to the  orignial message template. 
+            //Decrypt the  incoming message and pre-append it back to the  orignial message template.
 
 
             $descrypted_msg = $this->decrypt($resp_message);
 
             $new_msg = $identifier . "*" . $descrypted_msg;
             //echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
-            
+
             //echo 'Msg => ' . $new_msg . 'AND Identifier => ' . $identifier . '</br>';
 
 
@@ -18217,13 +18386,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $user_source = "0" . $mobile;
             }
             // // // echo  'New From : ' . $user_source . '</br>';
-            //Check if User is authoriesed to perform transactions in the  system. 
+            //Check if User is authoriesed to perform transactions in the  system.
             $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' GROUP BY phone_no ");
             $user_exists = $get_facility->num_rows();
 
             if ($user_exists >= 1) {
 
-                //If user exists, proceed with processing the decrypted message. 
+                //If user exists, proceed with processing the decrypted message.
                 $user_details = $get_facility->result();
 
                 foreach ($user_details as $value) {
@@ -18238,8 +18407,8 @@ GROUP BY tbl_client.clinic_number   ")->result();
                     if (strpos($code, 'C') !== false) {
 
                         /**
-                         * Break down the message to the  values 
-                         * The message should contain the  following values : 
+                         * Break down the message to the  values
+                         * The message should contain the  following values :
                          * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                          */
                         $clinic_number = @$split_message[1];
@@ -18265,14 +18434,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         $call_date = str_replace('/', '-', $call_date);
                         $call_date = date("Y-m-d", strtotime($call_date));
 
-                       
+
 
 
                         /*
 
-                         * since final outcome dead doesnot apply to the  outcome client contacted, 
-                         * the  outcome sent by the  mobile application should send the value without dead (7) 
-                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+                         * since final outcome dead doesnot apply to the  outcome client contacted,
+                         * the  outcome sent by the  mobile application should send the value without dead (7)
+                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                          *                                  */
                          if ($outcome == '4') {
                             $final_outcome1 = '';
@@ -18282,7 +18451,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $final_outcome = $final_outcome + 1;
                             }
                         } else {
-                            
+
                         }
                         if($outcome == '1' or $outcome == '2'){
                             if($final_outcome == '4' ){
@@ -18323,7 +18492,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 /**
                                  * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                  * The  appointment type should be the  same as what is recorded in the  DBase
-                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                  */
                                 $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
 
@@ -18336,7 +18505,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     foreach ($get_current_appointment_query->result() as $value) {
                                         $client_id = $value->client_id;
                                         $appointment_id = $value->id;
-                                        //Get the  curent actual outcome   
+                                        //Get the  curent actual outcome
                                         $app_status = $value->app_status;
                                         $no_calls = $value->no_calls;
                                         $no_msgs = $value->no_msgs;
@@ -18362,14 +18531,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
                                             /**
                                              * Update Appointment row with the  tracing type of client called .
                                              * Based on the number of updated made .....
-                                             * 
+                                             *
                                              */
                                             $this->db->trans_start();
 
@@ -18391,7 +18560,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
 
 
@@ -18420,16 +18589,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         'created_at' => $created_at
                                                     );
                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-                                                    $sql0 = "SELECT 
-                                                    * 
+                                                    $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
 
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                     $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
@@ -18437,45 +18606,45 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     return $message;
                                                 } else {
 
-                                                    /* 
-                                                     * Final Outcome dictionary : 
+                                                    /*
+                                                     * Final Outcome dictionary :
                                                              * 1 => Declined Care
                                                              * 2 => Returned to care
                                                              * 3 => Self Transfer
                                                              * 4 => Dead
                                                              * 5 => Other
-                                                     * 
+                                                     *
                                                      *        */
 
 
 
 
                                                     if ($final_outcome == 1) {
-                                                        
+
                                                         /*
 
                                                          * Declined Care
                                                             * leave appointment as open and follow up later with the  client.
                                                             * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                          *  */
-                                                      
+
                                                             $appointment_update = array(
                                                                     'fnl_trcing_outocme' => '3',
                                                                     'fnl_outcome_dte' => $created_at
                                                                 );
                                                                 $this->db->where('id', $appointment_id);
-                                                                $this->db->update('appointment', $appointment_update);                                                           
+                                                                $this->db->update('appointment', $appointment_update);
                                                     }
                                                     if ($final_outcome == 2) {
                                                         /*
 
-                                                         * Return to care  
+                                                         * Return to care
                                                          * leave appointment as open and follow up later with the  client.
                                                          *                                                             */
 
                                                         /*
                                                          * Returned to care , close the past active appointment
-                                                         *   and book a new future appointment for the  client 
+                                                         *   and book a new future appointment for the  client
                                                          */
                                                         $appointment_update = array(
                                                             'active_app' => '0',
@@ -18513,7 +18682,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             $last_appointment_id = $this->db->insert_id();
 
                                                             /*
-                                                             * If appointment type selected is other , 
+                                                             * If appointment type selected is other ,
                                                              * the  insert te value of appointment type selected. */
 
 
@@ -18528,9 +18697,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 );
                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                 $this->db->trans_complete();
-                                                              
+
                                                             } else {
-                                                                
+
                                                             }
                                                         }
                                                     }
@@ -18634,7 +18803,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     //     $this->db->update('client', $client_update);
                                                     // }
                                                     // if ($final_outcome == 8) {
-                                                    //     //Challenging Client , leave appointment as open and mark clients as challenging 
+                                                    //     //Challenging Client , leave appointment as open and mark clients as challenging
                                                     // }
                                                     // if ($final_outcome == 9) {
                                                     //     //Too Sick to attend , leave appointment as open and follow up later with the  client.
@@ -18670,7 +18839,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     $this->db->update('appointment', $update_appointment);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -18696,30 +18865,30 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
 
                                                         $usr_outgoing = null;
-                                                        
 
-                                                        $sql0 = "SELECT 
-                                                            * 
+
+                                                        $sql0 = "SELECT
+                                                            *
                                                             FROM
-                                                            tbl_incoming 
+                                                            tbl_incoming
                                                             WHERE 1 AND id ='$response_id' ";
                                                                         $query1 = $this->db->query($sql0)->result();
 
                                                             foreach($query1 as $s0){
                                                                 $process_id = $s0->id;
-                                                            
+
                                                                 $sql = "UPDATE tbl_incoming
                                                             SET processed = 'Yes' WHERE id = '$process_id'";
                                                             $this->db->query($sql);
 
-                                                            
-                                                
+
+
                                                     }
                                                     return $message;
 
-                                                        
+
                                                     }
-                                                    
+
                                                 }
                                             }
                                         }
@@ -18746,20 +18915,20 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
 
-                                    $sql0 = "SELECT 
-                                    * 
+                                    $sql0 = "SELECT
+                                    *
                                   FROM
-                                    tbl_incoming 
+                                    tbl_incoming
                                   WHERE 1 AND id ='$response_id' ";
                                               $query1 = $this->db->query($sql0)->result();
 
                                     foreach($query1 as $s0){
                                         $process_id = $s0->id;
-                                    
+
                                         $sql = "UPDATE tbl_incoming
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                     $this->db->query($sql);
-                                
+
                                     }
                                     return $message;
                                 }
@@ -18789,20 +18958,20 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
 
-                            $sql0 = "SELECT 
-                            * 
+                            $sql0 = "SELECT
+                            *
                           FROM
-                            tbl_incoming 
+                            tbl_incoming
                           WHERE 1 AND id ='$response_id' ";
                                       $query1 = $this->db->query($sql0)->result();
 
                             foreach($query1 as $s0){
                                 $process_id = $s0->id;
-                            
+
                                 $sql = "UPDATE tbl_incoming
                             SET processed = 'Yes' WHERE id = '$process_id'";
                             $this->db->query($sql);
-                        
+
                             }
                             //May 8th changed the above to this coz this is internet based
                             return $message;
@@ -18812,8 +18981,8 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
 
                         /**
-                         * Break down the message to the  values 
-                         * The message should contain the  following values : 
+                         * Break down the message to the  values
+                         * The message should contain the  following values :
                          * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                          */
                         $clinic_number = @$split_message[1];
@@ -18841,9 +19010,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                         /*
 
-                         * since final outcome dead doesnot apply to the  outcome client contacted, 
-                         * the  outcome sent by the  mobile application should send the value without dead (7) 
-                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+                         * since final outcome dead doesnot apply to the  outcome client contacted,
+                         * the  outcome sent by the  mobile application should send the value without dead (7)
+                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                          *                                  */
                          if ($outcome == '4') {
                             $final_outcome1 = '';
@@ -18861,9 +19030,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         //     }
 
                         // }
-                        
+
                         else {
-                            
+
                         }
 
                         if($outcome == '1' or $outcome == '2'){
@@ -18888,8 +19057,8 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             $final_outcome1 = '10';
                         }
 
-                        
-                       
+
+
 
 
 
@@ -18910,7 +19079,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 /**
                                  * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                  * The  appointment type should be the  same as what is recorded in the  DBase
-                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                  */
                                 $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
 
@@ -18923,7 +19092,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     foreach ($get_current_appointment_query->result() as $value) {
                                         $client_id = $value->client_id;
                                         $appointment_id = $value->id;
-                                        //Get the  curent actual outcome   
+                                        //Get the  curent actual outcome
                                         $app_status = $value->app_status;
                                         $no_calls = $value->no_calls;
                                         $no_msgs = $value->no_msgs;
@@ -18949,14 +19118,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
 
 
                                             /**
                                              * Update Appointment row with the  tracing type of client called .
                                              * Based on the number of updated made .....
-                                             * 
+                                             *
                                              */
                                             $this->db->trans_start();
 
@@ -18978,7 +19147,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
 
 
@@ -19007,16 +19176,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         'created_at' => $created_at
                                                     );
                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-                                                    $sql0 = "SELECT 
-                                                    * 
+                                                    $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
 
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                     $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
@@ -19024,21 +19193,21 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     return $message;
                                                 } else {
 
-                                                    /* 
-                                                     * Final Outcome dictionary : 
+                                                    /*
+                                                     * Final Outcome dictionary :
                                                              * 1 => Declined Care
                                                              * 2 => Returned to care
                                                              * 3 => Self Transfer
                                                              * 4 => Dead
                                                              * 5 => Other
-                                                     * 
+                                                     *
                                                      *        */
 
 
 
 
                                                     if ($final_outcome == 1) {
-                                                        
+
                                                         /*
 
                                                          * Declined Care
@@ -19053,18 +19222,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     'fnl_outcome_dte' => $created_at
                                                                 );
                                                                 $this->db->where('id', $appointment_id);
-                                                                $this->db->update('appointment', $appointment_update);                                                           
+                                                                $this->db->update('appointment', $appointment_update);
                                                     }
                                                     if ($final_outcome == 2) {
                                                         /*
 
-                                                         * Return to care  
+                                                         * Return to care
                                                          * leave appointment as open and follow up later with the  client.
                                                          *                                                             */
 
                                                         /*
                                                          * Returned to care , close the past active appointment
-                                                         *   and book a new future appointment for the  client 
+                                                         *   and book a new future appointment for the  client
                                                          */
                                                         $appointment_update = array(
                                                             'active_app' => '0',
@@ -19102,7 +19271,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             $last_appointment_id = $this->db->insert_id();
 
                                                             /*
-                                                             * If appointment type selected is other , 
+                                                             * If appointment type selected is other ,
                                                              * the  insert te value of appointment type selected. */
 
 
@@ -19117,9 +19286,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 );
                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                 $this->db->trans_complete();
-                                                              
+
                                                             } else {
-                                                                
+
                                                             }
                                                         }
                                                     }
@@ -19223,7 +19392,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     //     $this->db->update('client', $client_update);
                                                     // }
                                                     // if ($final_outcome == 8) {
-                                                    //     //Challenging Client , leave appointment as open and mark clients as challenging 
+                                                    //     //Challenging Client , leave appointment as open and mark clients as challenging
                                                     // }
                                                     // if ($final_outcome == 9) {
                                                     //     //Too Sick to attend , leave appointment as open and follow up later with the  client.
@@ -19259,7 +19428,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     $this->db->update('appointment', $update_appointment);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
 
 
@@ -19285,30 +19454,30 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
 
                                                         $usr_outgoing = null;
-                                                        
 
-                                                        $sql0 = "SELECT 
-                                                            * 
+
+                                                        $sql0 = "SELECT
+                                                            *
                                                             FROM
-                                                            tbl_incoming 
+                                                            tbl_incoming
                                                             WHERE 1 AND id ='$response_id' ";
                                                                         $query1 = $this->db->query($sql0)->result();
 
                                                             foreach($query1 as $s0){
                                                                 $process_id = $s0->id;
-                                                            
+
                                                                 $sql = "UPDATE tbl_incoming
                                                             SET processed = 'Yes' WHERE id = '$process_id'";
                                                             $this->db->query($sql);
 
-                                                            
-                                                
+
+
                                                     }
                                                     return $message;
 
-                                                        
+
                                                     }
-                                                    
+
                                                 }
                                             }
                                         }
@@ -19335,20 +19504,20 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
 
-                                    $sql0 = "SELECT 
-                                    * 
+                                    $sql0 = "SELECT
+                                    *
                                   FROM
-                                    tbl_incoming 
+                                    tbl_incoming
                                   WHERE 1 AND id ='$response_id' ";
                                               $query1 = $this->db->query($sql0)->result();
 
                                     foreach($query1 as $s0){
                                         $process_id = $s0->id;
-                                    
+
                                         $sql = "UPDATE tbl_incoming
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                     $this->db->query($sql);
-                                
+
                                     }
                                     return $message;
                                 }
@@ -19383,10 +19552,10 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                             foreach($query1 as $s0){
                                 $process_id = $s0->id;
-                            
+
                                 $sql = "UPDATE tbl_incoming  SET processed = 'Yes' WHERE id = '$process_id'";
                                 $this->db->query($sql);
-                        
+
                             }
                             //May 8th changed the above to this coz this is internet based
                             return $message;
@@ -19417,7 +19586,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $this->db->insert('usr_outgoing', $data_outgoing);
 
                 $usr_otgoing_id = "User";
-                
+
 
                 $response_update = array(
                     'processed' => 'Yes'
@@ -19434,101 +19603,101 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
 
         log_message("INFO", "Process defaulted actions has been called for $response_id ");
-        
-        
-        
+
+
+
         /*
-        
+
          * Process all missed appointments Actions for Personal Call
          * Treatment Supporter Called
-         * Physical Tracing 
+         * Physical Tracing
          *          */
-        
-        
-        
+
+
+
         $today = date("Y-m-d H:i:s");
         $created_at = date("Y-m-d H:i:s");
-        
+
         if (is_numeric($response_id)) {
             //value found is numeric
-            //Get all the unprocessed missed actions from the  user phone. 
-            $sql = "SELECT 
-                * 
+            //Get all the unprocessed missed actions from the  user phone.
+            $sql = "SELECT
+                *
                 FROM
-                tbl_incoming 
+                tbl_incoming
                 WHERE 1 AND id ='$response_id' ";
                         $query1 = $this->db->query($sql)->result();
-        
+
             foreach ($query1 as $value) {
-        
-        
+
+
                 $process_id = $value->id;
                 $user_source = $value->source;
                 $user_source = $value->source;
                 $user_destination = $value->destination;
                 $encrypted_msg = $value->msg;
-        
-        
+
+
                 $count_special = substr_count($encrypted_msg, "*");
                 if ($count_special < 2) {
                     //New Encrypted Message
                     echo " New Encrypted Message => " . $count_special;
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                     //Explode the  incoming message into two chunks usning the  * identifier
                     $explode_msg = explode("*", $encrypted_msg);
                     $identifier = @$explode_msg[0];
                     $resp_message = @$explode_msg[1];
-                    //Decrypt the  incoming message and pre-append it back to the  orignial message template. 
-        
-        
+                    //Decrypt the  incoming message and pre-append it back to the  orignial message template.
+
+
                     $descrypted_msg = $this->decrypt($resp_message);
-        
+
                     $new_msg = $identifier . "*" . $descrypted_msg;
                     echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
                     echo 'Msg => ' . $new_msg . 'AND Identifier => ' . $identifier . '</br>';
-        
-        
+
+
                     $msg = $new_msg;
-        
-        
+
+
                     echo 'New Message => ' . $new_msg . '<br>';
-        
-        
-        
+
+
+
                     $mobile = substr($user_source, -9);
                     $len = strlen($mobile);
-        
-        
+
+
                     $sql = "UPDATE tbl_incoming
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                     $this->db->query($sql);
-        
-        
-        
-        
-        
+
+
+
+
+
                     if ($len = 9) {
-        
+
                         $user_source = "0" . $mobile;
                     }
                     // // // echo  'New From : ' . $user_source . '</br>';
-                    //Check if User is authoriesed to perform transactions in the  system. 
+                    //Check if User is authoriesed to perform transactions in the  system.
                     $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' GROUP BY phone_no ");
                     $user_exists = $get_facility->num_rows();
-        
+
                     if ($user_exists >= 1) {
-        
-                        //If user exists, proceed with processing the decrypted message. 
+
+                        //If user exists, proceed with processing the decrypted message.
                         $user_details = $get_facility->result();
-        
+
                         foreach ($user_details as $value) {
                             $user_id = $value->id;
-        
+
                             /*
                               Explode the message using the * keyword , get the  first strip of the  message
                               Using the  first strip , to check the type of message if it's a call action or  a home visit action.
@@ -19536,10 +19705,10 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             $split_message = explode('*', $msg);
                             $code = $split_message[0];
                             if (strpos($code, 'C') !== false) {
-        
+
                                 /**
-                                 * Break down the message to the  values 
-                                 * The message should contain the  following values : 
+                                 * Break down the message to the  values
+                                 * The message should contain the  following values :
                                  * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                                  */
                                 $clinic_number = @$split_message[1];
@@ -19555,21 +19724,21 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $appointment_id = @$split_message[11];
                                 $return_date = @$split_message[12];
                                 $tracing_cost = @$split_message[13];
-        
+
                                 $app_date = str_replace('/', '-', $app_date);
                                 $app_date = date("Y-m-d", strtotime($app_date));
-        
+
                                 $call_date = str_replace('/', '-', $call_date);
                                 $call_date = date("Y-m-d", strtotime($call_date));
-        
+
                                 $return_date = str_replace('/', '-', $return_date);
                                 $return_date = date("Y-m-d", strtotime($return_date));
-        
+
                                 /*
-        
-                                 * since final outcome dead doesnot apply to the  outcome client contacted, 
-                                 * the  outcome sent by the  mobile application should send the value without dead (7) 
-                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+
+                                 * since final outcome dead doesnot apply to the  outcome client contacted,
+                                 * the  outcome sent by the  mobile application should send the value without dead (7)
+                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                                  *                                  */
                                  if ($outcome == '4') {
                                     $final_outcome1 = '';
@@ -19579,9 +19748,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         $final_outcome = $final_outcome + 1;
                                     }
                                 } else {
-                                    
+
                                 }
-        
+
                                 if ($final_outcome == '1') {
                                     $final_outcome1 = '3';
                                 }
@@ -19597,46 +19766,46 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 if ($final_outcome == '5') {
                                     $final_outcome1 = '10';
                                 }
-        
-        
-        
-        
+
+
+
+
                                 /*                                 * *
                                  * Check if the  client exists in the  system , if not found , then end the  transaction and send back mesage of Client not Found in the  system
                                  */
                                 $query2 = $this->db->query("Select * from tbl_client where clinic_number = '$clinic_number' LIMIT 1");
                                 $check_num_rows = $query2->num_rows();
-        
+
                                 if ($check_num_rows > 0) {
-        
+
                                     foreach ($query2->result() as $value) {
                                         $client_id = $value->id;
                                         $language_id = $value->language_id;
                                         $client_name = $value->f_name . ' ' . $value->m_name . ' ' . $value->l_name;
-        
+
                                         /**
                                          * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                          * The  appointment type should be the  same as what is recorded in the  DBase
-                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                          */
                                         $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
-        
-        
-        
+
+
+
                                         $get_current_appointment_query = $this->db->query($get_current_appointment_sql);
                                         $check_num_rows = $get_current_appointment_query->num_rows();
-        
+
                                         if ($check_num_rows > 0) {
                                             foreach ($get_current_appointment_query->result() as $value) {
                                                 $client_id = $value->client_id;
                                                 $appointment_id = $value->id;
-                                                //Get the  curent actual outcome   
+                                                //Get the  curent actual outcome
                                                 $app_status = $value->app_status;
                                                 $no_calls = $value->no_calls;
                                                 $no_msgs = $value->no_msgs;
                                                 $home_visits = $value->home_visits;
                                                 $this->db->trans_start();
-        
+
                                                 $insert_outcome = array(
                                                     'client_id' => $client_id,
                                                     'appointment_id' => $appointment_id,
@@ -19652,56 +19821,56 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                 );
                                                 $this->db->insert('clnt_outcome', $insert_outcome);
                                                 $client_outcome_id = $this->db->insert_id();
-        
-        
+
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-        
-        
+
+
                                                     /**
                                                      * Update Appointment row with the  tracing type of client called .
                                                      * Based on the number of updated made .....
-                                                     * 
+                                                     *
                                                      */
                                                     $this->db->trans_start();
-        
+
                                                     if ($no_calls < 1) {
                                                         $no_calls = 1;
                                                     } else {
                                                         $no_calls = $no_calls + 1;
                                                     }
-        
+
                                                     $update_appointment = array(
                                                         'no_calls' => $no_calls
                                                     );
                                                     $this->db->where('id', $appointment_id);
                                                     $this->db->update('appointment', $update_appointment);
-        
-        
-        
-        
-        
+
+
+
+
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-        
-        
-        
-        
+
+
+
+
                                                         if ($final_outcome == "NULL" or empty($final_outcome)) {
-        
-        
+
+
                                                             $created_at = date('Y-m-d H:i:s');
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
                                                             // Retrieve a config item named site_name contained within the blog_settings array
                                                             $source = $this->config->item('shortcode', 'config');
-        
+
                                                             $destination = '0' . $mobile;
-        
+
                                                             $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                             $data_outgoing = array(
                                                                 'destination' => $destination,
@@ -19714,12 +19883,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 'created_at' => $created_at
                                                             );
                                                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                             $send_text = $this->data->send_message($source, $destination, $message);
-        
+
                                                             if ($send_text) {
-        
-        
+
+
                                                                 $sql = "UPDATE tbl_incoming
                                                      SET processed = 'Yes' WHERE id = '$process_id'";
                                                                 $this->db->query($sql);
@@ -19727,31 +19896,31 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 echo 'FALSE';
                                                             }
                                                         } else {
-        
+
                                                             /*
-        
-                                                             * Final Outcome dictionary : 
+
+                                                             * Final Outcome dictionary :
                                                              * 1 => Declined Care
                                                              * 2 => Returned to care
                                                              * 3 => Self Transfer
                                                              * 4 => Dead
                                                              * 5 => Other
-                                                             * 
+                                                             *
                                                              *        */
-        
-        
-        
+
+
+
                                                             if ($final_outcome == 1) {
                                                                 /*
-        
+
                                                                  * Declined Care
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                                  *                                                              */
-        
-        
-        
-        
+
+
+
+
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
                                                                     'fnl_trcing_outocme' => '3',
@@ -19763,14 +19932,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             }
                                                             if ($final_outcome == 2) {
                                                                 /*
-        
-                                                                 * Return to care  
+
+                                                                 * Return to care
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  *                                                             */
-        
+
                                                                 /*
                                                                  * Returned to care , close the past active appointment
-                                                                 *   and book a new future appointment for the  client 
+                                                                 *   and book a new future appointment for the  client
                                                                  */
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
@@ -19786,9 +19955,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     echo 'future Appointment already esists ....';
                                                                 } else {
                                                                     //future appointment does not exist ...
-        
+
                                                                     echo 'future appointment does not exist ...';
-        
+
                                                                     $appointment_insert = array(
                                                                         'app_status' => 'Booked',
                                                                         'appntmnt_date' => $app_date,
@@ -19802,16 +19971,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         'visit_type' => 'Scheduled',
                                                                         'active_app' => '1'
                                                                     );
-        
+
                                                                     $this->db->insert('appointment', $appointment_insert);
                                                                     $last_appointment_id = $this->db->insert_id();
-        
+
                                                                     /*
-                                                                     * If appointment type selected is other , 
+                                                                     * If appointment type selected is other ,
                                                                      * the  insert te value of appointment type selected. */
-        
-        
-        
+
+
+
                                                                     if ($new_appointment_type == 6) {
                                                                         $this->db->trans_start();
                                                                         $appointment_other_insert = array(
@@ -19823,12 +19992,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     } else {
-                                                                        
+
                                                                     }
                                                                 }
                                                             }
@@ -19837,9 +20006,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                  * Self Transfer
                                                                  * leave appointment as cvlosed and self transfer the  client.
                                                                  */
-        
-        
-        
+
+
+
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
                                                                     'fnl_trcing_outocme' => '6',
@@ -19848,24 +20017,24 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 );
                                                                 $this->db->where('id', $appointment_id);
                                                                 $this->db->update('appointment', $appointment_update);
-        
+
                                                                 $client_update = array(
                                                                     'status' => 'Self Transfer'
                                                                 );
                                                                 $this->db->where('id', $client_id);
                                                                 $this->db->update('client', $client_update);
                                                             }
-        
+
                                                             if ($final_outcome == 4) {
                                                                 /*
-        
+
                                                                  * Dead / Deceased
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  *                                                                 */
-        
-        
-        
-        
+
+
+
+
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
                                                                     'fnl_trcing_outocme' => '7',
@@ -19874,14 +20043,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 );
                                                                 $this->db->where('id', $appointment_id);
                                                                 $this->db->update('appointment', $appointment_update);
-        
+
                                                                 $client_update = array(
                                                                     'status' => 'Deceased'
                                                                 );
                                                                 $this->db->where('id', $client_id);
                                                                 $this->db->update('client', $client_update);
                                                             }
-        
+
                                                             if ($final_outcome == 5) {
                                                                 //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                                 $data_insert = array(
@@ -19893,17 +20062,17 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                      );
                                                                      $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                             }
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
                                                             /* Update Appointment with the Final Outcome */
-        
+
                                                             $this->db->trans_start();
                                                             $update_appointment = array(
                                                                 'fnl_trcing_outocme' => $final_outcome,
@@ -19914,18 +20083,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             $this->db->update('appointment', $update_appointment);
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
-        
-        
+
+
                                                                 $created_at = date('Y-m-d H:i:s');
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                 $this->config->load('config', TRUE);
                                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                                 $source = $this->config->item('shortcode', 'config');
-        
+
                                                                 $destination = '0' . $mobile;
-        
+
                                                                 $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                                 $data_outgoing = array(
                                                                     'destination' => $destination,
@@ -19938,15 +20107,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     'created_at' => $created_at
                                                                 );
                                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                                 $usr_outgoing = null;
-                                                           
-        
+
+
                                                                 $send_text = $this->data->send_message($source, $destination, $message, $usr_outgoing);
-        
+
                                                                 if ($send_text) {
                                                                     echo 'SUCCESS';
-        
+
                                                                     $sql = "UPDATE tbl_incoming
                                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                                                     $this->db->query($sql);
@@ -19964,9 +20133,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             $this->config->load('config', TRUE);
                                             // Retrieve a config item named site_name contained within the blog_settings array
                                             $source = $this->config->item('shortcode', 'config');
-        
+
                                             $destination = '0' . $mobile;
-        
+
                                             $message = "The specified appointment for Clinic number: $clinic_number  is not active in the System  ";
                                             $data_outgoing = array(
                                                 'destination' => $destination,
@@ -19979,32 +20148,32 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                 'created_at' => $created_at
                                             );
                                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                             $send_text = $this->data->send_message($source, $destination, $message);
-        
+
                                             if ($send_text) {
-        
-        
+
+
                                                 $sql = "UPDATE tbl_incoming
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                 $this->db->query($sql);
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
                                 } else {
-        
-        
-        
+
+
+
                                     $created_at = date('Y-m-d H:i:s');
                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
                                     $source = $this->config->item('shortcode', 'config');
-        
+
                                     $destination = '0' . $mobile;
-        
+
                                     $message = "Clinic number: $clinic_number does not exist in the System  ";
                                     $data_outgoing = array(
                                         'destination' => $destination,
@@ -20017,26 +20186,26 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         'created_at' => $created_at
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                     $send_text = $this->data->send_message($source, $destination, $message);
-        
+
                                     if ($send_text) {
-        
-        
-        
+
+
+
                                         $sql = "UPDATE tbl_incoming
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                         $this->db->query($sql);
                                     } else {
-                                        
+
                                     }
                                 }
                             } else if (strpos($code, 'V') !== false) {
-        
-        
+
+
                                 /**
-                                 * Break down the message to the  values 
-                                 * The message should contain the  following values : 
+                                 * Break down the message to the  values
+                                 * The message should contain the  following values :
                                  * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                                  */
                                 $clinic_number = @$split_message[1];
@@ -20052,18 +20221,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $appointment_id = @$split_message[11];
                                 $return_date = @$split_message[12];
                                 $tracing_cost = @$split_message[13];
-        
+
                                 $app_date = str_replace('/', '-', $app_date);
                                 $app_date = date("Y-m-d", strtotime($app_date));
-        
+
                                 $call_date = str_replace('/', '-', $call_date);
                                 $call_date = date("Y-m-d", strtotime($call_date));
-        
+
                                 /*
-        
-                                 * since final outcome dead doesnot apply to the  outcome client contacted, 
-                                 * the  outcome sent by the  mobile application should send the value without dead (7) 
-                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+
+                                 * since final outcome dead doesnot apply to the  outcome client contacted,
+                                 * the  outcome sent by the  mobile application should send the value without dead (7)
+                                 * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                                  *                                  */
                                  if ($outcome == '4') {
                                     $final_outcome1 = '';
@@ -20073,9 +20242,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         $final_outcome = $final_outcome + 1;
                                     }
                                 } else {
-                                    
+
                                 }
-        
+
                                 if ($final_outcome == '1') {
                                     $final_outcome1 = '3';
                                 }
@@ -20091,46 +20260,46 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 if ($final_outcome == '5') {
                                     $final_outcome1 = '10';
                                 }
-        
-        
-        
-        
+
+
+
+
                                 /*                                 * *
                                  * Check if the  client exists in the  system , if not found , then end the  transaction and send back mesage of Client not Found in the  system
                                  */
                                 $query2 = $this->db->query("Select * from tbl_client where clinic_number = '$clinic_number' LIMIT 1");
                                 $check_num_rows = $query2->num_rows();
-        
+
                                 if ($check_num_rows > 0) {
-        
+
                                     foreach ($query2->result() as $value) {
                                         $client_id = $value->id;
                                         $language_id = $value->language_id;
                                         $client_name = $value->f_name . ' ' . $value->m_name . ' ' . $value->l_name;
-        
+
                                         /**
                                          * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                          * The  appointment type should be the  same as what is recorded in the  DBase
-                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                         * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                          */
                                         $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
-        
-        
-        
+
+
+
                                         $get_current_appointment_query = $this->db->query($get_current_appointment_sql);
                                         $check_num_rows = $get_current_appointment_query->num_rows();
-        
+
                                         if ($check_num_rows > 0) {
                                             foreach ($get_current_appointment_query->result() as $value) {
                                                 $client_id = $value->client_id;
                                                 $appointment_id = $value->id;
-                                                //Get the  curent actual outcome   
+                                                //Get the  curent actual outcome
                                                 $app_status = $value->app_status;
                                                 $no_calls = $value->no_calls;
                                                 $no_msgs = $value->no_msgs;
                                                 $home_visits = $value->home_visits;
                                                 $this->db->trans_start();
-        
+
                                                 $insert_outcome = array(
                                                     'client_id' => $client_id,
                                                     'appointment_id' => $appointment_id,
@@ -20146,56 +20315,56 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                 );
                                                 $this->db->insert('clnt_outcome', $insert_outcome);
                                                 $client_outcome_id = $this->db->insert_id();
-        
-        
+
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-        
-        
+
+
                                                     /**
                                                      * Update Appointment row with the  tracing type of client called .
                                                      * Based on the number of updated made .....
-                                                     * 
+                                                     *
                                                      */
                                                     $this->db->trans_start();
-        
+
                                                     if ($no_calls < 1) {
                                                         $no_calls = 1;
                                                     } else {
                                                         $no_calls = $no_calls + 1;
                                                     }
-        
+
                                                     $update_appointment = array(
                                                         'no_calls' => $no_calls
                                                     );
                                                     $this->db->where('id', $appointment_id);
                                                     $this->db->update('appointment', $update_appointment);
-        
-        
-        
-        
-        
+
+
+
+
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-        
-        
-        
-        
+
+
+
+
                                                         if ($final_outcome == "NULL" or empty($final_outcome)) {
-        
-        
+
+
                                                             $created_at = date('Y-m-d H:i:s');
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
                                                             // Retrieve a config item named site_name contained within the blog_settings array
                                                             $source = $this->config->item('shortcode', 'config');
-        
+
                                                             $destination = '0' . $mobile;
-        
+
                                                             $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                             $data_outgoing = array(
                                                                 'destination' => $destination,
@@ -20208,12 +20377,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 'created_at' => $created_at
                                                             );
                                                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                             $send_text = $this->data->send_message($source, $destination, $message);
-        
+
                                                             if ($send_text) {
-        
-        
+
+
                                                                 $sql = "UPDATE tbl_incoming
                                                      SET processed = 'Yes' WHERE id = '$process_id'";
                                                                 $this->db->query($sql);
@@ -20221,31 +20390,31 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 echo 'FALSE';
                                                             }
                                                         } else {
-        
+
                                                             /*
-        
-                                                             * Final Outcome dictionary : 
+
+                                                             * Final Outcome dictionary :
                                                              * 1 => Declined Care
                                                              * 2 => Returned to care
                                                              * 3 => Self Transfer
                                                              * 4 => Dead
                                                              * 5 => Other
-                                                             * 
+                                                             *
                                                              *        */
-        
-        
-        
+
+
+
                                                             if ($final_outcome == 1) {
                                                                 /*
-        
+
                                                                  * Declined Care
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                                  *                                                              */
-        
-        
-        
-        
+
+
+
+
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
                                                                     'fnl_trcing_outocme' => '3',
@@ -20257,14 +20426,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             }
                                                             if ($final_outcome == 2) {
                                                                 /*
-        
-                                                                 * Return to care  
+
+                                                                 * Return to care
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  *                                                             */
-        
+
                                                                 /*
                                                                  * Returned to care , close the past active appointment
-                                                                 *   and book a new future appointment for the  client 
+                                                                 *   and book a new future appointment for the  client
                                                                  */
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
@@ -20280,9 +20449,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     echo 'future Appointment already esists ....';
                                                                 } else {
                                                                     //future appointment does not exist ...
-        
+
                                                                     echo 'future appointment does not exist ...';
-        
+
                                                                     $appointment_insert = array(
                                                                         'app_status' => 'Booked',
                                                                         'appntmnt_date' => $app_date,
@@ -20296,16 +20465,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         'visit_type' => 'Scheduled',
                                                                         'active_app' => '1'
                                                                     );
-        
+
                                                                     $this->db->insert('appointment', $appointment_insert);
                                                                     $last_appointment_id = $this->db->insert_id();
-        
+
                                                                     /*
-                                                                     * If appointment type selected is other , 
+                                                                     * If appointment type selected is other ,
                                                                      * the  insert te value of appointment type selected. */
-        
-        
-        
+
+
+
                                                                     if ($new_appointment_type == 6) {
                                                                         $this->db->trans_start();
                                                                         $appointment_other_insert = array(
@@ -20317,12 +20486,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                         $this->db->trans_complete();
                                                                         if ($this->db->trans_status() === FALSE) {
-                                                                            
+
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     } else {
-                                                                        
+
                                                                     }
                                                                 }
                                                             }
@@ -20331,9 +20500,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                  * Self Transfer
                                                                  * leave appointment as cvlosed and self transfer the  client.
                                                                  */
-        
-        
-        
+
+
+
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
                                                                     'fnl_trcing_outocme' => '6',
@@ -20342,24 +20511,24 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 );
                                                                 $this->db->where('id', $appointment_id);
                                                                 $this->db->update('appointment', $appointment_update);
-        
+
                                                                 $client_update = array(
                                                                     'status' => 'Self Transfer'
                                                                 );
                                                                 $this->db->where('id', $client_id);
                                                                 $this->db->update('client', $client_update);
                                                             }
-        
+
                                                             if ($final_outcome == 4) {
                                                                 /*
-        
+
                                                                  * Dead / Deceased
                                                                  * leave appointment as open and follow up later with the  client.
                                                                  *                                                                 */
-        
-        
-        
-        
+
+
+
+
                                                                 $appointment_update = array(
                                                                     'active_app' => '0',
                                                                     'fnl_trcing_outocme' => '7',
@@ -20368,14 +20537,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 );
                                                                 $this->db->where('id', $appointment_id);
                                                                 $this->db->update('appointment', $appointment_update);
-        
+
                                                                 $client_update = array(
                                                                     'status' => 'Deceased'
                                                                 );
                                                                 $this->db->where('id', $client_id);
                                                                 $this->db->update('client', $client_update);
                                                             }
-        
+
                                                             if ($final_outcome == 5) {
                                                                 //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                                 $data_insert = array(
@@ -20387,17 +20556,17 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                      );
                                                                      $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                             }
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
                                                             /* Update Appointment with the Final Outcome */
-        
+
                                                             $this->db->trans_start();
                                                             $update_appointment = array(
                                                                 'fnl_trcing_outocme' => $final_outcome,
@@ -20408,18 +20577,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             $this->db->update('appointment', $update_appointment);
                                                             $this->db->trans_complete();
                                                             if ($this->db->trans_status() === FALSE) {
-                                                                
+
                                                             } else {
-        
-        
+
+
                                                                 $created_at = date('Y-m-d H:i:s');
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                 $this->config->load('config', TRUE);
                                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                                 $source = $this->config->item('shortcode', 'config');
-        
+
                                                                 $destination = '0' . $mobile;
-        
+
                                                                 $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                                 $data_outgoing = array(
                                                                     'destination' => $destination,
@@ -20432,15 +20601,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     'created_at' => $created_at
                                                                 );
                                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                                 $usr_outgoing = null;
-                                                               
-        
+
+
                                                                 $send_text = $this->data->send_message($source, $destination, $message, $usr_outgoing);
-        
+
                                                                 if ($send_text) {
                                                                     echo 'SUCCESS';
-        
+
                                                                     $sql = "UPDATE tbl_incoming
                                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                                                     $this->db->query($sql);
@@ -20458,9 +20627,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             $this->config->load('config', TRUE);
                                             // Retrieve a config item named site_name contained within the blog_settings array
                                             $source = $this->config->item('shortcode', 'config');
-        
+
                                             $destination = '0' . $mobile;
-        
+
                                             $message = "The specified appointment for Clinic number: $clinic_number  is not active in the System  ";
                                             $data_outgoing = array(
                                                 'destination' => $destination,
@@ -20473,32 +20642,32 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                 'created_at' => $created_at
                                             );
                                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                             $send_text = $this->data->send_message($source, $destination, $message);
-        
+
                                             if ($send_text) {
-        
-        
+
+
                                                 $sql = "UPDATE tbl_incoming
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                 $this->db->query($sql);
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
                                 } else {
-        
-        
-        
+
+
+
                                     $created_at = date('Y-m-d H:i:s');
                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
                                     $source = $this->config->item('shortcode', 'config');
-        
+
                                     $destination = '0' . $mobile;
-        
+
                                     $message = "Clinic number: $clinic_number does not exist in the System  ";
                                     $data_outgoing = array(
                                         'destination' => $destination,
@@ -20511,18 +20680,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         'created_at' => $created_at
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                     $send_text = $this->data->send_message($source, $destination, $message);
-        
+
                                     if ($send_text) {
-        
-        
-        
+
+
+
                                         $sql = "UPDATE tbl_incoming
                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                         $this->db->query($sql);
                                     } else {
-                                        
+
                                     }
                                 }
                             }
@@ -20534,7 +20703,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         $this->config->load('config', TRUE);
                         // Retrieve a config item named site_name contained within the blog_settings array
                         $source = $this->config->item('shortcode', 'config');
-        
+
                         $destination = '0' . $mobile;
                         $this->db->trans_start();
                         $message = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you";
@@ -20549,16 +20718,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             'created_at' => $created_at
                         );
                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                         $usr_otgoing_id = "User";
                         $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-        
+
                         if ($send_text) {
                             echo 'SUCCESS';
                         } else {
                             echo 'FALSE';
                         }
-        
+
                         $response_update = array(
                             'processed' => 'Yes'
                         );
@@ -20568,80 +20737,80 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 } else {
                     //Old Non Encrypted Message
                     echo " Old Non Encrypted Message => " . $count_special;
-        
-        
-        
+
+
+
                     $this->db->trans_start();
-        
+
                     $this->db->delete('responses', array('id' => $process_id));
-        
+
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 }
             }
         } else if (!is_numeric($response_id)) {
             //value found is letter , process as internet message ...
             $our_msg = explode("#", $response_id);
-        
+
             $encrypted_msg = $our_msg[0];
             $user_source = $our_msg[1];
-        
+
             $destination = $user_source;
-        
-        
-        
+
+
+
             //Explode the  incoming message into two chunks usning the  * identifier
             $explode_msg = explode("*", $encrypted_msg);
             $identifier = @$explode_msg[0];
             $resp_message = @$explode_msg[1];
-            //Decrypt the  incoming message and pre-append it back to the  orignial message template. 
-        
-        
+            //Decrypt the  incoming message and pre-append it back to the  orignial message template.
+
+
             $descrypted_msg = $this->decrypt($resp_message);
-        
+
             $new_msg = $identifier . "*" . $descrypted_msg;
             //echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
             //echo 'Msg => ' . $new_msg . 'AND Identifier => ' . $identifier . '</br>';
-        
-        
+
+
             $msg = $new_msg;
-        
-        
+
+
             //echo 'New Message => ' . $new_msg . '<br>';
-        
-        
-        
+
+
+
             $mobile = substr($user_source, -9);
             $len = strlen($mobile);
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
             if ($len = 9) {
-        
+
                 $user_source = "0" . $mobile;
             }
             // // // echo  'New From : ' . $user_source . '</br>';
-            //Check if User is authoriesed to perform transactions in the  system. 
+            //Check if User is authoriesed to perform transactions in the  system.
             $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' GROUP BY phone_no ");
             $user_exists = $get_facility->num_rows();
-        
+
             if ($user_exists >= 1) {
-        
-                //If user exists, proceed with processing the decrypted message. 
+
+                //If user exists, proceed with processing the decrypted message.
                 $user_details = $get_facility->result();
-        
+
                 foreach ($user_details as $value) {
                     $user_id = $value->id;
-        
+
                     /*
                       Explode the message using the * keyword , get the  first strip of the  message
                       Using the  first strip , to check the type of message if it's a call action or  a home visit action.
@@ -20649,10 +20818,10 @@ GROUP BY tbl_client.clinic_number   ")->result();
                     $split_message = explode('*', $msg);
                     $code = $split_message[0];
                     if (strpos($code, 'C') !== false) {
-        
+
                         /**
-                         * Break down the message to the  values 
-                         * The message should contain the  following values : 
+                         * Break down the message to the  values
+                         * The message should contain the  following values :
                          * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                          */
                         $clinic_number = @$split_message[1];
@@ -20668,22 +20837,22 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         $appointment_id = @$split_message[11];
                         $return_date = @$split_message[12];
                         $tracing_cost = @$split_message[13];
-        
+
                         $app_date = str_replace('/', '-', $app_date);
                         $app_date = date("Y-m-d", strtotime($app_date));
-        
+
                         $call_date = str_replace('/', '-', $call_date);
                         $call_date = date("Y-m-d", strtotime($call_date));
-        
+
                         $return_date = str_replace('/', '-', $return_date);
                         $return_date = date("Y-m-d", strtotime($return_date));
-        
-        
+
+
                         /*
-        
-                         * since final outcome dead doesnot apply to the  outcome client contacted, 
-                         * the  outcome sent by the  mobile application should send the value without dead (7) 
-                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+
+                         * since final outcome dead doesnot apply to the  outcome client contacted,
+                         * the  outcome sent by the  mobile application should send the value without dead (7)
+                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                          *                                  */
                          if ($outcome == '4') {
                             $final_outcome1 = '';
@@ -20693,7 +20862,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $final_outcome = $final_outcome + 1;
                             }
                         } else {
-                            
+
                         }
                         if($outcome == '1' or $outcome == '2'){
                             if($final_outcome == '4' ){
@@ -20701,7 +20870,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             }
 
                         }
-        
+
                         if ($final_outcome == '1') {
                             $final_outcome1 = '3';
                         }
@@ -20717,44 +20886,44 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         if ($final_outcome == '5') {
                             $final_outcome1 = '10';
                         }
-        
-        
+
+
                         /*                         * *
                          * Check if the  client exists in the  system , if not found , then end the  transaction and send back mesage of Client not Found in the  system
                          */
                         $query2 = $this->db->query("Select * from tbl_client where clinic_number = '$clinic_number' LIMIT 1");
                         $check_num_rows = $query2->num_rows();
-        
+
                         if ($check_num_rows > 0) {
-        
+
                             foreach ($query2->result() as $value) {
                                 $client_id = $value->id;
                                 $language_id = $value->language_id;
                                 $client_name = $value->f_name . ' ' . $value->m_name . ' ' . $value->l_name;
-        
+
                                 /**
                                  * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                  * The  appointment type should be the  same as what is recorded in the  DBase
-                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                  */
                                 $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
-        
-        
-        
+
+
+
                                 $get_current_appointment_query = $this->db->query($get_current_appointment_sql);
                                 $check_num_rows = $get_current_appointment_query->num_rows();
-        
+
                                 if ($check_num_rows > 0) {
                                     foreach ($get_current_appointment_query->result() as $value) {
                                         $client_id = $value->client_id;
                                         $appointment_id = $value->id;
-                                        //Get the  curent actual outcome   
+                                        //Get the  curent actual outcome
                                         $app_status = $value->app_status;
                                         $no_calls = $value->no_calls;
                                         $no_msgs = $value->no_msgs;
                                         $home_visits = $value->home_visits;
                                         $this->db->trans_start();
-        
+
                                         $insert_outcome = array(
                                             'client_id' => $client_id,
                                             'appointment_id' => $appointment_id,
@@ -20770,56 +20939,56 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         );
                                         $this->db->insert('clnt_outcome', $insert_outcome);
                                         $client_outcome_id = $this->db->insert_id();
-        
-        
+
+
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-        
-        
+
+
                                             /**
                                              * Update Appointment row with the  tracing type of client called .
                                              * Based on the number of updated made .....
-                                             * 
+                                             *
                                              */
                                             $this->db->trans_start();
-        
+
                                             if ($no_calls < 1) {
                                                 $no_calls = 1;
                                             } else {
                                                 $no_calls = $no_calls + 1;
                                             }
-        
+
                                             $update_appointment = array(
                                                 'no_calls' => $no_calls
                                             );
                                             $this->db->where('id', $appointment_id);
                                             $this->db->update('appointment', $update_appointment);
-        
-        
-        
-        
-        
+
+
+
+
+
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-        
-        
-        
-        
+
+
+
+
                                                 if ($final_outcome == "NULL" or empty($final_outcome)) {
-        
-        
+
+
                                                     $created_at = date('Y-m-d H:i:s');
                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                     $this->config->load('config', TRUE);
                                                     // Retrieve a config item named site_name contained within the blog_settings array
                                                     $source = $this->config->item('shortcode', 'config');
-        
+
                                                     $destination = '0' . $mobile;
-        
+
                                                     $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                     $data_outgoing = array(
                                                         'destination' => $destination,
@@ -20832,51 +21001,51 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         'created_at' => $created_at
                                                     );
                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
-                                                    $sql0 = "SELECT 
-                                                    * 
+
+                                                    $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
-        
+
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                         $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
-                                                
+
                                                     }
                                                     return $message;
                                                 } else {
-        
+
                                                     /*
-        
-                                                      * Final Outcome dictionary : 
+
+                                                      * Final Outcome dictionary :
                                                      * 1 => Declined Care
                                                      * 2 => Returned to care
                                                      * 3 => Self Transfer
                                                      * 4 => Dead
-                                                     * 5 => Other  
-                                                     * 
+                                                     * 5 => Other
+                                                     *
                                                      *        */
-        
-        
-        
-        
+
+
+
+
                                                      if ($final_outcome == 1) {
-                                                       
+
                                                         /*
-        
+
                                                          * Declined Care
                                                          * leave appointment as open and follow up later with the  client.
                                                          * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                          *                                                              */
-                                                            
-        
-        
-        
+
+
+
+
                                                         $appointment_update = array(
                                                             'active_app' => '0',
                                                             'fnl_trcing_outocme' => '3',
@@ -20888,14 +21057,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     }
                                                     if ($final_outcome == 2) {
                                                         /*
-        
-                                                         * Return to care  
+
+                                                         * Return to care
                                                          * leave appointment as open and follow up later with the  client.
                                                          *                                                             */
-        
+
                                                         /*
                                                          * Returned to care , close the past active appointment
-                                                         *   and book a new future appointment for the  client 
+                                                         *   and book a new future appointment for the  client
                                                          */
                                                         $appointment_update = array(
                                                             'active_app' => '0',
@@ -20911,9 +21080,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             //echo 'future Appointment already esists ....';
                                                         } else {
                                                             //future appointment does not exist ...
-        
+
                                                             //echo 'future appointment does not exist ...';
-        
+
                                                             $appointment_insert = array(
                                                                 'app_status' => 'Booked',
                                                                 'appntmnt_date' => $app_date,
@@ -20927,16 +21096,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 'visit_type' => 'Scheduled',
                                                                 'active_app' => '1'
                                                             );
-        
+
                                                             $this->db->insert('appointment', $appointment_insert);
                                                             $last_appointment_id = $this->db->insert_id();
-        
+
                                                             /*
-                                                             * If appointment type selected is other , 
+                                                             * If appointment type selected is other ,
                                                              * the  insert te value of appointment type selected. */
-        
-        
-        
+
+
+
                                                             if ($new_appointment_type == 6) {
                                                                 $this->db->trans_start();
                                                                 $appointment_other_insert = array(
@@ -20948,12 +21117,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-                                                                    
+
                                                                 }
                                                             } else {
-                                                                
+
                                                             }
                                                         }
                                                     }
@@ -20962,9 +21131,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                          * Self Transfer
                                                          * leave appointment as cvlosed and self transfer the  client.
                                                          */
-        
-        
-        
+
+
+
                                                         $appointment_update = array(
                                                             'active_app' => '0',
                                                             'fnl_trcing_outocme' => '6',
@@ -20973,7 +21142,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         );
                                                         $this->db->where('id', $appointment_id);
                                                         $this->db->update('appointment', $appointment_update);
-        
+
                                                         $client_update = array(
                                                             'status' => 'Self Transfer'
                                                         );
@@ -20982,14 +21151,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     }
                                                     if ($final_outcome == 4) {
                                                         /*
-        
+
                                                          * Dead / Deceased
                                                          * leave appointment as open and follow up later with the  client.
                                                          *                                                                 */
-        
-        
-        
-        
+
+
+
+
                                                         $appointment_update = array(
                                                             'active_app' => '0',
                                                             'fnl_trcing_outocme' => '7',
@@ -20998,15 +21167,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         );
                                                         $this->db->where('id', $appointment_id);
                                                         $this->db->update('appointment', $appointment_update);
-        
+
                                                         $client_update = array(
                                                             'status' => 'Deceased'
                                                         );
                                                         $this->db->where('id', $client_id);
                                                         $this->db->update('client', $client_update);
                                                     }
-        
-        
+
+
                                                     if ($final_outcome == 5) {
                                                         //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                         $data_insert = array(
@@ -21020,7 +21189,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     }
                                                     // if ($final_outcome == 6) {
                                                     //     //Self Transfer , close appointment and mark clients as self transfer
-        
+
                                                     //     $appointment_update = array(
                                                     //         'active_app' => '0',
                                                     //         'fnl_trcing_outocme' => $final_outcome,
@@ -21029,7 +21198,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     //     );
                                                     //     $this->db->where('id', $appointment_id);
                                                     //     $this->db->update('appointment', $appointment_update);
-        
+
                                                     //     $client_update = array(
                                                     //         'status' => 'Self Transfer'
                                                     //     );
@@ -21038,8 +21207,8 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     // }
                                                     // if ($final_outcome == 7) {
                                                     //     //Dead , close appointment and mark clients as Dead
-        
-        
+
+
                                                     //     $appointment_update = array(
                                                     //         'active_app' => '0',
                                                     //         'fnl_trcing_outocme' => $final_outcome,
@@ -21048,7 +21217,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     //     );
                                                     //     $this->db->where('id', $appointment_id);
                                                     //     $this->db->update('appointment', $appointment_update);
-        
+
                                                     //     $client_update = array(
                                                     //         'status' => 'Deceased'
                                                     //     );
@@ -21056,13 +21225,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     //     $this->db->update('client', $client_update);
                                                     // }
                                                     // if ($final_outcome == 8) {
-                                                    //     //Challenging Client , leave appointment as open and mark clients as challenging 
+                                                    //     //Challenging Client , leave appointment as open and mark clients as challenging
                                                     // }
                                                     // if ($final_outcome == 9) {
                                                     //     //Too Sick to attend , leave appointment as open and follow up later with the  client.
                                                     // }
-        
-        
+
+
                                                     // if ($final_outcome == 10) {
                                                     //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                     //     $data_insert = array(
@@ -21074,14 +21243,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     //     );
                                                     //     $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                     // }
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                                                     /* Update Appointment with the Final Outcome */
-        
+
                                                     $this->db->trans_start();
                                                     $update_appointment = array(
                                                         'fnl_trcing_outocme' => $final_outcome,
@@ -21092,18 +21261,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     $this->db->update('appointment', $update_appointment);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-        
-        
+
+
                                                         $created_at = date('Y-m-d H:i:s');
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
                                                         // Retrieve a config item named site_name contained within the blog_settings array
                                                         $source = $this->config->item('shortcode', 'config');
-        
+
                                                         $destination = '0' . $mobile;
-        
+
                                                         $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                         $data_outgoing = array(
                                                             'destination' => $destination,
@@ -21116,23 +21285,23 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             'created_at' => $created_at
                                                         );
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                         $usr_outgoing = null;
-        
-                                                        $sql0 = "SELECT 
-                                                        * 
+
+                                                        $sql0 = "SELECT
+                                                        *
                                                       FROM
-                                                        tbl_incoming 
+                                                        tbl_incoming
                                                       WHERE 1 AND id ='$response_id' ";
                                                                   $query1 = $this->db->query($sql0)->result();
-        
+
                                                         foreach($query1 as $s0){
                                                             $process_id = $s0->id;
-                                                        
+
                                                             $sql = "UPDATE tbl_incoming
                                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                                         $this->db->query($sql);
-                                                    
+
                                                         }
                                                         return $message;
                                                     }
@@ -21146,9 +21315,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
                                     $source = $this->config->item('shortcode', 'config');
-        
+
                                     $destination = '0' . $mobile;
-        
+
                                     $message = "The specified appointment for Clinic number: $clinic_number  is not active in the System  ";
                                     $data_outgoing = array(
                                         'destination' => $destination,
@@ -21161,37 +21330,37 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         'created_at' => $created_at
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
-                                    $sql0 = "SELECT 
-                                                    * 
+
+                                    $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
-        
+
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                         $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
-                                                
+
                                                     }
                                                     return $message;
                                 }
                             }
                         } else {
-        
-        
-        
+
+
+
                             $created_at = date('Y-m-d H:i:s');
                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                             $this->config->load('config', TRUE);
                             // Retrieve a config item named site_name contained within the blog_settings array
                             $source = $this->config->item('shortcode', 'config');
-        
+
                             $destination = '0' . $mobile;
-        
+
                             $message = "Clinic number: $clinic_number does not exist in the System  ";
                             $data_outgoing = array(
                                 'destination' => $destination,
@@ -21204,31 +21373,31 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 'created_at' => $created_at
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
-                            $sql0 = "SELECT 
-                                                    * 
+
+                            $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
-        
+
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                         $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
-                                                
+
                                                     }
                                                     return $message;
                         }
                     } else if (strpos($code, 'V') !== false) {
-        
-        
-        
+
+
+
                         /**
-                         * Break down the message to the  values 
-                         * The message should contain the  following values : 
+                         * Break down the message to the  values
+                         * The message should contain the  following values :
                          * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                          */
                         $clinic_number = @$split_message[1];
@@ -21244,21 +21413,21 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         $appointment_id = @$split_message[11];
                         $return_date = @$split_message[12];
                         $tracing_cost = @$split_message[13];
-        
+
                         $app_date = str_replace('/', '-', $app_date);
                         $app_date = date("Y-m-d", strtotime($app_date));
-        
+
                         $call_date = str_replace('/', '-', $call_date);
                         $call_date = date("Y-m-d", strtotime($call_date));
-        
+
                         $return_date = str_replace('/', '-', $return_date);
                         $return_date = date("Y-m-d", strtotime($return_date));
-        
+
                         /*
-        
-                         * since final outcome dead doesnot apply to the  outcome client contacted, 
-                         * the  outcome sent by the  mobile application should send the value without dead (7) 
-                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+
+                         * since final outcome dead doesnot apply to the  outcome client contacted,
+                         * the  outcome sent by the  mobile application should send the value without dead (7)
+                         * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                          *                                  */
                          if ($outcome == '4') {
                             $final_outcome1 = '';
@@ -21268,7 +21437,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $final_outcome = $final_outcome + 1;
                             }
                         } else {
-                            
+
                         }
                         if($outcome == '1' or $outcome == '2'){
                             if($final_outcome == '4' ){
@@ -21276,7 +21445,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             }
 
                         }
-        
+
                         if ($final_outcome == '1') {
                             $final_outcome1 = '3';
                         }
@@ -21292,47 +21461,47 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         if ($final_outcome == '5') {
                             $final_outcome1 = '10';
                         }
-        
-        
-        
-        
-        
+
+
+
+
+
                         /*                         * *
                          * Check if the  client exists in the  system , if not found , then end the  transaction and send back mesage of Client not Found in the  system
                          */
                         $query2 = $this->db->query("Select * from tbl_client where clinic_number = '$clinic_number' LIMIT 1");
                         $check_num_rows = $query2->num_rows();
-        
+
                         if ($check_num_rows > 0) {
-        
+
                             foreach ($query2->result() as $value) {
                                 $client_id = $value->id;
                                 $language_id = $value->language_id;
                                 $client_name = $value->f_name . ' ' . $value->m_name . ' ' . $value->l_name;
-        
+
                                 /**
                                  * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                  * The  appointment type should be the  same as what is recorded in the  DBase
-                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                 * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                  */
                                 $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
-        
-        
-        
+
+
+
                                 $get_current_appointment_query = $this->db->query($get_current_appointment_sql);
                                 $check_num_rows = $get_current_appointment_query->num_rows();
-        
+
                                 if ($check_num_rows > 0) {
                                     foreach ($get_current_appointment_query->result() as $value) {
                                         $client_id = $value->client_id;
                                         $appointment_id = $value->id;
-                                        //Get the  curent actual outcome   
+                                        //Get the  curent actual outcome
                                         $app_status = $value->app_status;
                                         $no_calls = $value->no_calls;
                                         $no_msgs = $value->no_msgs;
                                         $home_visits = $value->home_visits;
                                         $this->db->trans_start();
-        
+
                                         $insert_outcome = array(
                                             'client_id' => $client_id,
                                             'appointment_id' => $appointment_id,
@@ -21348,56 +21517,56 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         );
                                         $this->db->insert('clnt_outcome', $insert_outcome);
                                         $client_outcome_id = $this->db->insert_id();
-        
-        
+
+
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
-        
-        
+
+
                                             /**
                                              * Update Appointment row with the  tracing type of client called .
                                              * Based on the number of updated made .....
-                                             * 
+                                             *
                                              */
                                             $this->db->trans_start();
-        
+
                                             if ($no_calls < 1) {
                                                 $no_calls = 1;
                                             } else {
                                                 $no_calls = $no_calls + 1;
                                             }
-        
+
                                             $update_appointment = array(
                                                 'no_calls' => $no_calls
                                             );
                                             $this->db->where('id', $appointment_id);
                                             $this->db->update('appointment', $update_appointment);
-        
-        
-        
-        
-        
+
+
+
+
+
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-        
-        
-        
-        
+
+
+
+
                                                 if ($final_outcome == "NULL" or empty($final_outcome)) {
-        
-        
+
+
                                                     $created_at = date('Y-m-d H:i:s');
                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                     $this->config->load('config', TRUE);
                                                     // Retrieve a config item named site_name contained within the blog_settings array
                                                     $source = $this->config->item('shortcode', 'config');
-        
+
                                                     $destination = '0' . $mobile;
-        
+
                                                     $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                     $data_outgoing = array(
                                                         'destination' => $destination,
@@ -21410,50 +21579,50 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         'created_at' => $created_at
                                                     );
                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
-                                                    $sql0 = "SELECT 
-                                                    * 
+
+                                                    $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
-        
+
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                         $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
-                                                
+
                                                     }
                                                     return $message;
                                                 } else {
-        
+
                                                     /*
-        
-                                                    * Final Outcome dictionary : 
+
+                                                    * Final Outcome dictionary :
                                                      * 1 => Declined Care
                                                      * 2 => Returned to care
                                                      * 3 => Self Transfer
                                                      * 4 => Dead
-                                                     * 5 => Other 
-                                                     * 
+                                                     * 5 => Other
+                                                     *
                                                      *        */
-        
-        
-        
-        
+
+
+
+
                                                      if ($final_outcome == 1) {
                                                         /*
-        
+
                                                          * Declined Care
                                                          * leave appointment as open and follow up later with the  client.
                                                          * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                          *                                                              */
-        
-        
-        
-        
+
+
+
+
                                                         $appointment_update = array(
                                                             'active_app' => '0',
                                                             'fnl_trcing_outocme' => '3',
@@ -21465,14 +21634,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     }
                                                     if ($final_outcome == 2) {
                                                         /*
-        
-                                                         * Return to care  
+
+                                                         * Return to care
                                                          * leave appointment as open and follow up later with the  client.
                                                          *                                                             */
-        
+
                                                         /*
                                                          * Returned to care , close the past active appointment
-                                                         *   and book a new future appointment for the  client 
+                                                         *   and book a new future appointment for the  client
                                                          */
                                                         $appointment_update = array(
                                                             'active_app' => '0',
@@ -21488,9 +21657,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             //echo 'future Appointment already esists ....';
                                                         } else {
                                                             //future appointment does not exist ...
-        
+
                                                             //echo 'future appointment does not exist ...';
-        
+
                                                             $appointment_insert = array(
                                                                 'app_status' => 'Booked',
                                                                 'appntmnt_date' => $app_date,
@@ -21504,16 +21673,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 'visit_type' => 'Scheduled',
                                                                 'active_app' => '1'
                                                             );
-        
+
                                                             $this->db->insert('appointment', $appointment_insert);
                                                             $last_appointment_id = $this->db->insert_id();
-        
+
                                                             /*
-                                                             * If appointment type selected is other , 
+                                                             * If appointment type selected is other ,
                                                              * the  insert te value of appointment type selected. */
-        
-        
-        
+
+
+
                                                             if ($new_appointment_type == 6) {
                                                                 $this->db->trans_start();
                                                                 $appointment_other_insert = array(
@@ -21525,12 +21694,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-                                                                    
+
                                                                 }
                                                             } else {
-                                                                
+
                                                             }
                                                         }
                                                     }
@@ -21539,9 +21708,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                          * Self Transfer
                                                          * leave appointment as cvlosed and self transfer the  client.
                                                          */
-        
-        
-        
+
+
+
                                                         $appointment_update = array(
                                                             'active_app' => '0',
                                                             'fnl_trcing_outocme' => '6',
@@ -21550,24 +21719,24 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         );
                                                         $this->db->where('id', $appointment_id);
                                                         $this->db->update('appointment', $appointment_update);
-        
+
                                                         $client_update = array(
                                                             'status' => 'Self Transfer'
                                                         );
                                                         $this->db->where('id', $client_id);
                                                         $this->db->update('client', $client_update);
                                                     }
-        
+
                                                     if ($final_outcome == 4) {
                                                         /*
-        
+
                                                          * Dead / Deceased
                                                          * leave appointment as open and follow up later with the  client.
                                                          *                                                                 */
-        
-        
-        
-        
+
+
+
+
                                                         $appointment_update = array(
                                                             'active_app' => '0',
                                                             'fnl_trcing_outocme' => '7',
@@ -21576,14 +21745,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         );
                                                         $this->db->where('id', $appointment_id);
                                                         $this->db->update('appointment', $appointment_update);
-        
+
                                                         $client_update = array(
                                                             'status' => 'Deceased'
                                                         );
                                                         $this->db->where('id', $client_id);
                                                         $this->db->update('client', $client_update);
                                                     }
-        
+
                                                     if ($final_outcome == 5) {
                                                         //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                         $data_insert = array(
@@ -21595,14 +21764,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                              );
                                                              $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                     }
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
                                                     /* Update Appointment with the Final Outcome */
-        
+
                                                     $this->db->trans_start();
                                                     $update_appointment = array(
                                                         'fnl_trcing_outocme' => $final_outcome,
@@ -21613,18 +21782,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     $this->db->update('appointment', $update_appointment);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-        
-        
+
+
                                                         $created_at = date('Y-m-d H:i:s');
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
                                                         // Retrieve a config item named site_name contained within the blog_settings array
                                                         $source = $this->config->item('shortcode', 'config');
-        
+
                                                         $destination = '0' . $mobile;
-        
+
                                                         $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                         $data_outgoing = array(
                                                             'destination' => $destination,
@@ -21637,23 +21806,23 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             'created_at' => $created_at
                                                         );
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                                                         $usr_outgoing = null;
-        
-                                                        $sql0 = "SELECT 
-                                                        * 
+
+                                                        $sql0 = "SELECT
+                                                        *
                                                       FROM
-                                                        tbl_incoming 
+                                                        tbl_incoming
                                                       WHERE 1 AND id ='$response_id' ";
                                                                   $query1 = $this->db->query($sql0)->result();
-        
+
                                                         foreach($query1 as $s0){
                                                             $process_id = $s0->id;
-                                                        
+
                                                             $sql = "UPDATE tbl_incoming
                                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                                         $this->db->query($sql);
-                                                    
+
                                                         }
                                                         return $message;
                                                     }
@@ -21667,9 +21836,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     $this->config->load('config', TRUE);
                                     // Retrieve a config item named site_name contained within the blog_settings array
                                     $source = $this->config->item('shortcode', 'config');
-        
+
                                     $destination = '0' . $mobile;
-        
+
                                     $message = "The specified appointment for Clinic number: $clinic_number  is not active in the System  ";
                                     $data_outgoing = array(
                                         'destination' => $destination,
@@ -21682,38 +21851,38 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         'created_at' => $created_at
                                     );
                                     $this->db->insert('usr_outgoing', $data_outgoing);
-        
-                                    
-                                    $sql0 = "SELECT 
-                                                    * 
+
+
+                                    $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
-        
+
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                         $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
-                                                
+
                                                     }
                                                     return $message;
                                 }
                             }
                         } else {
-        
-        
-        
+
+
+
                             $created_at = date('Y-m-d H:i:s');
                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                             $this->config->load('config', TRUE);
                             // Retrieve a config item named site_name contained within the blog_settings array
                             $source = $this->config->item('shortcode', 'config');
-        
+
                             $destination = '0' . $mobile;
-        
+
                             $message = "Clinic number: $clinic_number does not exist in the System  ";
                             $data_outgoing = array(
                                 'destination' => $destination,
@@ -21726,21 +21895,21 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 'created_at' => $created_at
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
-        
-                            $sql0 = "SELECT 
-                                                    * 
+
+                            $sql0 = "SELECT
+                                                    *
                                                   FROM
-                                                    tbl_incoming 
+                                                    tbl_incoming
                                                   WHERE 1 AND id ='$response_id' ";
                                                               $query1 = $this->db->query($sql0)->result();
-        
+
                                                     foreach($query1 as $s0){
                                                         $process_id = $s0->id;
-                                                    
+
                                                         $sql = "UPDATE tbl_incoming
                                                     SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
-                                                
+
                                                     }
                                                     return $message;
                         }
@@ -21753,7 +21922,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $this->config->load('config', TRUE);
                 // Retrieve a config item named site_name contained within the blog_settings array
                 $source = $this->config->item('shortcode', 'config');
-        
+
                 $destination = '0' . $mobile;
                 $this->db->trans_start();
                 $message = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you";
@@ -21768,10 +21937,10 @@ GROUP BY tbl_client.clinic_number   ")->result();
                     'created_at' => $created_at
                 );
                 $this->db->insert('usr_outgoing', $data_outgoing);
-        
+
                 $usr_otgoing_id = "User";
-                
-        
+
+
                 $response_update = array(
                     'processed' => 'Yes'
                 );
@@ -21785,97 +21954,97 @@ GROUP BY tbl_client.clinic_number   ")->result();
         function process_LTFU_actions($response_id) {
 
             /*
-            
+
              * Process all missed appointments Actions for Personal Call
              * Treatment Supporter Called
-             * Physical Tracing 
+             * Physical Tracing
              *          */
-            
-            
-            
+
+
+
             $today = date("Y-m-d H:i:s");
             $created_at = date("Y-m-d H:i:s");
-            
+
             if (is_numeric($response_id)) {
                 //value found is numeric
-                //Get all the unprocessed missed actions from the  user phone. 
-                $sql = "SELECT 
-                    * 
+                //Get all the unprocessed missed actions from the  user phone.
+                $sql = "SELECT
+                    *
                     FROM
-                    tbl_incoming 
+                    tbl_incoming
                     WHERE 1 AND id ='$response_id' ";
                 $query1 = $this->db->query($sql)->result();
-            
+
                 foreach ($query1 as $value) {
-            
-            
+
+
                     $process_id = $value->id;
                     $user_source = $value->source;
                     $user_source = $value->source;
                     $user_destination = $value->destination;
                     $encrypted_msg = $value->msg;
-            
-            
+
+
                     $count_special = substr_count($encrypted_msg, "*");
                     if ($count_special < 2) {
                         //New Encrypted Message
                         echo " New Encrypted Message => " . $count_special;
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
                         //Explode the  incoming message into two chunks usning the  * identifier
                         $explode_msg = explode("*", $encrypted_msg);
                         $identifier = @$explode_msg[0];
                         $resp_message = @$explode_msg[1];
-                        //Decrypt the  incoming message and pre-append it back to the  orignial message template. 
-            
-            
+                        //Decrypt the  incoming message and pre-append it back to the  orignial message template.
+
+
                         $descrypted_msg = $this->decrypt($resp_message);
-            
+
                         $new_msg = $identifier . "*" . $descrypted_msg;
                         echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
                         echo 'Msg => ' . $new_msg . 'AND Identifier => ' . $identifier . '</br>';
-            
-            
+
+
                         $msg = $new_msg;
-            
-            
+
+
                         echo 'New Message => ' . $new_msg . '<br>';
-            
-            
-            
+
+
+
                         $mobile = substr($user_source, -9);
                         $len = strlen($mobile);
-            
-            
+
+
                         $sql = "UPDATE tbl_incoming
                                         SET processed = 'Yes' WHERE id = '$process_id'";
                         $this->db->query($sql);
-            
-            
-            
-            
-            
+
+
+
+
+
                         if ($len = 9) {
-            
+
                             $user_source = "0" . $mobile;
                         }
                         // // // echo  'New From : ' . $user_source . '</br>';
-                        //Check if User is authoriesed to perform transactions in the  system. 
+                        //Check if User is authoriesed to perform transactions in the  system.
                         $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' GROUP BY phone_no ");
                         $user_exists = $get_facility->num_rows();
-            
+
                         if ($user_exists >= 1) {
-            
-                            //If user exists, proceed with processing the decrypted message. 
+
+                            //If user exists, proceed with processing the decrypted message.
                             $user_details = $get_facility->result();
-            
+
                             foreach ($user_details as $value) {
                                 $user_id = $value->id;
-            
+
                                 /*
                                   Explode the message using the * keyword , get the  first strip of the  message
                                   Using the  first strip , to check the type of message if it's a call action or  a home visit action.
@@ -21883,10 +22052,10 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $split_message = explode('*', $msg);
                                 $code = $split_message[0];
                                 if (strpos($code, 'C') !== false) {
-            
+
                                     /**
-                                     * Break down the message to the  values 
-                                     * The message should contain the  following values : 
+                                     * Break down the message to the  values
+                                     * The message should contain the  following values :
                                      * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                                      */
                                     $clinic_number = @$split_message[1];
@@ -21902,18 +22071,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     $appointment_id = @$split_message[11];
                                     $return_date = @$split_message[12];
                                     $tracing_cost = @$split_message[13];
-            
+
                                     $app_date = str_replace('/', '-', $app_date);
                                     $app_date = date("Y-m-d", strtotime($app_date));
-            
+
                                     $call_date = str_replace('/', '-', $call_date);
                                     $call_date = date("Y-m-d", strtotime($call_date));
-            
+
                                     /*
-            
-                                     * since final outcome dead doesnot apply to the  outcome client contacted, 
-                                     * the  outcome sent by the  mobile application should send the value without dead (7) 
-                                     * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+
+                                     * since final outcome dead doesnot apply to the  outcome client contacted,
+                                     * the  outcome sent by the  mobile application should send the value without dead (7)
+                                     * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                                      *                                  */
                                      if ($outcome == '4') {
                                         $final_outcome1 = '';
@@ -21923,9 +22092,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             $final_outcome = $final_outcome + 1;
                                         }
                                     } else {
-                                        
+
                                     }
-            
+
                                     if ($final_outcome == '1') {
                                         $final_outcome1 = '3';
                                     }
@@ -21941,46 +22110,46 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     if ($final_outcome == '5') {
                                         $final_outcome1 = '10';
                                     }
-            
-            
-            
-            
+
+
+
+
                                     /*                                 * *
                                      * Check if the  client exists in the  system , if not found , then end the  transaction and send back mesage of Client not Found in the  system
                                      */
                                     $query2 = $this->db->query("Select * from tbl_client where clinic_number = '$clinic_number' LIMIT 1");
                                     $check_num_rows = $query2->num_rows();
-            
+
                                     if ($check_num_rows > 0) {
-            
+
                                         foreach ($query2->result() as $value) {
                                             $client_id = $value->id;
                                             $language_id = $value->language_id;
                                             $client_name = $value->f_name . ' ' . $value->m_name . ' ' . $value->l_name;
-            
+
                                             /**
                                              * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                              * The  appointment type should be the  same as what is recorded in the  DBase
-                                             * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                             * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                              */
                                             $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
-            
-            
-            
+
+
+
                                             $get_current_appointment_query = $this->db->query($get_current_appointment_sql);
                                             $check_num_rows = $get_current_appointment_query->num_rows();
-            
+
                                             if ($check_num_rows > 0) {
                                                 foreach ($get_current_appointment_query->result() as $value) {
                                                     $client_id = $value->client_id;
                                                     $appointment_id = $value->id;
-                                                    //Get the  curent actual outcome   
+                                                    //Get the  curent actual outcome
                                                     $app_status = $value->app_status;
                                                     $no_calls = $value->no_calls;
                                                     $no_msgs = $value->no_msgs;
                                                     $home_visits = $value->home_visits;
                                                     $this->db->trans_start();
-            
+
                                                     $insert_outcome = array(
                                                         'client_id' => $client_id,
                                                         'appointment_id' => $appointment_id,
@@ -21996,56 +22165,56 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     );
                                                     $this->db->insert('clnt_outcome', $insert_outcome);
                                                     $client_outcome_id = $this->db->insert_id();
-            
-            
+
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-            
-            
+
+
                                                         /**
                                                          * Update Appointment row with the  tracing type of client called .
                                                          * Based on the number of updated made .....
-                                                         * 
+                                                         *
                                                          */
                                                         $this->db->trans_start();
-            
+
                                                         if ($no_calls < 1) {
                                                             $no_calls = 1;
                                                         } else {
                                                             $no_calls = $no_calls + 1;
                                                         }
-            
+
                                                         $update_appointment = array(
                                                             'no_calls' => $no_calls
                                                         );
                                                         $this->db->where('id', $appointment_id);
                                                         $this->db->update('appointment', $update_appointment);
-            
-            
-            
-            
-            
+
+
+
+
+
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-            
-            
-            
-            
+
+
+
+
                                                             if ($final_outcome == "NULL" or empty($final_outcome)) {
-            
-            
+
+
                                                                 $created_at = date('Y-m-d H:i:s');
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                 $this->config->load('config', TRUE);
                                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                                 $source = $this->config->item('shortcode', 'config');
-            
+
                                                                 $destination = '0' . $mobile;
-            
+
                                                                 $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                                 $data_outgoing = array(
                                                                     'destination' => $destination,
@@ -22058,12 +22227,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     'created_at' => $created_at
                                                                 );
                                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                                                 $send_text = $this->data->send_message($source, $destination, $message);
-            
+
                                                                 if ($send_text) {
-            
-            
+
+
                                                                     $sql = "UPDATE tbl_incoming
                                                          SET processed = 'Yes' WHERE id = '$process_id'";
                                                                     $this->db->query($sql);
@@ -22071,31 +22240,31 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     echo 'FALSE';
                                                                 }
                                                             } else {
-            
+
                                                                 /*
-            
-                                                                 * Final Outcome dictionary : 
+
+                                                                 * Final Outcome dictionary :
                                                                  * 1 => Declined Care
                                                                  * 2 => Returned to care
                                                                  * 3 => Self Transfer
                                                                  * 4 => Dead
                                                                  * 5 => Other
-                                                                 * 
+                                                                 *
                                                                  *        */
-            
-            
-            
+
+
+
                                                                 if ($final_outcome == 1) {
                                                                     /*
-            
+
                                                                      * Declined Care
                                                                      * leave appointment as open and follow up later with the  client.
                                                                      * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                                      *                                                              */
-            
-            
-            
-            
+
+
+
+
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
                                                                         'fnl_trcing_outocme' => '3',
@@ -22107,14 +22276,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 }
                                                                 if ($final_outcome == 2) {
                                                                     /*
-            
-                                                                     * Return to care  
+
+                                                                     * Return to care
                                                                      * leave appointment as open and follow up later with the  client.
                                                                      *                                                             */
-            
+
                                                                     /*
                                                                      * Returned to care , close the past active appointment
-                                                                     *   and book a new future appointment for the  client 
+                                                                     *   and book a new future appointment for the  client
                                                                      */
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
@@ -22130,9 +22299,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         echo 'future Appointment already esists ....';
                                                                     } else {
                                                                         //future appointment does not exist ...
-            
+
                                                                         echo 'future appointment does not exist ...';
-            
+
                                                                         $appointment_insert = array(
                                                                             'app_status' => 'Booked',
                                                                             'appntmnt_date' => $app_date,
@@ -22146,16 +22315,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                             'visit_type' => 'Scheduled',
                                                                             'active_app' => '1'
                                                                         );
-            
+
                                                                         $this->db->insert('appointment', $appointment_insert);
                                                                         $last_appointment_id = $this->db->insert_id();
-            
+
                                                                         /*
-                                                                         * If appointment type selected is other , 
+                                                                         * If appointment type selected is other ,
                                                                          * the  insert te value of appointment type selected. */
-            
-            
-            
+
+
+
                                                                         if ($new_appointment_type == 6) {
                                                                             $this->db->trans_start();
                                                                             $appointment_other_insert = array(
@@ -22167,12 +22336,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                             $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                             $this->db->trans_complete();
                                                                             if ($this->db->trans_status() === FALSE) {
-                                                                                
+
                                                                             } else {
-                                                                                
+
                                                                             }
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     }
                                                                 }
@@ -22181,9 +22350,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                      * Self Transfer
                                                                      * leave appointment as cvlosed and self transfer the  client.
                                                                      */
-            
-            
-            
+
+
+
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
                                                                         'fnl_trcing_outocme' => '6',
@@ -22192,24 +22361,24 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     );
                                                                     $this->db->where('id', $appointment_id);
                                                                     $this->db->update('appointment', $appointment_update);
-            
+
                                                                     $client_update = array(
                                                                         'status' => 'Self Transfer'
                                                                     );
                                                                     $this->db->where('id', $client_id);
                                                                     $this->db->update('client', $client_update);
                                                                 }
-            
+
                                                                 if ($final_outcome == 4) {
                                                                     /*
-            
+
                                                                      * Dead / Deceased
                                                                      * leave appointment as open and follow up later with the  client.
                                                                      *                                                                 */
-            
-            
-            
-            
+
+
+
+
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
                                                                         'fnl_trcing_outocme' => '7',
@@ -22218,14 +22387,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     );
                                                                     $this->db->where('id', $appointment_id);
                                                                     $this->db->update('appointment', $appointment_update);
-            
+
                                                                     $client_update = array(
                                                                         'status' => 'Deceased'
                                                                     );
                                                                     $this->db->where('id', $client_id);
                                                                     $this->db->update('client', $client_update);
                                                                 }
-            
+
                                                                 if ($final_outcome == 5) {
                                                                     //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                                     $data_insert = array(
@@ -22237,17 +22406,17 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                          );
                                                                          $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                                 }
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
+
                                                                 /* Update Appointment with the Final Outcome */
-            
+
                                                                 $this->db->trans_start();
                                                                 $update_appointment = array(
                                                                     'fnl_trcing_outocme' => $final_outcome,
@@ -22258,18 +22427,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 $this->db->update('appointment', $update_appointment);
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-            
-            
+
+
                                                                     $created_at = date('Y-m-d H:i:s');
                                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                     $this->config->load('config', TRUE);
                                                                     // Retrieve a config item named site_name contained within the blog_settings array
                                                                     $source = $this->config->item('shortcode', 'config');
-            
+
                                                                     $destination = '0' . $mobile;
-            
+
                                                                     $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                                     $data_outgoing = array(
                                                                         'destination' => $destination,
@@ -22282,14 +22451,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         'created_at' => $created_at
                                                                     );
                                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                                                     $usr_outgoing = null;
-            
+
                                                                     $send_text = $this->data->send_message($source, $destination, $message, $usr_outgoing);
-            
+
                                                                     if ($send_text) {
                                                                         echo 'SUCCESS';
-            
+
                                                                         $sql = "UPDATE tbl_incoming
                                                             SET processed = 'Yes' WHERE id = '$process_id'";
                                                                         $this->db->query($sql);
@@ -22307,9 +22476,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                 $this->config->load('config', TRUE);
                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                 $source = $this->config->item('shortcode', 'config');
-            
+
                                                 $destination = '0' . $mobile;
-            
+
                                                 $message = "The specified appointment for Clinic number: $clinic_number  is not active in the System  ";
                                                 $data_outgoing = array(
                                                     'destination' => $destination,
@@ -22322,32 +22491,32 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     'created_at' => $created_at
                                                 );
                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                                 $send_text = $this->data->send_message($source, $destination, $message);
-            
+
                                                 if ($send_text) {
-            
-            
+
+
                                                     $sql = "UPDATE tbl_incoming
                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
                                     } else {
-            
-            
-            
+
+
+
                                         $created_at = date('Y-m-d H:i:s');
                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                         $this->config->load('config', TRUE);
                                         // Retrieve a config item named site_name contained within the blog_settings array
                                         $source = $this->config->item('shortcode', 'config');
-            
+
                                         $destination = '0' . $mobile;
-            
+
                                         $message = "Clinic number: $clinic_number does not exist in the System  ";
                                         $data_outgoing = array(
                                             'destination' => $destination,
@@ -22360,26 +22529,26 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             'created_at' => $created_at
                                         );
                                         $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                         $send_text = $this->data->send_message($source, $destination, $message);
-            
+
                                         if ($send_text) {
-            
-            
-            
+
+
+
                                             $sql = "UPDATE tbl_incoming
                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                             $this->db->query($sql);
                                         } else {
-                                            
+
                                         }
                                     }
                                 } else if (strpos($code, 'V') !== false) {
-            
-            
+
+
                                     /**
-                                     * Break down the message to the  values 
-                                     * The message should contain the  following values : 
+                                     * Break down the message to the  values
+                                     * The message should contain the  following values :
                                      * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                                      */
                                     $clinic_number = @$split_message[1];
@@ -22395,18 +22564,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     $appointment_id = @$split_message[11];
                                     $return_date = @$split_message[12];
                                     $tracing_cost = @$split_message[13];
-            
+
                                     $app_date = str_replace('/', '-', $app_date);
                                     $app_date = date("Y-m-d", strtotime($app_date));
-            
+
                                     $call_date = str_replace('/', '-', $call_date);
                                     $call_date = date("Y-m-d", strtotime($call_date));
-            
+
                                     /*
-            
-                                     * since final outcome dead doesnot apply to the  outcome client contacted, 
-                                     * the  outcome sent by the  mobile application should send the value without dead (7) 
-                                     * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+
+                                     * since final outcome dead doesnot apply to the  outcome client contacted,
+                                     * the  outcome sent by the  mobile application should send the value without dead (7)
+                                     * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                                      *                                  */
                                      if ($outcome == '4') {
                                         $final_outcome1 = '';
@@ -22416,9 +22585,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             $final_outcome = $final_outcome + 1;
                                         }
                                     } else {
-                                        
+
                                     }
-            
+
                                     if ($final_outcome == '1') {
                                         $final_outcome1 = '3';
                                     }
@@ -22434,46 +22603,46 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     if ($final_outcome == '5') {
                                         $final_outcome1 = '10';
                                     }
-            
-            
-            
-            
+
+
+
+
                                     /*                                 * *
                                      * Check if the  client exists in the  system , if not found , then end the  transaction and send back mesage of Client not Found in the  system
                                      */
                                     $query2 = $this->db->query("Select * from tbl_client where clinic_number = '$clinic_number' LIMIT 1");
                                     $check_num_rows = $query2->num_rows();
-            
+
                                     if ($check_num_rows > 0) {
-            
+
                                         foreach ($query2->result() as $value) {
                                             $client_id = $value->id;
                                             $language_id = $value->language_id;
                                             $client_name = $value->f_name . ' ' . $value->m_name . ' ' . $value->l_name;
-            
+
                                             /**
                                              * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                              * The  appointment type should be the  same as what is recorded in the  DBase
-                                             * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                             * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                              */
                                             $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
-            
-            
-            
+
+
+
                                             $get_current_appointment_query = $this->db->query($get_current_appointment_sql);
                                             $check_num_rows = $get_current_appointment_query->num_rows();
-            
+
                                             if ($check_num_rows > 0) {
                                                 foreach ($get_current_appointment_query->result() as $value) {
                                                     $client_id = $value->client_id;
                                                     $appointment_id = $value->id;
-                                                    //Get the  curent actual outcome   
+                                                    //Get the  curent actual outcome
                                                     $app_status = $value->app_status;
                                                     $no_calls = $value->no_calls;
                                                     $no_msgs = $value->no_msgs;
                                                     $home_visits = $value->home_visits;
                                                     $this->db->trans_start();
-            
+
                                                     $insert_outcome = array(
                                                         'client_id' => $client_id,
                                                         'appointment_id' => $appointment_id,
@@ -22489,56 +22658,56 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     );
                                                     $this->db->insert('clnt_outcome', $insert_outcome);
                                                     $client_outcome_id = $this->db->insert_id();
-            
-            
+
+
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-            
-            
+
+
                                                         /**
                                                          * Update Appointment row with the  tracing type of client called .
                                                          * Based on the number of updated made .....
-                                                         * 
+                                                         *
                                                          */
                                                         $this->db->trans_start();
-            
+
                                                         if ($no_calls < 1) {
                                                             $no_calls = 1;
                                                         } else {
                                                             $no_calls = $no_calls + 1;
                                                         }
-            
+
                                                         $update_appointment = array(
                                                             'no_calls' => $no_calls
                                                         );
                                                         $this->db->where('id', $appointment_id);
                                                         $this->db->update('appointment', $update_appointment);
-            
-            
-            
-            
-            
+
+
+
+
+
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-            
-            
-            
-            
+
+
+
+
                                                             if ($final_outcome == "NULL" or empty($final_outcome)) {
-            
-            
+
+
                                                                 $created_at = date('Y-m-d H:i:s');
                                                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                 $this->config->load('config', TRUE);
                                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                                 $source = $this->config->item('shortcode', 'config');
-            
+
                                                                 $destination = '0' . $mobile;
-            
+
                                                                 $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                                 $data_outgoing = array(
                                                                     'destination' => $destination,
@@ -22551,12 +22720,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     'created_at' => $created_at
                                                                 );
                                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                                                 $send_text = $this->data->send_message($source, $destination, $message);
-            
+
                                                                 if ($send_text) {
-            
-            
+
+
                                                                     $sql = "UPDATE tbl_incoming
                                                          SET processed = 'Yes' WHERE id = '$process_id'";
                                                                     $this->db->query($sql);
@@ -22564,31 +22733,31 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     echo 'FALSE';
                                                                 }
                                                             } else {
-            
+
                                                                 /*
-            
-                                                                 * Final Outcome dictionary : 
+
+                                                                 * Final Outcome dictionary :
                                                                  * 1 => Declined Care
                                                                  * 2 => Returned to care
                                                                  * 3 => Self Transfer
                                                                  * 4 => Dead
                                                                  * 5 => Other
-                                                                 * 
+                                                                 *
                                                                  *        */
-            
-            
-            
+
+
+
                                                                 if ($final_outcome == 1) {
                                                                     /*
-            
+
                                                                      * Declined Care
                                                                      * leave appointment as open and follow up later with the  client.
                                                                      * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                                      *                                                              */
-            
-            
-            
-            
+
+
+
+
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
                                                                         'fnl_trcing_outocme' => '3',
@@ -22600,14 +22769,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 }
                                                                 if ($final_outcome == 2) {
                                                                     /*
-            
-                                                                     * Return to care  
+
+                                                                     * Return to care
                                                                      * leave appointment as open and follow up later with the  client.
                                                                      *                                                             */
-            
+
                                                                     /*
                                                                      * Returned to care , close the past active appointment
-                                                                     *   and book a new future appointment for the  client 
+                                                                     *   and book a new future appointment for the  client
                                                                      */
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
@@ -22623,9 +22792,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         echo 'future Appointment already esists ....';
                                                                     } else {
                                                                         //future appointment does not exist ...
-            
+
                                                                         echo 'future appointment does not exist ...';
-            
+
                                                                         $appointment_insert = array(
                                                                             'app_status' => 'Booked',
                                                                             'appntmnt_date' => $app_date,
@@ -22639,16 +22808,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                             'visit_type' => 'Scheduled',
                                                                             'active_app' => '1'
                                                                         );
-            
+
                                                                         $this->db->insert('appointment', $appointment_insert);
                                                                         $last_appointment_id = $this->db->insert_id();
-            
+
                                                                         /*
-                                                                         * If appointment type selected is other , 
+                                                                         * If appointment type selected is other ,
                                                                          * the  insert te value of appointment type selected. */
-            
-            
-            
+
+
+
                                                                         if ($new_appointment_type == 6) {
                                                                             $this->db->trans_start();
                                                                             $appointment_other_insert = array(
@@ -22660,12 +22829,12 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                             $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                             $this->db->trans_complete();
                                                                             if ($this->db->trans_status() === FALSE) {
-                                                                                
+
                                                                             } else {
-                                                                                
+
                                                                             }
                                                                         } else {
-                                                                            
+
                                                                         }
                                                                     }
                                                                 }
@@ -22674,9 +22843,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                      * Self Transfer
                                                                      * leave appointment as cvlosed and self transfer the  client.
                                                                      */
-            
-            
-            
+
+
+
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
                                                                         'fnl_trcing_outocme' => '6',
@@ -22685,24 +22854,24 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     );
                                                                     $this->db->where('id', $appointment_id);
                                                                     $this->db->update('appointment', $appointment_update);
-            
+
                                                                     $client_update = array(
                                                                         'status' => 'Self Transfer'
                                                                     );
                                                                     $this->db->where('id', $client_id);
                                                                     $this->db->update('client', $client_update);
                                                                 }
-            
+
                                                                 if ($final_outcome == 4) {
                                                                     /*
-            
+
                                                                      * Dead / Deceased
                                                                      * leave appointment as open and follow up later with the  client.
                                                                      *                                                                 */
-            
-            
-            
-            
+
+
+
+
                                                                     $appointment_update = array(
                                                                         'active_app' => '0',
                                                                         'fnl_trcing_outocme' => '7',
@@ -22711,14 +22880,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     );
                                                                     $this->db->where('id', $appointment_id);
                                                                     $this->db->update('appointment', $appointment_update);
-            
+
                                                                     $client_update = array(
                                                                         'status' => 'Deceased'
                                                                     );
                                                                     $this->db->where('id', $client_id);
                                                                     $this->db->update('client', $client_update);
                                                                 }
-            
+
                                                                 if ($final_outcome == 5) {
                                                                     //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                                     $data_insert = array(
@@ -22730,17 +22899,17 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                          );
                                                                          $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                                 }
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
+
                                                                 /* Update Appointment with the Final Outcome */
-            
+
                                                                 $this->db->trans_start();
                                                                 $update_appointment = array(
                                                                     'fnl_trcing_outocme' => $final_outcome,
@@ -22751,18 +22920,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 $this->db->update('appointment', $update_appointment);
                                                                 $this->db->trans_complete();
                                                                 if ($this->db->trans_status() === FALSE) {
-                                                                    
+
                                                                 } else {
-            
-            
+
+
                                                                     $created_at = date('Y-m-d H:i:s');
                                                                     // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                                     $this->config->load('config', TRUE);
                                                                     // Retrieve a config item named site_name contained within the blog_settings array
                                                                     $source = $this->config->item('shortcode', 'config');
-            
+
                                                                     $destination = '0' . $mobile;
-            
+
                                                                     $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                                     $data_outgoing = array(
                                                                         'destination' => $destination,
@@ -22775,14 +22944,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                         'created_at' => $created_at
                                                                     );
                                                                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                                                     $usr_outgoing = null;
-            
+
                                                                     $send_text = $this->data->send_message($source, $destination, $message, $usr_outgoing);
-            
+
                                                                     if ($send_text) {
                                                                         echo 'SUCCESS';
-            
+
                                                                         $sql = "UPDATE tbl_incoming
                                                             SET processed = 'Yes' WHERE id = '$process_id'";
                                                                         $this->db->query($sql);
@@ -22800,9 +22969,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                 $this->config->load('config', TRUE);
                                                 // Retrieve a config item named site_name contained within the blog_settings array
                                                 $source = $this->config->item('shortcode', 'config');
-            
+
                                                 $destination = '0' . $mobile;
-            
+
                                                 $message = "The specified appointment for Clinic number: $clinic_number  is not active in the System  ";
                                                 $data_outgoing = array(
                                                     'destination' => $destination,
@@ -22815,32 +22984,32 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                     'created_at' => $created_at
                                                 );
                                                 $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                                 $send_text = $this->data->send_message($source, $destination, $message);
-            
+
                                                 if ($send_text) {
-            
-            
+
+
                                                     $sql = "UPDATE tbl_incoming
                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                                     $this->db->query($sql);
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
                                     } else {
-            
-            
-            
+
+
+
                                         $created_at = date('Y-m-d H:i:s');
                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                         $this->config->load('config', TRUE);
                                         // Retrieve a config item named site_name contained within the blog_settings array
                                         $source = $this->config->item('shortcode', 'config');
-            
+
                                         $destination = '0' . $mobile;
-            
+
                                         $message = "Clinic number: $clinic_number does not exist in the System  ";
                                         $data_outgoing = array(
                                             'destination' => $destination,
@@ -22853,18 +23022,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             'created_at' => $created_at
                                         );
                                         $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                                         $send_text = $this->data->send_message($source, $destination, $message);
-            
+
                                         if ($send_text) {
-            
-            
-            
+
+
+
                                             $sql = "UPDATE tbl_incoming
                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                             $this->db->query($sql);
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
@@ -22876,7 +23045,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             $this->config->load('config', TRUE);
                             // Retrieve a config item named site_name contained within the blog_settings array
                             $source = $this->config->item('shortcode', 'config');
-            
+
                             $destination = '0' . $mobile;
                             $this->db->trans_start();
                             $message = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you";
@@ -22891,16 +23060,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 'created_at' => $created_at
                             );
                             $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                             $usr_otgoing_id = "User";
                             $send_text = $this->data->send_message($source, $destination, $msg, $usr_otgoing_id);
-            
+
                             if ($send_text) {
                                 echo 'SUCCESS';
                             } else {
                                 echo 'FALSE';
                             }
-            
+
                             $response_update = array(
                                 'processed' => 'Yes'
                             );
@@ -22910,78 +23079,78 @@ GROUP BY tbl_client.clinic_number   ")->result();
                     } else {
                         //Old Non Encrypted Message
                         echo " Old Non Encrypted Message => " . $count_special;
-            
-            
-            
+
+
+
                         $this->db->trans_start();
-            
+
                         $this->db->delete('responses', array('id' => $process_id));
-            
+
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
             } else if (!is_numeric($response_id)) {
                 //value found is letter , process as internet message ...
                 $our_msg = explode("#", $response_id);
-            
+
                 $encrypted_msg = $our_msg[0];
                 $user_source = $our_msg[1];
-            
+
                 $destination = $user_source;
-            
+
                 //Explode the  incoming message into two chunks usning the  * identifier
                 $explode_msg = explode("*", $encrypted_msg);
                 $identifier = @$explode_msg[0];
                 $resp_message = @$explode_msg[1];
-                //Decrypt the  incoming message and pre-append it back to the  orignial message template. 
-            
-            
+                //Decrypt the  incoming message and pre-append it back to the  orignial message template.
+
+
                 $descrypted_msg = $this->decrypt($resp_message);
-            
+
                 $new_msg = $identifier . "*" . $descrypted_msg;
                 //echo 'Decrypted Msg => ' . $descrypted_msg . '<br>';
                 //echo 'Msg => ' . $new_msg . 'AND Identifier => ' . $identifier . '</br>';
-            
-            
+
+
                 $msg = $new_msg;
-            
-            
+
+
                 //echo 'New Message => ' . $new_msg . '<br>';
-            
-            
-            
+
+
+
                 $mobile = substr($user_source, -9);
                 $len = strlen($mobile);
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
                 if ($len = 9) {
-            
+
                     $user_source = "0" . $mobile;
                 }
                 // // // echo  'New From : ' . $user_source . '</br>';
-                //Check if User is authoriesed to perform transactions in the  system. 
+                //Check if User is authoriesed to perform transactions in the  system.
                 $get_facility = $this->db->query("Select * from tbl_users where phone_no='$user_source' and access_level='Facility' GROUP BY phone_no ");
                 $user_exists = $get_facility->num_rows();
-            
+
                 if ($user_exists >= 1) {
-            
-                    //If user exists, proceed with processing the decrypted message. 
+
+                    //If user exists, proceed with processing the decrypted message.
                     $user_details = $get_facility->result();
-            
+
                     foreach ($user_details as $value) {
                         $user_id = $value->id;
-            
+
                         /*
                           Explode the message using the * keyword , get the  first strip of the  message
                           Using the  first strip , to check the type of message if it's a call action or  a home visit action.
@@ -22989,13 +23158,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         $split_message = explode('*', $msg);
                         $code = $split_message[0];
 
-                     
 
-                  
-                            
+
+
+
                             /**
-                             * Break down the message to the  values 
-                             * The message should contain the  following values : 
+                             * Break down the message to the  values
+                             * The message should contain the  following values :
                              * Clinic Number , Old Appointment Type , New Appointment Type, Call Date , Outcome,  Appointment Date,  Tracer Name , Final Outcome
                              */
                             $clinic_number = @$split_message[1];
@@ -23014,15 +23183,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
                             $app_date = str_replace('/', '-', $app_date);
                             $app_date = date("Y-m-d", strtotime($app_date));
-            
+
                             $call_date = str_replace('/', '-', $call_date);
                             $call_date = date("Y-m-d", strtotime($call_date));
-            
+
                             /*
-            
-                             * since final outcome dead doesnot apply to the  outcome client contacted, 
-                             * the  outcome sent by the  mobile application should send the value without dead (7) 
-                             * hence our number 7 will be 8 and 8 will 9 and 9 will 10 
+
+                             * since final outcome dead doesnot apply to the  outcome client contacted,
+                             * the  outcome sent by the  mobile application should send the value without dead (7)
+                             * hence our number 7 will be 8 and 8 will 9 and 9 will 10
                              *                                  */
                              if ($outcome == '4') {
                                 $final_outcome1 = '';
@@ -23032,15 +23201,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     $final_outcome = $final_outcome + 1;
                                 }
                             } else {
-                                
+
                             }
                             if($outcome == '1' or $outcome == '2'){
                                 if($final_outcome == '4' ){
                                     $final_outcome = '5';
                                 }
-    
+
                             }
-            
+
                             if ($final_outcome == '1') {
                                 $final_outcome1 = '3';
                             }
@@ -23056,45 +23225,45 @@ GROUP BY tbl_client.clinic_number   ")->result();
                             if ($final_outcome == '5') {
                                 $final_outcome1 = '10';
                             }
-                       
-            
-                            
+
+
+
                             /*                         * *
                              * Check if the  client exists in the  system , if not found , then end the  transaction and send back mesage of Client not Found in the  system
                              */
                             $query2 = $this->db->query("Select * from tbl_client where clinic_number = '$clinic_number' LIMIT 1");
                             $check_num_rows = $query2->num_rows();
-            
+
                             if ($check_num_rows > 0) {
 
                                 foreach ($query2->result() as $value) {
                                     $client_id = $value->id;
                                     $language_id = $value->language_id;
                                     $client_name = $value->f_name . ' ' . $value->m_name . ' ' . $value->l_name;
-    
+
                                     /**
                                      * Get the  appointment from the system based on the Active Appointment (this is determined by the  active_app = 1 and appointment date should be less than today. )
                                      * The  appointment type should be the  same as what is recorded in the  DBase
-                                     * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome 
+                                     * If Appointment is found , then proceed to adding/ updating the  appointment outcome in the  tbl_clnt_outcome
                                      */
                                     $get_current_appointment_sql = "Select * from tbl_appointment where id='$appointment_id' ";
-    
-    
-    
+
+
+
                                     $get_current_appointment_query = $this->db->query($get_current_appointment_sql);
                                     $check_num_rows = $get_current_appointment_query->num_rows();
-    
+
                                     if ($check_num_rows > 0) {
                                         foreach ($get_current_appointment_query->result() as $value) {
                                             $client_id = $value->client_id;
                                             $appointment_id = $value->id;
-                                            //Get the  curent actual outcome   
+                                            //Get the  curent actual outcome
                                             $app_status = $value->app_status;
                                             $no_calls = $value->no_calls;
                                             $no_msgs = $value->no_msgs;
                                             $home_visits = $value->home_visits;
                                             $this->db->trans_start();
-    
+
                                             $insert_outcome = array(
                                                 'client_id' => $client_id,
                                                 'appointment_id' => $appointment_id,
@@ -23110,56 +23279,56 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             );
                                             $this->db->insert('clnt_outcome', $insert_outcome);
                                             $client_outcome_id = $this->db->insert_id();
-    
-    
+
+
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-    
-    
+
+
                                                 /**
                                                  * Update Appointment row with the  tracing type of client called .
                                                  * Based on the number of updated made .....
-                                                 * 
+                                                 *
                                                  */
                                                 $this->db->trans_start();
-    
+
                                                 if ($no_calls < 1) {
                                                     $no_calls = 1;
                                                 } else {
                                                     $no_calls = $no_calls + 1;
                                                 }
-    
+
                                                 $update_appointment = array(
                                                     'no_calls' => $no_calls
                                                 );
                                                 $this->db->where('id', $appointment_id);
                                                 $this->db->update('appointment', $update_appointment);
-    
-    
-    
-    
-    
+
+
+
+
+
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-    
-    
-    
-    
+
+
+
+
                                                     if ($final_outcome == "NULL" or empty($final_outcome)) {
-    
-    
+
+
                                                         $created_at = date('Y-m-d H:i:s');
                                                         // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                         $this->config->load('config', TRUE);
                                                         // Retrieve a config item named site_name contained within the blog_settings array
                                                         $source = $this->config->item('shortcode', 'config');
-    
+
                                                         $destination = '0' . $mobile;
-    
+
                                                         $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                         $data_outgoing = array(
                                                             'destination' => $destination,
@@ -23172,64 +23341,64 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             'created_at' => $created_at
                                                         );
                                                         $this->db->insert('usr_outgoing', $data_outgoing);
-                                                        $sql0 = "SELECT 
-                                                        * 
+                                                        $sql0 = "SELECT
+                                                        *
                                                       FROM
-                                                        tbl_incoming 
+                                                        tbl_incoming
                                                       WHERE 1 AND id ='$response_id' ";
                                                                   $query1 = $this->db->query($sql0)->result();
-    
+
                                                         foreach($query1 as $s0){
                                                             $process_id = $s0->id;
-                                                        
+
                                                         $sql = "UPDATE tbl_incoming
                                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                                         $this->db->query($sql);
                                                         }
                                                         return $message;
                                                     } else {
-    
-                                                        /* 
-                                                         * Final Outcome dictionary : 
+
+                                                        /*
+                                                         * Final Outcome dictionary :
                                                                  * 1 => Declined Care
                                                                  * 2 => Returned to care
                                                                  * 3 => Self Transfer
                                                                  * 4 => Dead
                                                                  * 5 => Other
-                                                         * 
+                                                         *
                                                          *        */
-    
-    
-    
-    
+
+
+
+
                                                         if ($final_outcome == 1) {
-                                                            
+
                                                             /*
-    
+
                                                              * Declined Care
                                                                 * leave appointment as open and follow up later with the  client.
                                                                 * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
                                                              *  */
                                                             echo "Final Outcome =>" . $outcome;
                                                             exit;
-    
+
                                                                 $appointment_update = array(
                                                                         'fnl_trcing_outocme' => '3',
                                                                         'fnl_outcome_dte' => $created_at
                                                                     );
                                                                     $this->db->where('id', $appointment_id);
-                                                                    $this->db->update('appointment', $appointment_update);                                                           
+                                                                    $this->db->update('appointment', $appointment_update);
                                                         }
                                                         if ($final_outcome == 2) {
                                                             /*
-    
-                                                             * Return to care  
+
+                                                             * Return to care
                                                              * leave appointment as open and follow up later with the  client.
                                                              *                                                             */
-    
+
                                                             /*
                                                              * Returned to care , close the past active appointment
-                                                             *   and book a new future appointment for the  client 
+                                                             *   and book a new future appointment for the  client
                                                              */
                                                             $appointment_update = array(
                                                                 'active_app' => '0',
@@ -23246,9 +23415,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 //echo 'future Appointment already esists ....';
                                                             } else {
                                                                 //future appointment does not exist ...
-    
+
                                                                 //echo 'future appointment does not exist ...';
-    
+
                                                                 $appointment_insert = array(
                                                                     'app_status' => 'Booked',
                                                                     'appntmnt_date' => $app_date,
@@ -23262,16 +23431,16 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     'visit_type' => 'Scheduled',
                                                                     'active_app' => '1'
                                                                 );
-    
+
                                                                 $this->db->insert('appointment', $appointment_insert);
                                                                 $last_appointment_id = $this->db->insert_id();
-    
+
                                                                 /*
-                                                                 * If appointment type selected is other , 
+                                                                 * If appointment type selected is other ,
                                                                  * the  insert te value of appointment type selected. */
-    
-    
-    
+
+
+
                                                                 if ($new_appointment_type == 6) {
                                                                     $this->db->trans_start();
                                                                     $appointment_other_insert = array(
@@ -23282,9 +23451,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                     );
                                                                     $this->db->insert('other_appointment_types', $appointment_other_insert);
                                                                     $this->db->trans_complete();
-                                                                  
+
                                                                 } else {
-                                                                    
+
                                                                 }
                                                             }
                                                         }
@@ -23293,9 +23462,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                              * Self Transfer
                                                              * leave appointment as cvlosed and self transfer the  client.
                                                              */
-    
-    
-    
+
+
+
                                                             $appointment_update = array(
                                                                 'active_app' => '0',
                                                                 'fnl_trcing_outocme' => '6',
@@ -23304,7 +23473,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             );
                                                             $this->db->where('id', $appointment_id);
                                                             $this->db->update('appointment', $appointment_update);
-    
+
                                                             $client_update = array(
                                                                 'status' => 'Self Transfer'
                                                             );
@@ -23313,14 +23482,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         }
                                                         if ($final_outcome == 4) {
                                                             /*
-    
+
                                                              * Dead / Deceased
                                                              * leave appointment as open and follow up later with the  client.
                                                              *                                                                 */
-    
-    
-    
-    
+
+
+
+
                                                             $appointment_update = array(
                                                                 'active_app' => '0',
                                                                 'fnl_trcing_outocme' => '7',
@@ -23329,15 +23498,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                             );
                                                             $this->db->where('id', $appointment_id);
                                                             $this->db->update('appointment', $appointment_update);
-    
+
                                                             $client_update = array(
                                                                 'status' => 'Deceased'
                                                             );
                                                             $this->db->where('id', $client_id);
                                                             $this->db->update('client', $client_update);
                                                         }
-    
-    
+
+
                                                         if ($final_outcome == 5) {
                                                             //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                             $data_insert = array(
@@ -23349,10 +23518,10 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                  );
                                                                  $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                         }
-    
+
                                                         // if ($final_outcome == 6) {
                                                         //     //Self Transfer , close appointment and mark clients as self transfer
-    
+
                                                         //     $appointment_update = array(
                                                         //         'active_app' => '0',
                                                         //         'fnl_trcing_outocme' => $final_outcome,
@@ -23361,7 +23530,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         //     );
                                                         //     $this->db->where('id', $appointment_id);
                                                         //     $this->db->update('appointment', $appointment_update);
-    
+
                                                         //     $client_update = array(
                                                         //         'status' => 'Self Transfer'
                                                         //     );
@@ -23370,8 +23539,8 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         // }
                                                         // if ($final_outcome == 7) {
                                                         //     //Dead , close appointment and mark clients as Dead
-    
-    
+
+
                                                         //     $appointment_update = array(
                                                         //         'active_app' => '0',
                                                         //         'fnl_trcing_outocme' => $final_outcome,
@@ -23380,7 +23549,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         //     );
                                                         //     $this->db->where('id', $appointment_id);
                                                         //     $this->db->update('appointment', $appointment_update);
-    
+
                                                         //     $client_update = array(
                                                         //         'status' => 'Deceased'
                                                         //     );
@@ -23388,13 +23557,13 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         //     $this->db->update('client', $client_update);
                                                         // }
                                                         // if ($final_outcome == 8) {
-                                                        //     //Challenging Client , leave appointment as open and mark clients as challenging 
+                                                        //     //Challenging Client , leave appointment as open and mark clients as challenging
                                                         // }
                                                         // if ($final_outcome == 9) {
                                                         //     //Too Sick to attend , leave appointment as open and follow up later with the  client.
                                                         // }
-    
-    
+
+
                                                         // if ($final_outcome == 10) {
                                                         //     //Other final outcome , leave appointment as open and follow up later with the  client.
                                                         //     $data_insert = array(
@@ -23406,14 +23575,14 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         //     );
                                                         //     $this->db->insert('tbl_other_final_outcome', $data_insert);
                                                         // }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
                                                         /* Update Appointment with the Final Outcome */
-    
+
                                                         $this->db->trans_start();
                                                         $update_appointment = array(
                                                             'fnl_trcing_outocme' => $final_outcome,
@@ -23424,18 +23593,18 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                         $this->db->update('appointment', $update_appointment);
                                                         $this->db->trans_complete();
                                                         if ($this->db->trans_status() === FALSE) {
-                                                            
+
                                                         } else {
-    
-    
+
+
                                                             $created_at = date('Y-m-d H:i:s');
                                                             // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                                             $this->config->load('config', TRUE);
                                                             // Retrieve a config item named site_name contained within the blog_settings array
                                                             $source = $this->config->item('shortcode', 'config');
-    
+
                                                             $destination = '0' . $mobile;
-    
+
                                                             $message = "Outcome for  Clinic number: $clinic_number was successfully updated in the   System  ";
                                                             $data_outgoing = array(
                                                                 'destination' => $destination,
@@ -23448,32 +23617,32 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                                                 'created_at' => $created_at
                                                             );
                                                             $this->db->insert('usr_outgoing', $data_outgoing);
-    
+
                                                             $usr_outgoing = null;
-                                                            
-    
-                                                            $sql0 = "SELECT 
-                                                                * 
+
+
+                                                            $sql0 = "SELECT
+                                                                *
                                                                 FROM
-                                                                tbl_incoming 
+                                                                tbl_incoming
                                                                 WHERE 1 AND id ='$response_id' ";
                                                                             $query1 = $this->db->query($sql0)->result();
-    
+
                                                                 foreach($query1 as $s0){
                                                                     $process_id = $s0->id;
-                                                                
+
                                                                     $sql = "UPDATE tbl_incoming
                                                                 SET processed = 'Yes' WHERE id = '$process_id'";
                                                                 $this->db->query($sql);
-    
-                                                                
-                                                    
+
+
+
                                                         }
                                                         return $message;
-    
-                                                            
+
+
                                                         }
-                                                        
+
                                                     }
                                                 }
                                             }
@@ -23484,9 +23653,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                         $this->config->load('config', TRUE);
                                         // Retrieve a config item named site_name contained within the blog_settings array
                                         $source = $this->config->item('shortcode', 'config');
-    
+
                                         $destination = '0' . $mobile;
-    
+
                                         $message = "The specified appointment for Clinic number: $clinic_number  is not active in the System  ";
                                         $data_outgoing = array(
                                             'destination' => $destination,
@@ -23499,37 +23668,37 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                             'created_at' => $created_at
                                         );
                                         $this->db->insert('usr_outgoing', $data_outgoing);
-    
-                                        $sql0 = "SELECT 
-                                        * 
+
+                                        $sql0 = "SELECT
+                                        *
                                       FROM
-                                        tbl_incoming 
+                                        tbl_incoming
                                       WHERE 1 AND id ='$response_id' ";
                                                   $query1 = $this->db->query($sql0)->result();
-    
+
                                         foreach($query1 as $s0){
                                             $process_id = $s0->id;
-                                        
+
                                             $sql = "UPDATE tbl_incoming
                                         SET processed = 'Yes' WHERE id = '$process_id'";
                                         $this->db->query($sql);
-                                    
+
                                         }
                                         return $message;
                                     }
                                 }
                             } else {
-    
-    
-    
+
+
+
                                 $created_at = date('Y-m-d H:i:s');
                                 // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
                                 $this->config->load('config', TRUE);
                                 // Retrieve a config item named site_name contained within the blog_settings array
                                 $source = $this->config->item('shortcode', 'config');
-    
+
                                 $destination = '0' . $mobile;
-    
+
                                 $message = "Clinic number: $clinic_number does not exist in the System  ";
                                 $data_outgoing = array(
                                     'destination' => $destination,
@@ -23542,26 +23711,26 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                     'created_at' => $created_at
                                 );
                                 $this->db->insert('usr_outgoing', $data_outgoing);
-    
-                                $sql0 = "SELECT 
-                                * 
+
+                                $sql0 = "SELECT
+                                *
                               FROM
-                                tbl_incoming 
+                                tbl_incoming
                               WHERE 1 AND id ='$response_id' ";
                                           $query1 = $this->db->query($sql0)->result();
-    
+
                                 foreach($query1 as $s0){
                                     $process_id = $s0->id;
-                                
+
                                     $sql = "UPDATE tbl_incoming
                                 SET processed = 'Yes' WHERE id = '$process_id'";
                                 $this->db->query($sql);
-                            
+
                                 }
                                 //May 8th changed the above to this coz this is internet based
                                 return $message;
                             }
-                        
+
                     }
                 } else {
                     //echo 'User Not Found ....';
@@ -23570,7 +23739,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                     $this->config->load('config', TRUE);
                     // Retrieve a config item named site_name contained within the blog_settings array
                     $source = $this->config->item('shortcode', 'config');
-            
+
                     $destination = '0' . $mobile;
                     $this->db->trans_start();
                     $message = "Hi , your phone number is not is the system,kindly contact your partner focal person so that it can be added, thank you";
@@ -23585,10 +23754,10 @@ GROUP BY tbl_client.clinic_number   ")->result();
                         'created_at' => $created_at
                     );
                     $this->db->insert('usr_outgoing', $data_outgoing);
-            
+
                     $usr_otgoing_id = "User";
-                    
-            
+
+
                     $response_update = array(
                         'processed' => 'Yes'
                     );
@@ -23626,9 +23795,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $this->db->update('client', $stable_array);
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             } else {
                 $this->db->trans_start();
@@ -23639,9 +23808,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $this->db->update('client', $stable_array);
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
             if ($date_difference < '182') {
@@ -23653,9 +23822,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $this->db->update('client', $stable_array);
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             } else {
                 $this->db->trans_start();
@@ -23666,9 +23835,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $this->db->update('client', $stable_array);
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
             $start_id + 1000;
@@ -23834,7 +24003,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
 
 
 
-                //Number process , Append conutry code prefix on the  phone no if its not appended e.g 0712345678 => 254712345678	
+                //Number process , Append conutry code prefix on the  phone no if its not appended e.g 0712345678 => 254712345678
                 $mobile = substr($source, -9);
                 $len = strlen($mobile);
 
@@ -23860,7 +24029,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $negative_value = @$exploded_value[1];
 
                                 if ($msg == $positive_value) {
-                                    //Postive outcome , record in the  SMS Checkin 
+                                    //Postive outcome , record in the  SMS Checkin
                                     $data_insert = array(
                                         'client_id' => $client_id,
                                         'msg' => $msg,
@@ -23872,7 +24041,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 }
 
                                 if ($msg == $negative_value) {
-                                    //Negative outcome , record in the  SMS Checkin 
+                                    //Negative outcome , record in the  SMS Checkin
                                     $data_insert = array(
                                         'client_id' => $client_id,
                                         'msg' => $msg,
@@ -23887,7 +24056,7 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 $this->db->insert('sms_checkin', $data_insert);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
 
 
@@ -23900,15 +24069,15 @@ GROUP BY tbl_client.clinic_number   ")->result();
                                 }
                             }
                         } else {
-                            
+
                         }
                     }
                 } else {
-                    
+
                 }
             }
         } else {
-            
+
         }
     }
 
@@ -23986,9 +24155,9 @@ GROUP BY tbl_client.clinic_number   ")->result();
                 $this->db->update('responses', $data_update);
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
@@ -24027,21 +24196,21 @@ GROUP BY tbl_client.clinic_number   ")->result();
             $this->db->insert('responses', $data_insert);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE) {
-                
+
             } else {
-                
+
             }
         }
     }
 
     function send_facility_tracers() {
         $get_facility_users = $this->db->query(" SELECT
-	* 
+	*
 FROM
 	tbl_users
-	INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id 
+	INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id
 WHERE
-	tbl_users.access_level = 'Facility' 
+	tbl_users.access_level = 'Facility'
 	AND tbl_users.rcv_app_list = 'Yes' and tbl_role.name LIKE '%Tracer%' ")->result();
         foreach ($get_facility_users as $value) {
             $mfl_code = $value->facility_id;
@@ -24052,7 +24221,7 @@ WHERE
 	f_name,m_name,phone_no,tbl_users.id
 FROM
 	tbl_users
-	INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id 
+	INNER JOIN tbl_role ON tbl_role.id = tbl_users.role_id
 WHERE
 	tbl_users.access_level = 'Facility' and tbl_role.name LIKE '%Tracer%' and facility_id ='$mfl_code' ")->result();
             foreach ($get_tracers_list as $tracers_value) {
@@ -24101,14 +24270,14 @@ WHERE
                     $this->db->insert('usr_outgoing', $outgoing);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
-                        
+
                     }
                 } else if (!$send_text) {
                     echo 'Msg was not sent , please try again.....';
                 } else {
-                    
+
                 }
             }
         }
@@ -24122,13 +24291,13 @@ WHERE
 
 
 
-        $query = $this->db->query(" 
+        $query = $this->db->query("
         SELECT
-        * 
+        *
     FROM
-        tbl_responses 
+        tbl_responses
     WHERE
-     id='$response_id'  
+     id='$response_id'
          ")->result();
 
         foreach ($query as $value) {
@@ -24181,7 +24350,7 @@ WHERE
 
                 $check_user_exist = $get_facility->num_rows();
                 if ($check_user_exist > 0) {
-                    /* Process the  sent message 
+                    /* Process the  sent message
                       Check if the specified number exists in the  system,
                       If it's not found, then send a failed message back to the  user
                       Else process and move the  client to our facility.
@@ -24208,7 +24377,7 @@ WHERE
 	cl.phone_no,
 	app.appntmnt_date as appointment_date,
 	app.app_status,
-	app_type.NAME AS appointment_type 
+	app_type.NAME AS appointment_type
 FROM
 	tbl_client cl
 	INNER JOIN tbl_appointment app ON app.client_id = cl.id
@@ -24267,9 +24436,9 @@ FROM
                                             $this->db->insert('usr_outgoing', $outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
 
 
@@ -24284,18 +24453,18 @@ FROM
 
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         } else if (!$send_text) {
                                             echo 'Msg was not sent , please try again.....';
                                         } else {
-                                            
+
                                         }
                                     }
                                 } else {
-                                    
+
                                 }
                             }
                         } else {
@@ -24351,9 +24520,9 @@ FROM
 
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
@@ -24408,9 +24577,9 @@ FROM
 
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
@@ -24428,9 +24597,9 @@ FROM
 
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
-                    
+
                 }
             }
         }
@@ -24438,14 +24607,14 @@ FROM
 
     function ushauri_msgs() {
 
-        //Get the  frequency of messages that should be going out, 
-        //from the  frequency schedule all the messages that should be going out to the clients 
-        //Be checking on a dialy basis if the message meets the  criteria and then send it to the  client. 
-        //Get the  frequency of message flowing 
+        //Get the  frequency of messages that should be going out,
+        //from the  frequency schedule all the messages that should be going out to the clients
+        //Be checking on a dialy basis if the message meets the  criteria and then send it to the  client.
+        //Get the  frequency of message flowing
         //Get the current week , check the last ougoing message per client level
         // and based on the conditions (if the  conditions were met) , if they were met , schedule the  next message
-        //Tables required : => tbl_messages , tbl_clnt_ushauri 
-        //1=> Get Clients based on the  date added on the  system 
+        //Tables required : => tbl_messages , tbl_clnt_ushauri
+        //1=> Get Clients based on the  date added on the  system
 
         $today = date("Y-m-d H:i:s");
         $dayofweek = date('w', strtotime($today));
@@ -24458,7 +24627,7 @@ FROM
         $week = $date->format("W");
         $year = date('Y');
 
-        $get_client_day = $this->db->query(" 
+        $get_client_day = $this->db->query("
 SELECT
 	tbl_client.phone_no,
 	tbl_client.id,
@@ -24470,13 +24639,13 @@ SELECT
 	DAYOFWEEK( CURDATE( ) ) as day_of_week
 FROM
 	tbl_client
-	INNER JOIN tbl_clnt_ushauri ON tbl_clnt_ushauri.`client_id` = tbl_client.`id` 
+	INNER JOIN tbl_clnt_ushauri ON tbl_clnt_ushauri.`client_id` = tbl_client.`id`
 WHERE
 	DAYOFWEEK( `tbl_client`.`created_at` ) = $dayofweek
-	AND smsenable = 'Yes' 
-	AND motivational_enable = 'Yes' 
+	AND smsenable = 'Yes'
+	AND motivational_enable = 'Yes'
 GROUP BY
-	tbl_client.id 
+	tbl_client.id
 ORDER BY
 	tbl_clnt_ushauri.updated_at ASC  ");
         $check_existnce = $get_client_day->num_rows();
@@ -24538,12 +24707,12 @@ ORDER BY
 
                                         if ($new_logic_flow == 26) {
                                             if ($gender_id == 1) {
-                                                
+
                                             } else if ($gender_id == 2) {
                                                 $new_logic_flow = 1;
                                             }
                                         } else {
-                                            
+
                                         }
                                     }
                                 }
@@ -24586,7 +24755,7 @@ ORDER BY
                                         $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
                                             $this->db->trans_start();
                                             $clnt_ushauri = array(
@@ -24602,9 +24771,9 @@ ORDER BY
                                             $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -24653,7 +24822,7 @@ ORDER BY
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
                                                 $this->db->trans_start();
                                                 $clnt_ushauri = array(
@@ -24669,9 +24838,9 @@ ORDER BY
                                                 $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
@@ -24712,7 +24881,7 @@ ORDER BY
                                                 $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     $this->db->trans_start();
                                                     $clnt_ushauri = array(
@@ -24728,9 +24897,9 @@ ORDER BY
                                                     $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-                                                        
+
                                                     }
                                                 }
                                             }
@@ -24769,7 +24938,7 @@ ORDER BY
                                                 $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
                                                     $this->db->trans_start();
                                                     $clnt_ushauri = array(
@@ -24785,9 +24954,9 @@ ORDER BY
                                                     $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                                     $this->db->trans_complete();
                                                     if ($this->db->trans_status() === FALSE) {
-                                                        
+
                                                     } else {
-                                                        
+
                                                     }
                                                 }
                                             }
@@ -24839,7 +25008,7 @@ ORDER BY
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
                                                 $this->db->trans_start();
                                                 $clnt_ushauri = array(
@@ -24855,9 +25024,9 @@ ORDER BY
                                                 $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
@@ -24906,7 +25075,7 @@ ORDER BY
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
                                                 $this->db->trans_start();
                                                 $clnt_ushauri = array(
@@ -24922,9 +25091,9 @@ ORDER BY
                                                 $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
@@ -24941,7 +25110,7 @@ ORDER BY
                                 echo"Qwerty";
                                 if ($gender_id == 1) {
 
-                                    //Get only cilents who are Female 
+                                    //Get only cilents who are Female
                                     if ($new_logic_flow == 7 or $new_logic_flow == 8 or $new_logic_flow == 24 or $new_logic_flow == 25 or $new_logic_flow == 26) {
 
                                         echo 'Logic ID is equal to 7 or 8 or 26 <br>';
@@ -24982,7 +25151,7 @@ ORDER BY
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
                                                 $this->db->trans_start();
                                                 $clnt_ushauri = array(
@@ -24998,9 +25167,9 @@ ORDER BY
                                                 $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
@@ -25053,7 +25222,7 @@ ORDER BY
                                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
                                                 $this->db->trans_start();
                                                 $clnt_ushauri = array(
@@ -25069,18 +25238,18 @@ ORDER BY
                                                 $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                                 $this->db->trans_complete();
                                                 if ($this->db->trans_status() === FALSE) {
-                                                    
+
                                                 } else {
-                                                    
+
                                                 }
                                             }
                                         }
                                     } else {
 
                                         if ($new_logic_flow == 26) {
-                                            
+
                                         } else {
-                                            
+
                                         }
                                         echo 'New Logic Flow ID => ' . $new_logic_flow . '<br>';
                                         echo 'This condition has been mettttttt.......';
@@ -25128,7 +25297,7 @@ ORDER BY
                                         $this->db->insert('clnt_outgoing', $clnt_outgoing);
                                         $this->db->trans_complete();
                                         if ($this->db->trans_status() === FALSE) {
-                                            
+
                                         } else {
                                             $this->db->trans_start();
                                             $clnt_ushauri = array(
@@ -25144,9 +25313,9 @@ ORDER BY
                                             $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                             $this->db->trans_complete();
                                             if ($this->db->trans_status() === FALSE) {
-                                                
+
                                             } else {
-                                                
+
                                             }
                                         }
                                     }
@@ -25185,7 +25354,7 @@ ORDER BY
                             $this->db->insert('clnt_outgoing', $clnt_outgoing);
                             $this->db->trans_complete();
                             if ($this->db->trans_status() === FALSE) {
-                                
+
                             } else {
                                 $this->db->trans_start();
                                 $clnt_ushauri = array(
@@ -25201,9 +25370,9 @@ ORDER BY
                                 $this->db->insert('clnt_ushauri', $clnt_ushauri);
                                 $this->db->trans_complete();
                                 if ($this->db->trans_status() === FALSE) {
-                                    
+
                                 } else {
-                                    
+
                                 }
                             }
                         }
@@ -25211,7 +25380,7 @@ ORDER BY
                 }
             }
         } else {
-            $get_first_outoging_msg = $this->db->query("	
+            $get_first_outoging_msg = $this->db->query("
 				SELECT
 	tbl_client.phone_no,
 	tbl_client.id,
@@ -25221,11 +25390,11 @@ ORDER BY
 	tbl_client.f_name,
 	DAYOFWEEK( CURDATE( ) ) as day_of_week
 FROM
-	tbl_client 
+	tbl_client
 WHERE
 	DAYOFWEEK( `tbl_client`.`created_at` ) = $dayofweek
-	AND smsenable = 'Yes' 
-	AND motivational_enable = 'Yes' 
+	AND smsenable = 'Yes'
+	AND motivational_enable = 'Yes'
 GROUP BY
 	tbl_client.id ")->result();
             foreach ($get_first_outoging_msg as $value) {
@@ -25273,7 +25442,7 @@ GROUP BY
                     $this->db->insert('clnt_outgoing', $clnt_outgoing);
                     $this->db->trans_complete();
                     if ($this->db->trans_status() === FALSE) {
-                        
+
                     } else {
                         $this->db->trans_start();
                         $clnt_ushauri = array(
@@ -25289,9 +25458,9 @@ GROUP BY
                         $this->db->insert('clnt_ushauri', $clnt_ushauri);
                         $this->db->trans_complete();
                         if ($this->db->trans_status() === FALSE) {
-                            
+
                         } else {
-                            
+
                         }
                     }
                 }
@@ -25374,13 +25543,13 @@ GROUP BY
 
     function cleanup() {
         /*
-         * Select the  client records that meet the specified condition 
-         * strip off the  first 5 characters from string position one 
-         * strip off the  last 5 characters from  string postion last 
+         * Select the  client records that meet the specified condition
+         * strip off the  first 5 characters from string position one
+         * strip off the  last 5 characters from  string postion last
          */
 
 
-        $get_client = $this->db->query(" SELECT 
+        $get_client = $this->db->query(" SELECT
     *
 FROM
     ushauri_new.tbl_client where INSTR(clinic_number, '  ') > 0 ")->result();
@@ -25430,13 +25599,13 @@ FROM
 
     function cleanup2() {
         /*
-         * Select the  client records that meet the specified condition 
-         * strip off the  first 5 characters from string position one 
-         * strip off the  last 5 characters from  string postion last 
+         * Select the  client records that meet the specified condition
+         * strip off the  first 5 characters from string position one
+         * strip off the  last 5 characters from  string postion last
          */
 
 
-        $get_client = $this->db->query(" SELECT 
+        $get_client = $this->db->query(" SELECT
     *
 FROM
     ushauri_new.tbl_client where INSTR(clinic_number, '-') > 0 ")->result();
@@ -25458,7 +25627,7 @@ FROM
                 $this->db->query(" delete ignore from tbl_unrecognised where client_id='$id' ");
                 $this->db->trans_complete();
                 if ($this->db->trans_status() === FALSE) {
-                    
+
                 } else {
                     echo "clinic number =>  " . $clinic_number . ' deleted successfully  in the system  => ' . $new_clinic_number . '<br>';
                 }
@@ -25479,14 +25648,14 @@ FROM
 
     function cleanup3() {
         /*
-         * Select the  client records that meet the specified condition 
-         * strip off the  first 5 characters from string position one 
-         * strip off the  last 5 characters from  string postion last 
+         * Select the  client records that meet the specified condition
+         * strip off the  first 5 characters from string position one
+         * strip off the  last 5 characters from  string postion last
          */
 
 
 
-        $get_client = $this->db->query(" SELECT 
+        $get_client = $this->db->query(" SELECT
     *
 FROM
     ushauri_new.tbl_client where INSTR(clinic_number, ' ') > 0  ")->result();
@@ -25539,9 +25708,9 @@ FROM
             $this->db->update('appointment', $data_update);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE) {
-                
+
             } else {
-                
+
             }
         }
     }
@@ -25584,7 +25753,7 @@ FROM
                 // echo "Clinic no => ".$clinic_number."<br>";
 
                 $get_appointment = $this->db->query(" select tbl_appointment.id,appntmnt_date, active_app, app_status,`appointment_kept`,app_type_1 from tbl_client
-                    inner join tbl_appointment on tbl_appointment.client_id = tbl_client.id 
+                    inner join tbl_appointment on tbl_appointment.client_id = tbl_client.id
                     inner join tbl_appointment_types on tbl_appointment_types.id = tbl_appointment.app_type_1
                         where clinic_number='$clinic_number' and tbl_appointment.appntmnt_date='$appointment_date' and tbl_appointment_types.name='$appointment_type' ");
 
@@ -25609,8 +25778,8 @@ FROM
                     }
                 }
             }
-           
-            
+
+
         }
     }
 
@@ -25651,17 +25820,17 @@ FROM
 /*
 
  * This is used for appointment clean up in the  system .
- * 
+ *
  *  */
 
         $query = $this->db->query(" SELECT
-	* 
+	*
 FROM
-	tbl_incoming 
+	tbl_incoming
 WHERE 1  AND msg LIKE '%APP%'
-	AND DATE( created_at ) BETWEEN ( CURDATE( ) - INTERVAL 1 DAY ) 
+	AND DATE( created_at ) BETWEEN ( CURDATE( ) - INTERVAL 1 DAY )
 	AND CURDATE( ) and date(updated_at) < CURRENT_DATE and source LIKE '%742335621%'   ")->result();
-        //Get new response from tbl_response based on the response id passed 
+        //Get new response from tbl_response based on the response id passed
         foreach ($query as $value) {
             $user_source = $value->source;
             $user_destination = $value->destination;
@@ -25756,10 +25925,10 @@ WHERE 1  AND msg LIKE '%APP%'
                         }
                     }
                 } else {
-                    
+
                 }
             } else {
-                
+
             }
         }
     }
