@@ -845,6 +845,7 @@ function sender() {
             tbl_client.alt_phone_no,
             tbl_client.shared_no_name,
             tbl_client.smsenable,
+            tbl_client.partner_id,
 
             tbl_appointment.appntmnt_date,
             tbl_appointment.app_status,
@@ -871,6 +872,7 @@ function sender() {
             $txt_time = $value->txt_time;
             $alt_phone_no = $value->alt_phone_no;
             $smsenable = $value->smsenable;
+            $partner_id = $value->partner_id;
 
             $appointment_date = $value->appntmnt_date;
             $appointment_msg = $value->app_msg;
@@ -951,12 +953,84 @@ function sender() {
                             } else {
                                 // // // // echo 'No message was found....';
 
+                                if($partner_id == 30){
+                                    $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='1' and logic_flow='$logic_flow_id'
+                                    and language_id='$language_id' LIMIT 1 ")->result();
+                                    foreach ($get_content as $value) {
+                                        $content_id = $value->id;
+                                        $content = $value->message;
+                                        //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
+
+
+                                        $today = date("Y-m-d H:i:s");
+                                        $dayofweek = date('l', strtotime($appointment_date))
+
+                                        $new_msg = str_replace("DDD", $dayofweek, $content);
+                                        // echo 'nini hii' . $new_msg;
+                                        // exit;
+                                        $appointment_date = date("y-m-d", strtotime($appointment_date));
+                                        $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+
+
+                                        $status = "Not Sent";
+                                        $responded = "No";
+                                        $yes_notified = 'Yes';
+                                        $app_status = "Notified";
+                                        $Notified_status = "Notified Sent";
+                                        $this->db->trans_start();
+                                        $update_appointment_array = array(
+                                            'app_status' => $app_status,
+                                            'app_msg' => $cleaned_msg,
+                                            'notified' => $yes_notified,
+                                            'sent_status' => $Notified_status,
+                                            'updated_by' => '1'
+                                        );
+                                        $this->db->where('id', $appointment_id);
+                                        $this->db->update('appointment', $update_appointment_array);
+                                        $this->db->trans_complete();
+                                        if ($this->db->trans_status() === FALSE) {
+
+                                        } else {
 
 
 
-                                $get_partner_id = $this->db->query("Select partner_id from tbl_client");
+                                            // echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                            if ($smsenable == 'Yes') {
+                                                $this->db->trans_start();
+                                                // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
+                                                $this->config->load('config', TRUE);
+                                                // Retrieve a config item named site_name contained within the blog_settings array
+                                                $source = $this->config->item('shortcode', 'config');
+                                                $message_type_id = 1;
+                                                $clnt_outgoing = array(
+                                                    'destination' => $phone_no,
+                                                    'msg' => $cleaned_msg,
+                                                    'responded' => $responded,
+                                                    'status' => $status,
+                                                    'message_type_id' => $message_type_id,
+                                                    'source' => $source,
+                                                    'clnt_usr_id' => $client_id,
+                                                    'recepient_type' => 'Client',
+                                                    'content_id' => $content_id,
+                                                    'created_at' => $today,
+                                                    'created_by' => '1'
+                                                );
+                                                $this->db->insert('clnt_outgoing', $clnt_outgoing);
+                                                $this->db->trans_complete();
+                                                if ($this->db->trans_status() === FALSE) {
 
-                                if($get_partner_id !== 30){
+                                                } else {
+
+                                                }
+                                            } else {
+
+                                            }
+                                        }
+                                    }
+                                 }
+
+
+                                else{
                                     $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='0' and logic_flow='$logic_flow_id'
                                 and language_id='$language_id' LIMIT 1 ")->result();
                                 foreach ($get_content as $value) {
@@ -1030,80 +1104,6 @@ function sender() {
                                     }
                                 }
 
-                             } else{
-                                $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='1' and logic_flow='$logic_flow_id'
-                                and language_id='$language_id' LIMIT 1 ")->result();
-                                foreach ($get_content as $value) {
-                                    $content_id = $value->id;
-                                    $content = $value->message;
-                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
-
-
-                                    $today = date("Y-m-d H:i:s");
-                                    $dayofweek = date('l', strtotime($appointment_date))
-
-                                    $new_msg = str_replace("DDD", $dayofweek, $content);
-                                    // echo 'nini hii' . $new_msg;
-                                    // exit;
-                                    $appointment_date = date("y-m-d", strtotime($appointment_date));
-                                    $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-
-
-                                    $status = "Not Sent";
-                                    $responded = "No";
-                                    $yes_notified = 'Yes';
-                                    $app_status = "Notified";
-                                    $Notified_status = "Notified Sent";
-                                    $this->db->trans_start();
-                                    $update_appointment_array = array(
-                                        'app_status' => $app_status,
-                                        'app_msg' => $cleaned_msg,
-                                        'notified' => $yes_notified,
-                                        'sent_status' => $Notified_status,
-                                        'updated_by' => '1'
-                                    );
-                                    $this->db->where('id', $appointment_id);
-                                    $this->db->update('appointment', $update_appointment_array);
-                                    $this->db->trans_complete();
-                                    if ($this->db->trans_status() === FALSE) {
-
-                                    } else {
-
-
-
-                                        // echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
-                                        if ($smsenable == 'Yes') {
-                                            $this->db->trans_start();
-                                            // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
-                                            $this->config->load('config', TRUE);
-                                            // Retrieve a config item named site_name contained within the blog_settings array
-                                            $source = $this->config->item('shortcode', 'config');
-                                            $message_type_id = 1;
-                                            $clnt_outgoing = array(
-                                                'destination' => $phone_no,
-                                                'msg' => $cleaned_msg,
-                                                'responded' => $responded,
-                                                'status' => $status,
-                                                'message_type_id' => $message_type_id,
-                                                'source' => $source,
-                                                'clnt_usr_id' => $client_id,
-                                                'recepient_type' => 'Client',
-                                                'content_id' => $content_id,
-                                                'created_at' => $today,
-                                                'created_by' => '1'
-                                            );
-                                            $this->db->insert('clnt_outgoing', $clnt_outgoing);
-                                            $this->db->trans_complete();
-                                            if ($this->db->trans_status() === FALSE) {
-
-                                            } else {
-
-                                            }
-                                        } else {
-
-                                        }
-                                    }
-                                }
                              }
 
                             } //end
@@ -1140,6 +1140,7 @@ function sender() {
             tbl_client.alt_phone_no,
             tbl_client.shared_no_name,
             tbl_client.smsenable,
+            tbl_client.partner_id,
 
             tbl_appointment.appntmnt_date,
             tbl_appointment.app_status,
@@ -1161,7 +1162,6 @@ function sender() {
         foreach ($appointments as $value) {
 
 
-
             $f_name = $value->f_name;
             $m_name = $value->m_name;
             $l_name = $value->l_name;
@@ -1169,6 +1169,7 @@ function sender() {
             $txt_time = $value->txt_time;
             $alt_phone_no = $value->alt_phone_no;
             $smsenable = $value->smsenable;
+            $partner_id = $value->partner_id;
 
             $appointment_date = $value->appntmnt_date;
             $appointment_msg = $value->app_msg;
@@ -1266,9 +1267,90 @@ function sender() {
                                  echo 'No message was found bruh....';
 
 
-                                $get_partner_id = $this->db->query("Select partner_id from tbl_client");
+                                 if($partner_id == 30)
+                                    $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='1' and logic_flow='$logic_flow_id'
+                                and language_id='$language_id' LIMIT 1 ")->result();
+                                foreach ($get_content as $value) {
 
-                                if($get_partner_id !== 30) {
+                                     echo json_encode($value);
+                                    // exit;
+                                    $content_id = $value->id;
+                                    $content = $value->message;
+                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
+
+
+                                    $today = date("Y-m-d H:i:s");
+                                    $dayofweek = date('l', strtotime($appointment_date))
+                                    $new_msg = str_replace("DDD", $dayofweek, $content);
+                                    $appointment_date = date("y-m-d", strtotime($appointment_date));
+                                    $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+
+
+                                    $status = "Not Sent";
+                                    $responded = "No";
+                                    $yes_notified = 'Yes';
+                                    $app_status = "Notified";
+                                    $Notified_status = "Notified Sent";
+                                    $this->db->trans_start();
+                                    $update_appointment_array = array(
+                                        'app_status' => $app_status,
+                                        'app_msg' => $cleaned_msg,
+                                        'notified' => $yes_notified,
+                                        'sent_status' => $Notified_status,
+                                        'updated_by' => '1'
+                                    );
+                                    $this->db->where('id', $appointment_id);
+                                    $this->db->update('appointment', $update_appointment_array);
+                                    $this->db->trans_complete();
+                                    if ($this->db->trans_status() === FALSE) {
+                                        echo "Nothing";
+
+                                    } else {
+
+
+
+                                         echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                        // exit;
+
+                                        if ($smsenable == 'Yes') {
+                                            $this->db->trans_start();
+                                            // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
+                                            $this->config->load('config', TRUE);
+                                            // Retrieve a config item named site_name contained within the blog_settings array
+                                            $source = $this->config->item('shortcode', 'config');
+
+
+                                            $message_type_id = 1;
+                                            $clnt_outgoing = array(
+                                                'destination' => $phone_no,
+                                                'msg' => $cleaned_msg,
+                                                'responded' => $responded,
+                                                'status' => $status,
+                                                'message_type_id' => $message_type_id,
+                                                'source' => $source,
+                                                'clnt_usr_id' => $client_id,
+                                                'recepient_type' => 'Client',
+                                                'content_id' => $content_id,
+                                                'created_at' => $today,
+                                                'created_by' => '1'
+                                            );
+                                            $this->db->insert('clnt_outgoing', $clnt_outgoing);
+                                            $this->db->trans_complete();
+                                            if ($this->db->trans_status() === FALSE) {
+
+
+                                            } else {
+                                                echo "Client message also sent";
+
+
+                                            }
+                                        } else {
+
+                                        }
+
+                                    }
+                                }
+                              }else {
                                     $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='0' and logic_flow='$logic_flow_id'
                                 and language_id='$language_id' LIMIT 1 ")->result();
                                 foreach ($get_content as $value) {
@@ -1352,89 +1434,6 @@ function sender() {
                                     }
                                 }
 
-                                } else{
-                                    $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='1' and logic_flow='$logic_flow_id'
-                                and language_id='$language_id' LIMIT 1 ")->result();
-                                foreach ($get_content as $value) {
-
-                                     echo json_encode($value);
-                                    // exit;
-                                    $content_id = $value->id;
-                                    $content = $value->message;
-                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date
-
-
-                                    $today = date("Y-m-d H:i:s");
-                                    $dayofweek = date('l', strtotime($appointment_date))
-                                    $new_msg = str_replace("DDD", $dayofweek, $content);
-                                    $appointment_date = date("y-m-d", strtotime($appointment_date));
-                                    $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-
-
-                                    $status = "Not Sent";
-                                    $responded = "No";
-                                    $yes_notified = 'Yes';
-                                    $app_status = "Notified";
-                                    $Notified_status = "Notified Sent";
-                                    $this->db->trans_start();
-                                    $update_appointment_array = array(
-                                        'app_status' => $app_status,
-                                        'app_msg' => $cleaned_msg,
-                                        'notified' => $yes_notified,
-                                        'sent_status' => $Notified_status,
-                                        'updated_by' => '1'
-                                    );
-                                    $this->db->where('id', $appointment_id);
-                                    $this->db->update('appointment', $update_appointment_array);
-                                    $this->db->trans_complete();
-                                    if ($this->db->trans_status() === FALSE) {
-                                        echo "Nothing";
-
-                                    } else {
-
-
-
-                                         echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
-                                        // exit;
-
-                                        if ($smsenable == 'Yes') {
-                                            $this->db->trans_start();
-                                            // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
-                                            $this->config->load('config', TRUE);
-                                            // Retrieve a config item named site_name contained within the blog_settings array
-                                            $source = $this->config->item('shortcode', 'config');
-
-
-                                            $message_type_id = 1;
-                                            $clnt_outgoing = array(
-                                                'destination' => $phone_no,
-                                                'msg' => $cleaned_msg,
-                                                'responded' => $responded,
-                                                'status' => $status,
-                                                'message_type_id' => $message_type_id,
-                                                'source' => $source,
-                                                'clnt_usr_id' => $client_id,
-                                                'recepient_type' => 'Client',
-                                                'content_id' => $content_id,
-                                                'created_at' => $today,
-                                                'created_by' => '1'
-                                            );
-                                            $this->db->insert('clnt_outgoing', $clnt_outgoing);
-                                            $this->db->trans_complete();
-                                            if ($this->db->trans_status() === FALSE) {
-
-
-                                            } else {
-                                                echo "Client message also sent";
-
-
-                                            }
-                                        } else {
-
-                                        }
-
-                                    }
-                                }
                                 }
 
                             }
