@@ -824,220 +824,6 @@ function sender() {
     function one_day_scheduler() {
         //Current Date 
         $current_date = date("Y-m-d");
-        // Get all appointment dates 
-        $appointments = $this->db->query(" SELECT 
-            tbl_appointment.id AS appointment_id,
-            f_name,
-            m_name,
-            l_name,
-            dob,
-            tbl_client.status,
-            phone_no,
-            tbl_client.clinic_number,
-            tbl_client.created_at AS enrollment_date,
-            tbl_client.updated_at,
-            tbl_client.id AS client_id,
-            tbl_client.language_id AS language_id,
-            tbl_client.clinic_number,
-            tbl_client.client_status,
-            tbl_client.txt_frequency,
-            tbl_client.txt_time,
-            tbl_client.alt_phone_no,
-            tbl_client.shared_no_name,
-            tbl_client.smsenable,
-            
-            tbl_appointment.appntmnt_date,
-            tbl_appointment.app_status,
-            tbl_appointment.app_msg,
-            tbl_appointment.updated_at,
-                
-            tbl_appointment.app_type_1,
-            
-            
-            sent_status,
-            tbl_appointment.notified 
-            FROM
-            tbl_appointment 
-            INNER JOIN tbl_client 
-                ON tbl_client.id = tbl_appointment.client_id 
-            WHERE tbl_client.status = 'Active' 
-            AND active_app = '1' 
-                AND  DATE(`tbl_appointment`.`appntmnt_date`) = DATE(NOW() + INTERVAL 1 DAY) group by appointment_id ")->result();
-        foreach ($appointments as $value) {
-            $f_name = $value->f_name;
-            $m_name = $value->m_name;
-            $l_name = $value->l_name;
-            $phone_no = $value->phone_no;
-            $txt_time = $value->txt_time;
-            $alt_phone_no = $value->alt_phone_no;
-            $smsenable = $value->smsenable;
-
-            $appointment_date = $value->appntmnt_date;
-            $appointment_msg = $value->app_msg;
-
-            $app_status = $value->app_status;
-            $appointment_id = $value->appointment_id;
-            $notified = $value->notified;
-            $sent_status = $value->sent_status;
-            $language_id = $value->language_id;
-            $client_id = $value->client_id;
-            $client_name = ucwords(strtolower($f_name)) . " ";
-            $client_name = str_replace("'", '', $client_name);
-
-            /// // echo 'Client Name => ' . $client_name . 'and client id ' . $client_id . '</br>';
-
-
-
-            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(updated_at) = DATE(NOW()) AND clnt_usr_id=$client_id LIMIT 1")->num_rows();
-            if ($check_clnt_outgoing_msg_existence > 0) {
-                //echo 'Message found ....<br>';
-            } else {
-                //echo 'No message was found....';
-
-
-
-
-                $notification_flow = $this->db->query("Select * from tbl_notification_flow where status='Active' and notification_type ='Notified' LIMIT 1")->result();
-
-
-                foreach ($notification_flow as $value2) {
-                    $notification_type = $value2->notification_type;
-
-                    $notification_flow_days = $value2->days;
-
-                    $current_date2 = new DateTime($current_date);
-
-                    $appointment_date2 = new DateTime($appointment_date);
-                    $current_month = date("m", strtotime($current_date));
-
-                    $current_year = date("Y", strtotime($current_date));
-                    $appointment_year = date("Y", strtotime($appointment_date));
-
-                    $appointment_month = date("m", strtotime($appointment_date));
-
-                    $days_diff = $current_date2->diff($appointment_date2)->format("%a");
-                    //echo 'Day difference : => ' . $days_diff . '</br>';
-
-                    if ($current_date < $appointment_date) {
-                        //echo $client_name . '</br>' . $appointment_date . '</br> end <br>';
-                        //Booked and Notified
-
-                      //  $check_existence_booked = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => $notification_type))->num_rows();
-                        $check_existence_notified = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => $notification_type))->num_rows();
-                        if ($check_existence_notified == 1 && $notification_type == "Notified") {
-                            // // // // echo 'Check notified found ....<br> ';
-
-                            $target_group = 'All';
-                            $message_type_id = 1;
-                            // // // // echo 'Notification Flow Days ; ' . $notification_flow_days . ' And Days difference : ' . $days_diff . '</br>';
-                            // // // // echo gettype($notification_flow_days);
-                            $sevendays = '7';
-                            $oneday = '1';
-                            if (strcmp($sevendays, $days_diff) == 0) {
-
-                                // // // // echo 'Line No 1076 7 Days to appointment for client name ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $sevendays . '</br>';
-                                $logic_flow_id = 2;
-                            } elseif (strcmp($oneday, $days_diff) == 0) {
-                                // echo 'Line No 1079  One day to appointment..... for ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $oneday . '</br>';
-                                $logic_flow_id = 3;
-                            }
-                            // // // // echo 'Logic flow ' . $logic_flow_id . '</br>';
-
-
-
-                            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW()) AND clnt_usr_id=$client_id LIMIT 1")->num_rows();
-                            if ($check_clnt_outgoing_msg_existence > 0) {
-                                // // // // echo 'Message found ....<br>';
-                            } else {
-                                // // // // echo 'No message was found....';
-
-
-
-
-
-                                $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and logic_flow='$logic_flow_id' 
-                                and language_id='$language_id' LIMIT 1 ")->result();
-                                foreach ($get_content as $value) {
-                                    $content_id = $value->id;
-                                    $content = $value->message;
-                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
-
-
-                                    $today = date("Y-m-d H:i:s");
-
-                                    $new_msg = str_replace("XXX", $client_name, $content);
-                                    // echo 'nini hii' . $new_msg;
-                                    // exit;
-                                    $appointment_date = date("d-m-Y", strtotime($appointment_date));
-                                    $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
-
-                                   
-                                    $status = "Not Sent";
-                                    $responded = "No";
-                                    $yes_notified = 'Yes';
-                                    $app_status = "Notified";
-                                    $Notified_status = "Notified Sent";
-                                    $this->db->trans_start();
-                                    $update_appointment_array = array(
-                                        'app_status' => $app_status,
-                                        'app_msg' => $cleaned_msg,
-                                        'notified' => $yes_notified,
-                                        'sent_status' => $Notified_status,
-                                        'updated_by' => '1'
-                                    );
-                                    $this->db->where('id', $appointment_id);
-                                    $this->db->update('appointment', $update_appointment_array);
-                                    $this->db->trans_complete();
-                                    if ($this->db->trans_status() === FALSE) {
-                                        
-                                    } else {
-
-
-
-                                        // echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
-                                        if ($smsenable == 'Yes') {
-                                            $this->db->trans_start();
-                                            // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
-                                            $this->config->load('config', TRUE);
-                                            // Retrieve a config item named site_name contained within the blog_settings array
-                                            $source = $this->config->item('shortcode', 'config');
-                                            $message_type_id = 1;
-                                            $clnt_outgoing = array(
-                                                'destination' => $phone_no,
-                                                'msg' => $cleaned_msg,
-                                                'responded' => $responded,
-                                                'status' => $status,
-                                                'message_type_id' => $message_type_id,
-                                                'source' => $source,
-                                                'clnt_usr_id' => $client_id,
-                                                'recepient_type' => 'Client',
-                                                'content_id' => $content_id,
-                                                'created_at' => $today,
-                                                'created_by' => '1'
-                                            );
-                                            $this->db->insert('clnt_outgoing', $clnt_outgoing);
-                                            $this->db->trans_complete();
-                                            if ($this->db->trans_status() === FALSE) {
-                                                
-                                            } else {
-                                                
-                                            }
-                                        } else {
-                                            
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    function seven_day_scheduler() {
-        //Current Date 
-        $current_date = date("Y-m-d");
         // echo "this is today" . $current_date;
         // exit;
         // Get all appointment dates 
@@ -1078,7 +864,7 @@ function sender() {
                 ON tbl_client.id = tbl_appointment.client_id 
             WHERE tbl_client.status = 'Active' 
             AND active_app = '1' 
-                AND  DATE(`tbl_appointment`.`appntmnt_date`) = DATE(NOW() + INTERVAL 7 DAY) group by appointment_id ")->result();
+                AND  DATE(`tbl_appointment`.`appntmnt_date`) = DATE(NOW() + INTERVAL 1 DAY) group by appointment_id ")->result();
         foreach ($appointments as $value) {
 
           
@@ -1270,6 +1056,254 @@ function sender() {
 
                                     }
                                 }
+                            }
+                        }else{
+                            echo "Not found";
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function seven_day_scheduler() {
+        //Current Date 
+        $current_date = date("Y-m-d");
+        // echo "this is today" . $current_date;
+        // exit;
+        // Get all appointment dates 
+        $appointments = $this->db->query(" SELECT 
+            tbl_appointment.id AS appointment_id,
+            f_name,
+            m_name,
+            l_name,
+            dob,
+            tbl_client.status,
+            phone_no,
+            tbl_client.clinic_number,
+            tbl_client.created_at AS enrollment_date,
+            tbl_client.updated_at,
+            tbl_client.id AS client_id,
+            tbl_client.language_id AS language_id,
+            tbl_client.clinic_number,
+            tbl_client.client_status,
+            tbl_client.txt_frequency,
+            tbl_client.txt_time,
+            tbl_client.alt_phone_no,
+            tbl_client.shared_no_name,
+            tbl_client.smsenable,
+            tbl_client.partner_id,
+            
+            tbl_appointment.appntmnt_date,
+            tbl_appointment.app_status,
+            tbl_appointment.app_msg,
+            tbl_appointment.updated_at,
+                
+            tbl_appointment.app_type_1,
+            
+            
+            sent_status,
+            tbl_appointment.notified 
+            FROM
+            tbl_appointment 
+            INNER JOIN tbl_client 
+                ON tbl_client.id = tbl_appointment.client_id 
+            WHERE tbl_client.status = 'Active' 
+            AND active_app = '1' 
+                AND  DATE(`tbl_appointment`.`appntmnt_date`) = DATE(NOW() + INTERVAL 7 DAY) group by appointment_id ")->result();
+        foreach ($appointments as $value) {
+
+          
+
+            $f_name = $value->f_name;
+            $m_name = $value->m_name;
+            $l_name = $value->l_name;
+            $phone_no = $value->phone_no;
+            $txt_time = $value->txt_time;
+            $alt_phone_no = $value->alt_phone_no;
+            $smsenable = $value->smsenable;
+            $partner_id = $value->partner_id;
+             
+            $appointment_date = $value->appntmnt_date;
+            $appointment_msg = $value->app_msg;
+
+            $app_status = $value->app_status;
+            $appointment_id = $value->appointment_id;
+            $notified = $value->notified;
+            $sent_status = $value->sent_status;
+            $language_id = $value->language_id;
+            $client_id = $value->client_id;
+            $client_name = ucwords(strtolower($f_name)) . " ";
+            $client_name = str_replace("'", '', $client_name);
+
+            //  echo 'Client Name => ' . $client_name . 'and client id ' . $client_id . '</br>';
+            //  exit;
+
+
+
+            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW()) 
+            AND clnt_usr_id= $client_id LIMIT 1")->num_rows();
+            if ($check_clnt_outgoing_msg_existence > 0) {
+                  echo 'Message found ....<br>';
+                  //exit;
+            } else {
+                  echo 'No message was found....';
+                  //exit;
+
+
+
+
+                $notification_flow = $this->db->query("Select * from tbl_notification_flow where status='Active' and notification_type ='Notified' LIMIT 1")->result();
+
+
+                foreach ($notification_flow as $value2) {
+
+                    // echo json_encode($value2);
+                    // exit;
+                    $notification_type = $value2->notification_type;
+
+                    $notification_flow_days = $value2->days;
+
+                    $current_date2 = new DateTime($current_date);
+
+                    $appointment_date2 = new DateTime($appointment_date);
+                    $current_month = date("m", strtotime($current_date));
+
+                    $current_year = date("Y", strtotime($current_date));
+                    $appointment_year = date("Y", strtotime($appointment_date));
+
+                    $appointment_month = date("m", strtotime($appointment_date));
+
+                    $days_diff = $current_date2->diff($appointment_date2)->format("%a");
+                      echo 'Day difference : => ' . $days_diff . '</br>';
+                    //  exit;
+
+                    if ($current_date < $appointment_date) {
+                         echo $client_name . '</br>' . $appointment_date . '</br> end <br>';
+                        // exit;
+                        //Booked and Notified
+
+                        // $check_existence_booked = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => $notification_type))->num_rows();
+                        $check_existence_notified = $this->db->get_where('notification_flow', array('days' => $days_diff, 'notification_type' => $notification_type))->num_rows();
+                        if ($check_existence_notified == 1 && $notification_type == "Notified") {
+                              echo 'Check notified found ....<br> ';
+                            //  exit;
+
+                            $target_group = 'All';
+                            $message_type_id = 1;
+                            // // // // echo 'Notification Flow Days ; ' . $notification_flow_days . ' And Days difference : ' . $days_diff . '</br>';
+                            // // // // echo gettype($notification_flow_days);
+                            $sevendays = '7';
+                            $oneday = '1';
+                            if (strcmp($sevendays, $days_diff) == 0) {
+
+                                 echo 'Line No 1076 7 Days to appointment for client name ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $sevendays . '</br>';
+                                // exit;
+
+                                $logic_flow_id = 2;
+                                echo 'Logic flow in' . $logic_flow_id . '</br>';
+
+                            } elseif (strcmp($oneday, $days_diff) == 0) {
+                                 echo 'Line No 1079  One day to appointment..... for ' . $client_name . ' and day difference ' . $days_diff . ' and days is ' . $oneday . '</br>';
+                                $logic_flow_id = 3;
+                            }
+                             echo 'Logic flow ' . $logic_flow_id . '</br>';
+
+
+
+                            $check_clnt_outgoing_msg_existence = $this->db->query("SELECT * FROM tbl_clnt_outgoing WHERE message_type_id=1 AND DATE(created_at) = DATE(NOW()) 
+                            AND clnt_usr_id=$client_id LIMIT 1")->num_rows();
+                            if ($check_clnt_outgoing_msg_existence > 0) {
+                                 echo 'Message found again bruh....<br>';  
+                                                             
+                            } else {
+                                 echo 'No message was found bruh....';
+                                 
+                               
+                                
+                                $get_content = $this->db->query("Select * from tbl_messages where target_group='All' and message_type_id='1' and ushauri_id='0' and logic_flow='$logic_flow_id' 
+                                and language_id='$language_id' LIMIT 1 ")->result();
+                                foreach ($get_content as $value) {
+
+                                     echo json_encode($value);
+                                    // exit;
+                                    $content_id = $value->id;
+                                    $content = $value->message;
+                                    //Convert encoded character in the  message to clients real name and appointment day XXX => Client Name  YYY=> Appointment Date 
+
+
+                                    $today = date("Y-m-d H:i:s");
+
+                                    $new_msg = str_replace("XXX", $client_name, $content);
+                                    $appointment_date = date("d-m-Y", strtotime($appointment_date));
+                                    $cleaned_msg = str_replace("YYY", $appointment_date, $new_msg);
+
+
+                                    $status = "Not Sent";
+                                    $responded = "No";
+                                    $yes_notified = 'Yes';
+                                    $app_status = "Notified";
+                                    $Notified_status = "Notified Sent";
+                                    $this->db->trans_start();
+                                    $update_appointment_array = array(
+                                        'app_status' => $app_status,
+                                        'app_msg' => $cleaned_msg,
+                                        'notified' => $yes_notified,
+                                        'sent_status' => $Notified_status,
+                                        'updated_by' => '1'
+                                    );
+                                    $this->db->where('id', $appointment_id);
+                                    $this->db->update('appointment', $update_appointment_array);
+                                    $this->db->trans_complete();
+                                    if ($this->db->trans_status() === FALSE) {
+                                        echo "Nothing";
+                                        
+                                    } else {
+
+
+
+                                         echo 'Login flow id => ' . $logic_flow_id . 'Cleaned msg => ' . $cleaned_msg . '<br>';
+                                        // exit;
+                                        
+                                        if ($smsenable == 'Yes') {
+                                            $this->db->trans_start();
+                                            // Loads a config file named sys_config.php and assigns it to an index named "sys_config"
+                                            $this->config->load('config', TRUE);
+                                            // Retrieve a config item named site_name contained within the blog_settings array
+                                            $source = $this->config->item('shortcode', 'config');
+
+
+                                            $message_type_id = 1;
+                                            $clnt_outgoing = array(
+                                                'destination' => $phone_no,
+                                                'msg' => $cleaned_msg,
+                                                'responded' => $responded,
+                                                'status' => $status,
+                                                'message_type_id' => $message_type_id,
+                                                'source' => $source,
+                                                'clnt_usr_id' => $client_id,
+                                                'recepient_type' => 'Client',
+                                                'content_id' => $content_id,
+                                                'created_at' => $today,
+                                                'created_by' => '1'
+                                            );
+                                            $this->db->insert('clnt_outgoing', $clnt_outgoing);
+                                            $this->db->trans_complete();
+                                            if ($this->db->trans_status() === FALSE) {
+                                                
+                                                
+                                            } else {
+                                                echo "Client message also sent";
+                                               
+                                                
+                                            }
+                                        } else {
+                                            
+                                        }
+
+                                    }
+                                }
+                              
                             }
                         }else{
                             echo "Not found";
